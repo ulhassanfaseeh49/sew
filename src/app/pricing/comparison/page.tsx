@@ -1,23 +1,55 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, DollarSign, Printer, RefreshCw } from "lucide-react";
-export default function Page(){
-const[cost,sC]=useState("");const[market,sM]=useState("");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const c=parseFloat(cost)||0;const mk=parseFloat(market)||0;const costPlus=c*2;const value=mk*1.1;const hasResult=c>0;const resultValue="cost-plus: $"+costPlus.toFixed(2)+" | market: $"+mk.toFixed(2)+" | value: $"+value.toFixed(2);const resultLabel="compare and choose the best strategy";
-const faqItems=[{q:"Which pricing strategy is best?",a:"Use cost-plus as your floor. Check market prices. Charge more for unique, high-quality, or custom work."}];
-return(<div className="container"><Breadcrumb items={[{label:"Pricing",href:"/pricing"},{label:"Pricing Comparison"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><RefreshCw size={14} strokeWidth={1.5} /> Pricing #409</span><h1>Pricing Comparison</h1><p>Compare pricing strategies.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Your total cost ($)</label><input type="number" className="input-field" placeholder="15" value={cost} onChange={e=>sC(e.target.value)} min="0"/></div><div className="input-group"><label className="input-label">Market price ($)</label><input type="number" className="input-field" placeholder="35" value={market} onChange={e=>sM(e.target.value)} min="0"/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/pricing" className="related-tool-link"><DollarSign size={13} /> All Pricing</a></div></aside></div></div>);}
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeftRight, ChevronDown, DollarSign, Calculator } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const relatedTools = [
+    { name: "Etsy Fees", href: "/pricing/etsy-fees", icon: DollarSign },
+    { name: "Handmade Pricing", href: "/pricing/handmade-pricing", icon: Calculator },
+    { name: "Wholesale", href: "/pricing/wholesale", icon: DollarSign },
+];
+const faqItems = [
+    { q: "Which platform has the lowest fees?", a: "Direct website (Shopify at ~3%). Etsy is ~10-13%. Amazon Handmade is ~15%. Craft fairs depend on booth cost vs sales volume." },
+    { q: "Can I sell on multiple platforms?", a: "Yes. Many sellers use Etsy for discovery, their own website for repeat customers, and craft fairs for local sales. Keep pricing consistent." },
+    { q: "Should I include shipping in the comparison?", a: "Yes. Some platforms charge fees on shipping too (Etsy does). Free shipping increases your listing price, changing fee calculations." },
+];
+
+export default function ComparisonPage() {
+    const [sellingPrice, setSellingPrice] = useState(""); const [itemCost, setItemCost] = useState(""); const [shippingCost, setShippingCost] = useState("0");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+    const sp = parseFloat(sellingPrice) || 0; const ic = parseFloat(itemCost) || 0; const sc = parseFloat(shippingCost) || 0;
+    const hasResult = sp > 0;
+
+    const platforms = [
+        { name: "Direct sale", calc: () => ({ fees: 0, net: sp - ic }) },
+        { name: "Own website (Shopify)", calc: () => { const f = sp * 0.029 + 0.30; return { fees: f, net: sp - f - ic }; } },
+        { name: "Etsy", calc: () => { const f = 0.20 + (sp + sc) * 0.065 + (sp + sc) * 0.03 + 0.25; return { fees: f, net: sp - f - ic }; } },
+        { name: "Amazon Handmade", calc: () => { const f = sp * 0.15; return { fees: f, net: sp - f - ic }; } },
+        { name: "Facebook/Instagram", calc: () => { const f = sp * 0.029 + 0.30; return { fees: f, net: sp - f - ic }; } },
+    ].map(p => ({ name: p.name, ...p.calc() })).sort((a, b) => b.net - a.net);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Pricing", href: "/pricing" }, { label: "Platform Comparison" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><ArrowLeftRight size={14} strokeWidth={1.5} /> Pricing</span><h1>Selling Platform Comparison</h1><p>Compare take-home profit across all major selling platforms at a glance.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Your Item</h2>
+                    <div className="calculator-form"><div className="calculator-form-row">
+                        <div className="input-group"><label className="input-label">Selling Price ($)</label><input type="number" className="input-field input-mono" placeholder="e.g., 45" value={sellingPrice} onChange={e => setSellingPrice(e.target.value)} min="0" step="0.01" /></div>
+                        <div className="input-group"><label className="input-label">Item Cost ($)</label><input type="number" className="input-field input-mono" placeholder="e.g., 20" value={itemCost} onChange={e => setItemCost(e.target.value)} min="0" step="0.01" /></div>
+                        <div className="input-group"><label className="input-label">Shipping Cost ($)</label><input type="number" className="input-field input-mono" value={shippingCost} onChange={e => setShippingCost(e.target.value)} min="0" step="0.01" /></div>
+                    </div></div>
+                    {hasResult && (<div><div className="calculator-divider" />
+                        <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Platform</th><th>Fees</th><th>Your Profit</th><th>% Kept</th></tr></thead>
+                            <tbody>{platforms.map(p => (<tr key={p.name} style={{ color: p.net < 0 ? "var(--color-error)" : undefined }}><td style={{ fontWeight: 600 }}>{p.name}</td><td>${p.fees.toFixed(2)}</td><td>${p.net.toFixed(2)}</td><td>{sp > 0 ? (p.net / sp * 100).toFixed(0) : 0}%</td></tr>))}</tbody>
+                        </table></div>
+                        <p style={{ margin: "12px 0 0", padding: 12, fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", background: "var(--color-surface-hover)", borderRadius: 8 }}>Best option: {platforms[0]?.name} with ${platforms[0]?.net.toFixed(2)} profit per sale. Fees and rates are approximate -- verify current rates with each platform.</p>
+                    </div>)}
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}
