@@ -62,7 +62,7 @@ export default function MetersToFeetPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #6</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Meters to Feet Converter</h1>
                             <p>Convert meters to feet and inches for users working in imperial with metric measurements.</p>
                         </div>

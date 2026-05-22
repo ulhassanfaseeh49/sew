@@ -45,7 +45,7 @@ export default function PreCutFabricSizesPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Conversion Tool #23</span>
+                            <span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Pre-Cut Fabric Size Reference</h1>
                             <p>Complete guide to all pre-cut fabric sizes — charm squares, jelly rolls, layer cakes, and more — with dimensions and project ideas.</p>
                         </div>

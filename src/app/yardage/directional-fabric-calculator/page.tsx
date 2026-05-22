@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ArrowUp, ClipboardCopy, Palette, Printer, Repeat } from "lucide-react";
 
 export default function DirectionalFabricPage() {
     const [pieceL, setPieceL] = useState(""); const [pieceW, setPieceW] = useState(""); const [numPieces, setNumPieces] = useState("4"); const [fabricWidth, setFabricWidth] = useState("44.5"); const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -22,7 +23,7 @@ export default function DirectionalFabricPage() {
             <Breadcrumb items={[{ label: "Yardage Calculators", href: "/yardage" }, { label: "Directional Fabric" }]} />
             <div className="calculator-layout">
                 <div className="calculator-main">
-                    <div className={styles.toolHeader}><span className="category-badge"><span>⬆️</span> Yardage Tool #27</span><h1>One-Way / Directional Fabric Calculator</h1><p>Calculate extra yardage needed when fabric has a one-way design, nap, or sheen direction.</p></div>
+                    <div className={styles.toolHeader}><span className="category-badge"><ArrowUp size={14} strokeWidth={1.5} /> Yardage Tool</span><h1>One-Way / Directional Fabric Calculator</h1><p>Calculate extra yardage needed when fabric has a one-way design, nap, or sheen direction.</p></div>
                     <div className={`glass-card ${styles.calculatorCard}`}>
                         <h2 className={styles.calcTitle}>Piece Dimensions</h2>
                         <div className="calculator-form">
@@ -42,12 +43,12 @@ export default function DirectionalFabricPage() {
                                 <div className={styles.resultRow}><span>Directional yardage</span><strong>{roundedDir.toFixed(3)} yd</strong></div>
                                 <div className={styles.resultRow}><span>Extra needed</span><strong>{extra > 0 ? `+${extra.toFixed(3)} yd (${pctMore.toFixed(1)}% more)` : "Same"}</strong></div>
                             </div>
-                            <div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`Directional: ${roundedDir.toFixed(3)} yd vs non-directional: ${Math.ceil(yardNorm * 8 / 8).toFixed(3)} yd`)}>📋 Copy</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}>🖨️ Print</button></div>
+                            <div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`Directional: ${roundedDir.toFixed(3)} yd vs non-directional: ${Math.ceil(yardNorm * 8 / 8).toFixed(3)} yd`)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button></div>
                         </div>)}
                     </div>
                     <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
                 </div>
-                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/pattern-repeat-calculator" className="related-tool-link">🔁 Pattern Repeat</a><a href="/yardage/border-print-calculator" className="related-tool-link">🎨 Border Print</a></div></aside>
+                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/pattern-repeat-calculator" className="related-tool-link"><Repeat size={13} /> Pattern Repeat</a><a href="/yardage/border-print-calculator" className="related-tool-link"><Palette size={13} /> Border Print</a></div></aside>
             </div>
         </div>
     );

@@ -75,7 +75,7 @@ export default function FeetToMetersPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #5</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Feet to Meters Converter</h1>
                             <p>Convert feet and inches to meters for large fabric measurements, room dimensions, and home décor projects.</p>
                         </div>

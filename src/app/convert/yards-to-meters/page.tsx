@@ -129,7 +129,7 @@ export default function YardsToMetersPage() {
                         {/* Tool Header */}
                         <div className={styles.toolHeader}>
                             <span className="category-badge">
-                                <Ruler size={14} strokeWidth={1.5} /> Conversion Tool #1
+                                <Ruler size={14} strokeWidth={1.5} /> Conversion Tool
                             </span>
                             <h1>Yards to Meters Converter</h1>
                             <p>

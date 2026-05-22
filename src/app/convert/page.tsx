@@ -15,7 +15,7 @@ export default function ConvertHubPage() {
             <Breadcrumb items={[{ label: "Fabric Measurement & Conversion" }]} />
 
             <section className={styles.hubHero}>
-                <span className={styles.hubIcon}>📏</span>
+                <span className={styles.hubIcon}></span>
                 <h1>Fabric Measurement & Conversion Tools</h1>
                 <p className={styles.hubDesc}>
                     24 free calculators to convert between yards, meters, inches, centimeters, and every

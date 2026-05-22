@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { BarChart3, ClipboardCopy, Printer, Shirt } from "lucide-react";
 
 export default function Page() {
   const [yourShoulder,setYourShoulder]=useState("");const [patternShoulder,setPatternShoulder]=useState("");
@@ -16,7 +17,7 @@ export default function Page() {
       <div className="calculator-layout">
         <div className="calculator-main">
           <div className={styles.toolHeader}>
-            <span className="category-badge"><span>💪</span> Pattern Tool #107</span>
+            <span className="category-badge"><span></span> Pattern Tool</span>
             <h1>Broad Shoulder Adjustment</h1>
             <p>Calculate shoulder width adjustments.</p>
           </div>
@@ -33,15 +34,15 @@ export default function Page() {
                   <div className={styles.resultRow}><span>Per side</span><strong>{perSide>0?"+":""}{perSide.toFixed(3)}&quot;</strong></div><div className={styles.resultRow}><span>Method</span><strong>{Math.abs(diff)>1?"Slash and spread":"Pivot at armhole notch"}</strong></div>
                 </div>
                 <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}>📋 Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
                 </div>
               </div>
             )}
           </div>
           <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
         </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/pattern/full-bust-adjustment" className="related-tool-link">👗 FBA</a><a href="/pattern/size-grader" className="related-tool-link">📊 Size Grader</a></div></aside>
+        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/pattern/full-bust-adjustment" className="related-tool-link"><Shirt size={13} /> FBA</a><a href="/pattern/size-grader" className="related-tool-link"><BarChart3 size={13} /> Size Grader</a></div></aside>
       </div>
     </div>
   );

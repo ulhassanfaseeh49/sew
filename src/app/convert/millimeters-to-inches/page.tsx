@@ -87,7 +87,7 @@ export default function MillimetersToInchesPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #7</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Millimeters to Inches Converter</h1>
                             <p>Convert millimeters to inches with fraction display — specifically for buttons, snaps, zippers, and sewing hardware.</p>
                         </div>

@@ -57,7 +57,7 @@ export default function FabricAreaCalculatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #24</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Area Calculator</h1>
                             <p>Calculate fabric area for rectangles, triangles, and circles — with results in all units plus yardage equivalents.</p>
                         </div>

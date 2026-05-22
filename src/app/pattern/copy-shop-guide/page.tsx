@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ClipboardCopy, FileText, Printer, Ruler } from "lucide-react";
 
 export default function Page() {
   const [fromPaper,setFromPaper]=useState("A0");const [toPaper,setToPaper]=useState("letter");
@@ -16,7 +17,7 @@ export default function Page() {
       <div className="calculator-layout">
         <div className="calculator-main">
           <div className={styles.toolHeader}>
-            <span className="category-badge"><span>🖨️</span> Pattern Tool #99</span>
+            <span className="category-badge"><Printer size={14} strokeWidth={1.5} /> Pattern Tool</span>
             <h1>Copy Shop Scaling Guide</h1>
             <p>Calculate exact print percentage for pattern printing at copy shops.</p>
           </div>
@@ -33,15 +34,15 @@ export default function Page() {
                   <div className={styles.resultRow}><span>From size</span><strong>{fw}&quot; x {fh}&quot;</strong></div><div className={styles.resultRow}><span>To size</span><strong>{tw}&quot; x {th}&quot;</strong></div><div className={styles.resultRow}><span>Tell copy shop</span><strong>Print at {scalePct.toFixed(1)}%</strong></div>
                 </div>
                 <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}>📋 Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
                 </div>
               </div>
             )}
           </div>
           <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
         </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/pattern/pdf-print-calculator" className="related-tool-link">📄 PDF Print</a><a href="/pattern/percentage-scaler" className="related-tool-link">📐 % Scaler</a></div></aside>
+        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/pattern/pdf-print-calculator" className="related-tool-link"><FileText size={13} /> PDF Print</a><a href="/pattern/percentage-scaler" className="related-tool-link"><Ruler size={13} /> % Scaler</a></div></aside>
       </div>
     </div>
   );

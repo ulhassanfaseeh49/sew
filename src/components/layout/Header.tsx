@@ -45,13 +45,6 @@ const megaColumns = [
     },
 ];
 
-const browseLinks = [
-    { name: "All Tools Index", href: "/tools-index", icon: LayoutGrid, desc: "Browse all 484 tools alphabetically" },
-    { name: "Tools by Category", href: "/tools-by-category", icon: FolderOpen, desc: "28 categories, organized by topic" },
-    { name: "Tools by Project", href: "/tools-by-project", icon: Compass, desc: "Find tools by what you're making" },
-    { name: "Tools by Skill Level", href: "/tools-by-user", icon: Users, desc: "Beginner, intermediate & advanced" },
-];
-
 export default function Header() {
     const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
@@ -182,45 +175,9 @@ export default function Header() {
                             )}
                         </div>
 
-                        {/* Browse Dropdown */}
-                        <div
-                            className={styles.navGroup}
-                            onMouseEnter={() => handleMouseEnter("browse")}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            <button
-                                className={`${styles.navDropdownBtn} ${activeDropdown === "browse" ? styles.navDropdownActive : ""}`}
-                                onClick={() => handleDropdownClick("browse")}
-                                aria-expanded={activeDropdown === "browse"}
-                            >
-                                Browse
-                                <ChevronDown size={13} className={`${styles.chevron} ${activeDropdown === "browse" ? styles.chevronOpen : ""}`} />
-                            </button>
-
-                            {activeDropdown === "browse" && (
-                                <div className={styles.dropdown} onMouseEnter={() => handleMouseEnter("browse")} onMouseLeave={handleMouseLeave}>
-                                    {browseLinks.map(link => {
-                                        const IC = link.icon;
-                                        return (
-                                            <Link key={link.href} href={link.href} className={styles.dropdownItem} onClick={closeAll}>
-                                                <span className={styles.dropdownItemIcon}><IC size={16} strokeWidth={1.5} /></span>
-                                                <div>
-                                                    <div className={styles.dropdownItemName}>{link.name}</div>
-                                                    <div className={styles.dropdownItemDesc}>{link.desc}</div>
-                                                </div>
-                                            </Link>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-
                         {/* Static Links */}
                         <Link href="/blog" className={`${styles.navLink} ${pathname === "/blog" ? styles.navLinkActive : ""}`} onClick={closeAll}>
                             Guides
-                        </Link>
-                        <Link href="/reference/glossary" className={`${styles.navLink} ${pathname?.startsWith("/reference") ? styles.navLinkActive : ""}`} onClick={closeAll}>
-                            Glossary
                         </Link>
                         <Link href="/about" className={`${styles.navLink} ${pathname === "/about" ? styles.navLinkActive : ""}`} onClick={closeAll}>
                             About

@@ -7,7 +7,7 @@ export default function Page() {
         <div className="container" style={{ paddingBottom: "5rem" }}>
             <Breadcrumb items={[{ label: "Lace & Trim Tools" }]} />
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span>🌸</span> Category 18</span>
+                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span></span> Category 18</span>
                 <h1>Lace & Trim Calculators</h1>
                 <p style={{ fontSize: "1.125rem", color: "var(--color-text-secondary)", maxWidth: "700px", margin: "1rem auto 0" }}>11 tools for lace, ribbon, fringe, piping, and decorative trims.</p>
             </div>

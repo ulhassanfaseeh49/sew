@@ -69,7 +69,7 @@ export default function FabricWidthUniversalPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool #15</span>
+                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Universal Fabric Width Converter</h1>
                             <p>Convert yardage between ANY two fabric widths with custom inputs. Includes a simultaneous all-widths comparison table.</p>
                         </div>

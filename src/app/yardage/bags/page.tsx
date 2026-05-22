@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ClipboardCopy, Printer, Ruler, Shield, ShoppingBag } from "lucide-react";
 
 export default function Page() {
   const [bagType,setBagType]=useState("tote");
@@ -18,7 +19,7 @@ export default function Page() {
       <div className="calculator-layout">
         <div className="calculator-main">
           <div className={styles.toolHeader}>
-            <span className="category-badge"><span>👜</span> Yardage Tool #60</span>
+            <span className="category-badge"><ShoppingBag size={14} strokeWidth={1.5} /> Yardage Tool</span>
             <h1>Bag/Tote Yardage Calculator</h1>
             <p>Yardage for bags, totes, and purses.</p>
           </div>
@@ -40,15 +41,15 @@ export default function Page() {
                   <div className={styles.resultRow}><span>Lining</span><strong>{(yardageMap[bagType]||{lining:0.75}).lining.toFixed(2)} yd</strong></div>
                 </div>
                 <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultYards.toFixed(3)+' yards')}>📋 Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultYards.toFixed(3)+' yards')}><ClipboardCopy size={13} /> Copy</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
                 </div>
               </div>
             )}
           </div>
           <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
         </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/basic-calculator" className="related-tool-link">📐 Basic Yardage</a><a href="/yardage/buffer-calculator" className="related-tool-link">🛡️ Buffer</a></div></aside>
+        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/basic-calculator" className="related-tool-link"><Ruler size={13} /> Basic Yardage</a><a href="/yardage/buffer-calculator" className="related-tool-link"><Shield size={13} /> Buffer</a></div></aside>
       </div>
     </div>
   );

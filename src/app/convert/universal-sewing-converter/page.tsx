@@ -80,7 +80,7 @@ export default function UniversalConverterPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #11</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>All-in-One Sewing Unit Converter</h1>
                             <p>Master converter: enter any measurement and see it in yards, meters, inches, centimeters, millimeters, and feet — all at once.</p>
                         </div>

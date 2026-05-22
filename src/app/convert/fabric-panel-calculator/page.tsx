@@ -65,7 +65,7 @@ export default function FabricPanelCalculatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #21</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Panel Size Calculator</h1>
                             <p>Calculate usable area of a fabric panel after removing selvage, borders, and adding seam allowances.</p>
                         </div>

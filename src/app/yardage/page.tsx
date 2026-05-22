@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { yardageTools } from "@/lib/tools/yardage";
+import { Scissors, Wrench } from "lucide-react";
 
 export const metadata = {
     title: "Fabric Yardage Calculators — 42 Free Tools | SewTools",
@@ -13,15 +14,15 @@ export default function YardageHubPage() {
         <div className="container" style={{ paddingBottom: "5rem" }}>
             <Breadcrumb items={[{ label: "Fabric Yardage Calculators" }]} />
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span>🧵</span> Category 2</span>
+                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><Scissors size={14} strokeWidth={1.5} /> Category 2</span>
                 <h1>Fabric Yardage Calculators</h1>
                 <p style={{ fontSize: "1.125rem", color: "var(--color-text-secondary)", maxWidth: "700px", margin: "1rem auto 0" }}>
                     Never buy too much or too little fabric again. 42 specialized calculators for every project type.
                 </p>
                 <div style={{ display: "flex", gap: "2rem", justifyContent: "center", marginTop: "1.5rem", flexWrap: "wrap" }}>
-                    <div className="stat-badge">🔧 42 Tools</div>
-                    <div className="stat-badge">📂 5 Sub-categories</div>
-                    <div className="stat-badge">💯 100% Free</div>
+                    <div className="stat-badge"><Wrench size={13} /> 42 Tools</div>
+                    <div className="stat-badge"> 5 Sub-categories</div>
+                    <div className="stat-badge"> 100% Free</div>
                 </div>
             </div>
             {subcategories.map(sub => (

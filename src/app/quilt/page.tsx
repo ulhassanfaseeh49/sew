@@ -19,14 +19,14 @@ export default function QuiltHubPage() {
         <div className="container" style={{ paddingBottom: "5rem" }}>
             <Breadcrumb items={[{ label: "Quilt Math Tools" }]} />
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span>🟩</span> Category 7</span>
+                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span></span> Category 7</span>
                 <h1>Quilt Math Tools</h1>
                 <p style={{ fontSize: "1.125rem", color: "var(--color-text-secondary)", maxWidth: "700px", margin: "1rem auto 0" }}>
                     Every calculation a quilter needs. 38 precision tools for planning, cutting, and finishing quilts.
                 </p>
                 <div style={{ display: "flex", gap: "2rem", justifyContent: "center", marginTop: "1.5rem", flexWrap: "wrap" }}>
-                    <div className="stat-badge">🟩 38 Tools</div>
-                    <div className="stat-badge">💯 100% Free</div>
+                    <div className="stat-badge"> 38 Tools</div>
+                    <div className="stat-badge"> 100% Free</div>
                 </div>
             </div>
             {groups.map(g => (

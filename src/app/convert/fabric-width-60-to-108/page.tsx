@@ -57,7 +57,7 @@ export default function FabricWidth60to108Page() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool #13</span>
+                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Width Converter (60&quot; to 108&quot;)</h1>
                             <p>Convert yardage between 60&quot; and 108&quot;-wide fabric — perfect for quilt backing, bedding, and theatrical backdrops.</p>
                         </div>

@@ -69,7 +69,7 @@ export default function BoltYardageCalculatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Package size={14} strokeWidth={1.5} /> Conversion Tool #17</span>
+                            <span className="category-badge"><Package size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Bolt Yardage Calculator</h1>
                             <p>Track bolt yardage, calculate remaining fabric, estimate values, and check if you have enough for your next project.</p>
                         </div>

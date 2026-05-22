@@ -65,7 +65,7 @@ export default function BoltToProjectEstimatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Package size={14} strokeWidth={1.5} /> Conversion Tool #22</span>
+                            <span className="category-badge"><Package size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Bolt to Project Estimator</h1>
                             <p>How many tote bags, pillows, or dresses from one bolt? Calculate project counts for batch crafting and selling.</p>
                         </div>

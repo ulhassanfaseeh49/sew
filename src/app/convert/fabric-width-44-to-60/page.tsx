@@ -64,7 +64,7 @@ export default function FabricWidth44to60Page() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool #12</span>
+                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Width Converter (44/45&quot; to 60&quot;)</h1>
                             <p>Calculate how much 60&quot;-wide fabric to buy when a pattern specifies 44/45&quot; fabric, and vice versa. Save money by using wider fabric.</p>
                         </div>

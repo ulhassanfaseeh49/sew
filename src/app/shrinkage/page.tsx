@@ -7,7 +7,7 @@ export default function Page() {
         <div className="container" style={{ paddingBottom: "5rem" }}>
             <Breadcrumb items={[{ label: "Shrinkage Tools" }]} />
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span>💧</span> Category 11</span>
+                <span className="category-badge" style={{ marginBottom: "1rem", display: "inline-flex" }}><span></span> Category 11</span>
                 <h1>Fabric Shrinkage Tools</h1>
                 <p style={{ fontSize: "1.125rem", color: "var(--color-text-secondary)", maxWidth: "700px", margin: "1rem auto 0" }}>
                     Pre-wash, estimate, and compensate for fabric shrinkage with 8 dedicated tools.

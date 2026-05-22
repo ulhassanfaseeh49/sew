@@ -52,7 +52,7 @@ export default function FabricWidthComparisonPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><BarChart3 size={14} strokeWidth={1.5} /> Conversion Tool #16</span>
+                            <span className="category-badge"><BarChart3 size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Width Comparison Tool</h1>
                             <p>Side-by-side comparison showing how much fabric you need at every standard width — choose the most economical option.</p>
                         </div>

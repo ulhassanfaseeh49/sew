@@ -40,7 +40,7 @@ export default function FabricCutComparatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool #20</span>
+                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Cut Comparator</h1>
                             <p>Visual comparison of fat quarter, regular quarter, half yard, and other standard fabric cuts — designed for beginners.</p>
                         </div>
@@ -71,7 +71,7 @@ export default function FabricCutComparatorPage() {
                                                     <td>{c.dim}</td>
                                                     <td>{c.area} sq in</td>
                                                     <td>{c.maxSq}
-                                                        {ps > 0 && <span style={{ marginLeft: 6, fontSize: 12, color: fits ? 'var(--color-accent-primary)' : '#ef4444' }}>{fits ? "✓" : "✗"}</span>}
+                                                        {ps > 0 && <span style={{ marginLeft: 6, fontSize: 12, color: fits ? 'var(--color-accent-primary)' : '#ef4444' }}>{fits ? "" : ""}</span>}
                                                     </td>
                                                     <td style={{ color: 'var(--color-text-tertiary)' }}>{c.best}</td>
                                                 </tr>

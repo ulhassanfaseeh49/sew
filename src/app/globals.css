@@ -250,7 +250,7 @@ a:hover {
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 40px;
+  padding: var(--space-8) 40px var(--space-16);
 }
 
 .section {
@@ -266,13 +266,13 @@ a:hover {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  padding: var(--space-8);
   transition: all var(--transition-base);
 }
 
 .glass-card:hover {
   border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 /* --- Buttons (Spec System) --- */
@@ -627,12 +627,124 @@ select.input-field {
 /* --- Toolbar (Copy/Print) --- */
 .toolbar {
   display: flex;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 14px 16px;
   background: var(--color-bg-secondary);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+
+/* --- Preset Grid & Buttons --- */
+.preset-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.preset-btn:hover {
+  border-color: var(--color-border-hover);
+  color: var(--color-accent-primary);
+  background: var(--color-accent-light);
+}
+
+.preset-btn.active {
+  background: var(--color-accent-light);
+  color: var(--color-accent-primary);
+  border-color: rgba(0, 128, 96, 0.3);
+  font-weight: 600;
+}
+
+/* --- Smart Tip --- */
+.smart-tip {
+  background: var(--color-accent-light);
+  border-left: 3px solid var(--color-accent-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.smart-tip strong {
+  color: var(--color-accent-primary);
+}
+
+/* --- Reference Table --- */
+.reference-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.reference-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reference-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.reference-table td {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-bg-tertiary);
+}
+
+.reference-table tr:last-child td {
+  border-bottom: none;
+}
+
+.reference-table tr:hover td {
+  background: var(--color-bg-secondary);
+}
+
+/* --- Educational Content --- */
+.educational-content {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.educational-content p {
+  margin-bottom: var(--space-4);
+}
+
+.educational-content p:last-child {
+  margin-bottom: 0;
+}
+
+.educational-content strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
 }
 
 /* --- Tool Card Grid --- */
@@ -691,6 +803,7 @@ select.input-field {
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -714,14 +827,15 @@ select.input-field {
 .category-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
+  gap: 6px;
+  padding: 5px 14px;
   background: var(--color-accent-light);
-  border: none;
+  border: 1px solid var(--color-accent-subtle);
   border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 600;
   color: var(--color-accent-primary);
+  width: fit-content;
 }
 
 /* --- Calculator Layout (spec: 65/35 split) --- */
@@ -756,7 +870,13 @@ select.input-field {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
-  padding: 32px;
+  padding: var(--space-8);
+}
+
+.calculator-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
 .calculator-form {
@@ -778,13 +898,87 @@ select.input-field {
 .calculator-divider {
   height: 1px;
   background: var(--color-border);
-  margin: 32px 0;
+  margin: var(--space-6) 0;
+}
+
+/* --- Result Components --- */
+.result-card {
+  text-align: center;
+  padding: var(--space-6);
+  background: var(--color-accent-light);
+  border: 1px solid var(--color-accent-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.result-prefix {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-primary);
+  margin-bottom: var(--space-2);
+}
+
+.result-value {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.result-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.result-row:last-child {
+  border-bottom: none;
+}
+
+.result-row-label {
+  color: var(--color-text-secondary);
+}
+
+.result-row-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* --- Input Helpers --- */
+.input-helper {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-1);
+}
+
+.input-mono {
+  font-family: var(--font-mono);
 }
 
 /* --- Related Tools Sidebar (spec: bg secondary) --- */
 .related-tools {
   background: var(--color-bg-secondary);
   border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-6);
+}
+
+/* When .related-tools is inside .glass-card, glass-card already provides padding */
+.glass-card.related-tools {
   padding: var(--space-6);
 }
 
@@ -980,7 +1174,7 @@ select.input-field {
   }
 
   .container {
-    padding: 0 32px;
+    padding: var(--space-6) 32px var(--space-12);
   }
 
   .section {
@@ -997,7 +1191,7 @@ select.input-field {
   }
 
   .container {
-    padding: 0 16px;
+    padding: var(--space-6) 16px var(--space-12);
   }
 
   .section {
@@ -1027,7 +1221,7 @@ select.input-field {
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 var(--space-3);
+    padding: var(--space-5) var(--space-3) var(--space-10);
   }
 
   .toolbar {

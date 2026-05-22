@@ -66,7 +66,7 @@ export default function FractionToDecimalPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #9</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fraction to Decimal Converter</h1>
                             <p>Convert sewing fractions to decimal inches with visual reference — for the fractions every sewist encounters.</p>
                         </div>

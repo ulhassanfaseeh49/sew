@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ArrowLeftRight, ClipboardCopy, Printer, Repeat, Ruler, Shield } from "lucide-react";
 
 export default function BasicYardageCalcPage() {
     const [length, setLength] = useState("");
@@ -41,7 +42,7 @@ export default function BasicYardageCalcPage() {
             <div className="calculator-layout">
                 <div className="calculator-main">
                     <div className={styles.toolHeader}>
-                        <span className="category-badge"><span>📐</span> Yardage Tool #25</span>
+                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Yardage Tool</span>
                         <h1>Basic Fabric Yardage Calculator</h1>
                         <p>Calculate how much fabric you need based on your project dimensions and fabric width.</p>
                     </div>
@@ -83,14 +84,14 @@ export default function BasicYardageCalcPage() {
                                 <div className={styles.resultRow}><span>Buffer added</span><strong>{buf}% ({((withBuffer - totalLength) / 36).toFixed(3)} yd)</strong></div>
                             </div>
                             <div className="toolbar">
-                                <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`Need ${roundedYards.toFixed(3)} yards of ${fw}" fabric for ${p} pieces at ${l}"×${w}"`)}>📋 Copy</button>
-                                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>🖨️ Print</button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`Need ${roundedYards.toFixed(3)} yards of ${fw}" fabric for ${p} pieces at ${l}"×${w}"`)}><ClipboardCopy size={13} /> Copy</button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button>
                             </div>
                         </div>)}
                     </div>
                     <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
                 </div>
-                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/pattern-repeat-calculator" className="related-tool-link">🔁 Pattern Repeat</a><a href="/yardage/buffer-calculator" className="related-tool-link">🛡️ Buffer Calculator</a><a href="/convert/fabric-width-universal" className="related-tool-link">↔️ Width Converter</a></div></aside>
+                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/pattern-repeat-calculator" className="related-tool-link"><Repeat size={13} /> Pattern Repeat</a><a href="/yardage/buffer-calculator" className="related-tool-link"><Shield size={13} /> Buffer Calculator</a><a href="/convert/fabric-width-universal" className="related-tool-link"><ArrowLeftRight size={13} /> Width Converter</a></div></aside>
             </div>
         </div>
     );

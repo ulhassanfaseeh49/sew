@@ -65,7 +65,7 @@ export default function FatQuarterCalculatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Conversion Tool #18</span>
+                            <span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fat Quarter Calculator</h1>
                             <p>Calculate how many squares, rectangles, or custom shapes you can cut from a fat quarter (18&quot; × 22&quot;).</p>
                         </div>

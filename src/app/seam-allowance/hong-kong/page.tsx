@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ClipboardCopy, Printer, Ribbon, Shirt } from "lucide-react";
 
 export default function Page() {
   const [saWidth,setSaWidth]=useState("0.625");
@@ -16,7 +17,7 @@ export default function Page() {
       <div className="calculator-layout">
         <div className="calculator-main">
           <div className={styles.toolHeader}>
-            <span className="category-badge"><span>🎀</span> Seam Tool #91</span>
+            <span className="category-badge"><Ribbon size={14} strokeWidth={1.5} /> Seam Tool</span>
             <h1>Hong Kong Seam Finish Calculator</h1>
             <p>Calculate bias strip width and SA for Hong Kong seam finishes.</p>
           </div>
@@ -33,15 +34,15 @@ export default function Page() {
                   <div className={styles.resultRow}><span>Seam allowance</span><strong>{sa}&quot;</strong></div><div className={styles.resultRow}><span>Cut bias strip</span><strong>{biasStripCut.toFixed(2)}&quot; wide</strong></div><div className={styles.resultRow}><span>Finished binding width</span><strong>~{(biasStripCut/4).toFixed(2)}&quot;</strong></div>
                 </div>
                 <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}>📋 Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
                 </div>
               </div>
             )}
           </div>
           <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
         </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/french-seam" className="related-tool-link">🇫🇷 French Seam</a><a href="/seam-allowance/flat-felled" className="related-tool-link">👖 Flat-Felled</a></div></aside>
+        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/french-seam" className="related-tool-link">🇫🇷 French Seam</a><a href="/seam-allowance/flat-felled" className="related-tool-link"><Shirt size={13} /> Flat-Felled</a></div></aside>
       </div>
     </div>
   );

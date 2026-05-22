@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ArrowLeftRight, ClipboardCopy, Plus, Printer, Ruler } from "lucide-react";
 
 export default function Page() {
   const [sa,setSa]=useState("0.625");
@@ -16,7 +17,7 @@ export default function Page() {
       <div className="calculator-layout">
         <div className="calculator-main">
           <div className={styles.toolHeader}>
-            <span className="category-badge"><span>↔️</span> Seam Tool #83</span>
+            <span className="category-badge"><ArrowLeftRight size={14} strokeWidth={1.5} /> Seam Tool</span>
             <h1>Seam Allowance Converter</h1>
             <p>Convert between common seam allowances in imperial and metric.</p>
           </div>
@@ -33,15 +34,15 @@ export default function Page() {
                   <div className={styles.resultRow}><span>Inches</span><strong>{inches}&quot;</strong></div><div className={styles.resultRow}><span>Centimeters</span><strong>{cm.toFixed(2)} cm</strong></div><div className={styles.resultRow}><span>Millimeters</span><strong>{mm.toFixed(1)} mm</strong></div>
                 </div>
                 <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}>📋 Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
                 </div>
               </div>
             )}
           </div>
           <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
         </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/adder" className="related-tool-link">➕ SA Adder</a><a href="/seam-allowance/metric-converter" className="related-tool-link">📏 Metric</a></div></aside>
+        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/adder" className="related-tool-link"><Plus size={13} /> SA Adder</a><a href="/seam-allowance/metric-converter" className="related-tool-link"><Ruler size={13} /> Metric</a></div></aside>
       </div>
     </div>
   );

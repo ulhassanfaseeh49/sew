@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
+import { ArrowUp, ClipboardCopy, Printer, Repeat, Ruler } from "lucide-react";
 
 export default function PatternRepeatCalcPage() {
     const [pieceLength, setPieceLength] = useState("");
@@ -36,7 +37,7 @@ export default function PatternRepeatCalcPage() {
             <div className="calculator-layout">
                 <div className="calculator-main">
                     <div className={styles.toolHeader}>
-                        <span className="category-badge"><span>🔁</span> Yardage Tool #26</span>
+                        <span className="category-badge"><Repeat size={14} strokeWidth={1.5} /> Yardage Tool</span>
                         <h1>Yardage with Pattern Repeat Calculator</h1>
                         <p>Calculate the extra fabric needed to match pattern repeats across seams — for curtains, upholstery, and garments.</p>
                     </div>
@@ -70,14 +71,14 @@ export default function PatternRepeatCalcPage() {
                                 <div className={styles.resultRow}><span>Effective repeat</span><strong>{adjustedRepeat}&quot; ({repeatType})</strong></div>
                             </div>
                             <div className="toolbar">
-                                <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`${roundedYards.toFixed(3)} yd needed (${rep}" ${repeatType} repeat, ${np} pieces at ${pl}")`)}>📋 Copy</button>
-                                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>🖨️ Print</button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`${roundedYards.toFixed(3)} yd needed (${rep}" ${repeatType} repeat, ${np} pieces at ${pl}")`)}><ClipboardCopy size={13} /> Copy</button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button>
                             </div>
                         </div>)}
                     </div>
                     <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
                 </div>
-                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/basic-calculator" className="related-tool-link">📐 Basic Yardage</a><a href="/yardage/directional-fabric-calculator" className="related-tool-link">⬆️ Directional Fabric</a></div></aside>
+                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/yardage/basic-calculator" className="related-tool-link"><Ruler size={13} /> Basic Yardage</a><a href="/yardage/directional-fabric-calculator" className="related-tool-link"><ArrowUp size={13} /> Directional Fabric</a></div></aside>
             </div>
         </div>
     );

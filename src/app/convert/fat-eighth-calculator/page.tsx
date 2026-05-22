@@ -54,7 +54,7 @@ export default function FatEighthCalculatorPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Conversion Tool #19</span>
+                            <span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fat Eighth Calculator</h1>
                             <p>Calculate cutting possibilities from a fat eighth (9&quot; × 22&quot;) — half a fat quarter, perfect for scrappy quilts.</p>
                         </div>

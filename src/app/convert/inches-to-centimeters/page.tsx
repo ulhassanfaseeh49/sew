@@ -111,7 +111,7 @@ export default function InchesToCentimetersPage() {
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
                             <span className="category-badge">
-                                <Ruler size={14} strokeWidth={1.5} /> Conversion Tool #3
+                                <Ruler size={14} strokeWidth={1.5} /> Conversion Tool
                             </span>
                             <h1>Inches to Centimeters Converter</h1>
                             <p>

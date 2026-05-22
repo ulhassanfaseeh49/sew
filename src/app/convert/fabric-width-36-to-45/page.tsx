@@ -57,7 +57,7 @@ export default function FabricWidth36to45Page() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool #14</span>
+                            <span className="category-badge"><ArrowRightLeft size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Fabric Width Converter (36&quot; to 44/45&quot;)</h1>
                             <p>Convert between vintage 36&quot;-wide fabric and standard 44/45&quot; widths — essential for vintage pattern recreation.</p>
                         </div>

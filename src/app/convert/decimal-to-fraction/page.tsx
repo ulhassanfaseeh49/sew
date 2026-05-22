@@ -68,7 +68,7 @@ export default function DecimalToFractionPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #10</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Decimal to Fraction Converter</h1>
                             <p>Convert decimal inches to nearest sewing fraction — shows the closest 1/16&quot;, 1/8&quot;, and 1/4&quot; fractions.</p>
                         </div>

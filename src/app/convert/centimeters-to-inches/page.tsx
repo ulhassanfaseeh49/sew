@@ -83,7 +83,7 @@ export default function CentimetersToInchesPage() {
                 <div className="calculator-layout">
                     <div className="calculator-main">
                         <div className={styles.toolHeader}>
-                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #4</span>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool</span>
                             <h1>Centimeters to Inches Converter</h1>
                             <p>Convert centimeters to inches with fraction display for sewing use. See results as nearest 1/16&quot;, 1/8&quot;, and 1/4&quot; fractions.</p>
                         </div>
