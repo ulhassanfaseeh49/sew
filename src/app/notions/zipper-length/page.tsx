@@ -1,23 +1,74 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Scissors } from "lucide-react";
-export default function Page(){
-const[garment,sG]=useState("dress");const[opening,sO]=useState("");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const o=parseFloat(opening)||0;const add=garment==="pants"?1:garment==="jacket"?0:2;const zipLen=o>0?Math.ceil((o+add)/2)*2:0;const hasResult=o>0;const resultValue=zipLen+"\" zipper";const resultLabel="for "+o+"\" opening (rounded to nearest even inch)";
-const faqItems=[{q:"Should I buy a longer zipper?",a:"Yes, buying 1-2 inches longer is fine — you can shorten most zippers by sewing a new stop."}];
-return(<div className="container"><Breadcrumb items={[{label:"Notions",href:"/notions"},{label:"Zipper Length Selector"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><span></span> Notion #189</span><h1>Zipper Length Selector</h1><p>Correct zipper length by garment type.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Garment type</label><select className="input-field" value={garment} onChange={e=>sG(e.target.value)}><option value="dress">Dress (back)</option><option value="skirt">Skirt (side)</option><option value="pants">Pants (fly)</option><option value="jacket">Jacket (separating)</option></select></div><div className="input-group"><label className="input-label">Opening length (in)</label><input type="number" className="input-field" placeholder="22" value={opening} onChange={e=>sO(e.target.value)} min="0"/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/notions" className="related-tool-link"><Scissors size={13} /> All Notions</a></div></aside></div></div>);}
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { ArrowDownWideNarrow, Copy, Printer, ChevronDown, Scissors, Ruler } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const garmentLengths: Record<string, { ease: number; type: string }> = {
+    "Dress (back zip)": { ease: 1, type: "Coil invisible" },
+    "Dress (side zip)": { ease: 1, type: "Coil invisible" },
+    "Skirt (back/side)": { ease: 1, type: "Coil invisible" },
+    "Pants fly": { ease: 0.5, type: "Metal or coil" },
+    "Jacket (separating)": { ease: 2, type: "Separating" },
+    "Hoodie (separating)": { ease: 2, type: "Separating" },
+    "Tote bag pocket": { ease: 0.5, type: "Coil" },
+    "Pillow cover": { ease: 2, type: "Coil" },
+    "Custom": { ease: 0, type: "Any" },
+};
+const stdLengths = [4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24];
+
+const relatedTools = [
+    { name: "Buttonhole Calc", href: "/notions/buttonhole-calculator", icon: Scissors },
+    { name: "Hook & Eye", href: "/notions/hook-eye-spacing", icon: Ruler },
+    { name: "Seam Allowance", href: "/seam-allowance", icon: Ruler },
+];
+const faqItems = [
+    { q: "Should I buy a zipper longer than my opening?", a: "Usually yes. The zipper should be at least as long as the opening. For invisible zippers, buy 1-2\" longer and trim the bottom after installation." },
+    { q: "Can I shorten a zipper?", a: "Yes. Coil and plastic zippers can be shortened by sewing a bar-tack where you want the new stop. Metal zippers need a metal stopper." },
+    { q: "What zipper type for a concealed dress closure?", a: "An invisible/concealed zipper with a matching color. It requires a special invisible zipper foot and is inserted into an open seam." },
+];
+
+export default function ZipperLengthPage() {
+    const [garment, setGarment] = useState("Dress (back zip)"); const [opening, setOpening] = useState("18");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null); const [copied, setCopied] = useState(false);
+
+    const op = parseFloat(opening) || 0;
+    const info = garmentLengths[garment] || { ease: 0, type: "Any" };
+    const idealLen = op + info.ease;
+    const recommended = stdLengths.find(l => l >= idealLen) || stdLengths[stdLengths.length - 1];
+    const altLen = stdLengths.find(l => l >= idealLen && l !== recommended);
+    const hasResult = op > 0;
+
+    const handleCopy = useCallback(() => { navigator.clipboard.writeText(`Opening: ${op}". Recommended zipper: ${recommended}" (${info.type}).`); setCopied(true); setTimeout(() => setCopied(false), 2000); }, [op, recommended, info.type]);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Notions", href: "/notions" }, { label: "Zipper Length Selector" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><ArrowDownWideNarrow size={14} strokeWidth={1.5} /> Notions</span><h1>Zipper Length Selector</h1><p>Find the right zipper length and type for any garment or project.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Project Details</h2>
+                    <div className="calculator-form">
+                        <div className="calculator-form-row">
+                            <div className="input-group"><label className="input-label">Project Type</label><select className="input-field" value={garment} onChange={e => setGarment(e.target.value)}>{Object.keys(garmentLengths).map(g => (<option key={g} value={g}>{g}</option>))}</select></div>
+                            <div className="input-group"><label className="input-label">Opening Length (in)</label><input type="number" className="input-field input-mono" value={opening} onChange={e => setOpening(e.target.value)} min="1" step="0.5" /></div>
+                        </div>
+                    </div>
+                    {hasResult && (<div><div className="calculator-divider" />
+                        <div className="result-card"><div className="result-prefix">Recommended Zipper</div><div className="result-value">{recommended}&quot;</div><div className="result-label">{info.type}</div></div>
+                        <div className={styles.resultDetails} style={{ marginTop: 12 }}>
+                            <div className="result-row"><span className="result-row-label">Opening</span><span className="result-row-value">{op}&quot;</span></div>
+                            <div className="result-row"><span className="result-row-label">Ideal min length</span><span className="result-row-value">{idealLen.toFixed(1)}&quot;</span></div>
+                            {altLen && <div className="result-row"><span className="result-row-label">Alternative</span><span className="result-row-value">{altLen}&quot;</span></div>}
+                        </div>
+                        <div className="toolbar" style={{ marginTop: 16 }}><button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button></div>
+                    </div>)}
+                </div>
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Standard Zipper Lengths</h2>
+                    <p style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", margin: "0 0 8px" }}>{stdLengths.map(l => `${l}"`).join(", ")}</p>
+                    <p style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", fontStyle: "italic", margin: 0 }}>Also available by the yard (continuous zipper roll) for custom lengths.</p>
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}

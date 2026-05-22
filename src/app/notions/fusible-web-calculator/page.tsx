@@ -1,23 +1,62 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Flame, Printer, Scissors } from "lucide-react";
-export default function Page(){
-const[pieces,sP]=useState("");const[avgSize,sS]=useState("4");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const p=parseInt(pieces)||0;const s=parseFloat(avgSize)||4;const area=p*s*s;const yd=Math.ceil(area/(17*36)*4)/4;const hasResult=p>0;const resultValue=yd+" yards fusible web";const resultLabel=p+" pieces at ~"+s+"x"+s+"\"";
-const faqItems=[{q:"What is fusible web?",a:"A heat-activated adhesive sheet used to bond fabric pieces for applique without sewing."}];
-return(<div className="container"><Breadcrumb items={[{label:"Notions",href:"/notions"},{label:"Fusible Web Calculator"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Flame size={14} strokeWidth={1.5} /> Notion #198</span><h1>Fusible Web Calculator</h1><p>Fusible web yardage for applique.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Applique pieces</label><input type="number" className="input-field" placeholder="12" value={pieces} onChange={e=>sP(e.target.value)} min="0"/></div><div className="input-group"><label className="input-label">Avg piece size (in)</label><input type="number" className="input-field" value={avgSize} onChange={e=>sS(e.target.value)}/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/notions" className="related-tool-link"><Scissors size={13} /> All Notions</a></div></aside></div></div>);}
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Flame, Copy, Printer, ChevronDown, Layers, Scissors } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const products = [
+    { name: "HeatnBond Lite", sewable: "Yes", hold: "Medium", temp: "Medium iron, no steam" },
+    { name: "HeatnBond Ultra Hold", sewable: "No (clogs needle)", hold: "Permanent", temp: "Medium iron, no steam" },
+    { name: "Wonder Under (Pellon 805)", sewable: "Yes", hold: "Medium", temp: "Steam iron" },
+    { name: "Steam-A-Seam 2", sewable: "Yes", hold: "Medium", temp: "Steam iron, 10-15 sec" },
+    { name: "Misty Fuse", sewable: "Yes", hold: "Light", temp: "Low-medium, dry" },
+];
+const relatedTools = [
+    { name: "Interfacing Calc", href: "/notions/interfacing-calculator", icon: Layers },
+    { name: "Stabilizer Calc", href: "/notions/stabilizer-calculator", icon: Scissors },
+    { name: "Thread Yardage", href: "/notions/thread-yardage", icon: Scissors },
+];
+const faqItems = [
+    { q: "Which fusible web should I use for applique?", a: "If you plan to sew around edges: HeatnBond Lite or Wonder Under (sewable). If no sewing: HeatnBond Ultra Hold (permanent but clogs needles)." },
+    { q: "Why does my fusible web not stick?", a: "Wrong temperature, not enough pressing time, or using steam when the product requires dry heat. Always follow the specific product directions." },
+    { q: "How do I calculate fusible web for applique?", a: "Measure each applique piece, add 1/2\" margin around each. Total all areas together. Divide by web width (usually 17\") to get yardage." },
+];
+
+export default function FusibleWebCalcPage() {
+    const [totalArea, setTotalArea] = useState("100"); const [webWidth, setWebWidth] = useState("17");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null); const [copied, setCopied] = useState(false);
+
+    const area = parseFloat(totalArea) || 0; const ww = parseFloat(webWidth) || 17;
+    const yardage = ww > 0 ? area / ww / 36 : 0;
+    const yardageWithExtra = yardage * 1.15;
+    const hasResult = area > 0;
+
+    const handleCopy = useCallback(() => { navigator.clipboard.writeText(`Fusible web: ~${yardageWithExtra.toFixed(2)} yards (${area} sq in, +15% waste).`); setCopied(true); setTimeout(() => setCopied(false), 2000); }, [yardageWithExtra, area]);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Notions", href: "/notions" }, { label: "Fusible Web Calculator" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><Flame size={14} strokeWidth={1.5} /> Notions</span><h1>Fusible Web Yardage Calculator</h1><p>Calculate fusible web yardage for applique, hem bonding, and fabric fusing projects.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Project Area</h2>
+                    <div className="calculator-form">
+                        <div className="calculator-form-row">
+                            <div className="input-group"><label className="input-label">Total Applique Area (sq in)</label><input type="number" className="input-field input-mono" value={totalArea} onChange={e => setTotalArea(e.target.value)} min="1" /></div>
+                            <div className="input-group"><label className="input-label">Web Width (in)</label><input type="number" className="input-field input-mono" value={webWidth} onChange={e => setWebWidth(e.target.value)} min="1" /></div>
+                        </div>
+                    </div>
+                    {hasResult && (<div><div className="calculator-divider" />
+                        <div className="result-card"><div className="result-prefix">Fusible Web Yardage</div><div className="result-value">~{yardageWithExtra.toFixed(2)} yards</div><div className="result-label">Including 15% cutting waste</div></div>
+                        <div className="toolbar" style={{ marginTop: 16 }}><button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button></div>
+                    </div>)}
+                </div>
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Fusible Web Product Comparison</h2>
+                    <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Product</th><th>Sewable?</th><th>Hold</th><th>Iron Setting</th></tr></thead>
+                        <tbody>{products.map(p => (<tr key={p.name}><td style={{ fontWeight: 600 }}>{p.name}</td><td>{p.sewable}</td><td>{p.hold}</td><td>{p.temp}</td></tr>))}</tbody>
+                    </table></div>
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}

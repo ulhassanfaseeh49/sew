@@ -1,23 +1,53 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Scissors } from "lucide-react";
-export default function Page(){
-const[hoopW,sW]=useState("5");const[hoopH,sH]=useState("7");const[designs,sD]=useState("1");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const w=parseFloat(hoopW)||5;const h=parseFloat(hoopH)||7;const d=parseInt(designs)||1;const pieces=d;const area=pieces*(w+2)*(h+2);const yd=Math.ceil(area/(20*36)*4)/4;const hasResult=true;const resultValue=yd+" yards ("+pieces+" pieces)";const resultLabel=(w+2)+"x"+(h+2)+"\" per hooping";
-const faqItems=[{q:"What type of stabilizer do I need?",a:"Tear-away for wovens, cut-away for knits, wash-away for freestanding lace."}];
-return(<div className="container"><Breadcrumb items={[{label:"Notions",href:"/notions"},{label:"Stabilizer Calculator"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><span></span> Notion #197</span><h1>Stabilizer Calculator</h1><p>Stabilizer for embroidery and applique.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Hoop width (in)</label><input type="number" className="input-field" value={hoopW} onChange={e=>sW(e.target.value)}/></div><div className="input-group"><label className="input-label">Hoop height (in)</label><input type="number" className="input-field" value={hoopH} onChange={e=>sH(e.target.value)}/></div><div className="input-group"><label className="input-label">Number of hoopings</label><input type="number" className="input-field" value={designs} onChange={e=>sD(e.target.value)} min="1"/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/notions" className="related-tool-link"><Scissors size={13} /> All Notions</a></div></aside></div></div>);}
+import { useState } from "react";
+import Link from "next/link";
+import { Shield, ChevronDown, Scissors, Layers } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const stabMatrix = [
+    { fabric: "Stable woven (cotton, linen)", stab: "Tear-away (medium)", top: "No", why: "Easy removal, fabric supports itself" },
+    { fabric: "Knit / stretch", stab: "Cut-away (soft)", top: "No", why: "Permanent support; tear-away leaves holes" },
+    { fabric: "Terry / fleece / velvet", stab: "Cut-away or tear-away", top: "Yes (water-soluble film)", why: "Topping prevents stitches sinking into nap" },
+    { fabric: "Sheer / delicate", stab: "Wash-away (fibrous)", top: "No", why: "Removes completely; no residue" },
+    { fabric: "Already constructed items", stab: "Sticky (self-adhesive)", top: "Optional", why: "Hoop stabilizer, stick item on top" },
+    { fabric: "Free-standing lace", stab: "Wash-away (film)", top: "N/A", why: "Dissolves, leaving only thread" },
+];
+const relatedTools = [
+    { name: "Interfacing Calc", href: "/notions/interfacing-calculator", icon: Layers },
+    { name: "Fusible Web", href: "/notions/fusible-web-calculator", icon: Scissors },
+    { name: "Thread Yardage", href: "/notions/thread-yardage", icon: Scissors },
+];
+const faqItems = [
+    { q: "Why is my embroidery puckering?", a: "Most likely wrong stabilizer type, or stabilizer too light. Knits need cut-away (not tear-away). Dense designs need heavier stabilizer. Always hoop tightly." },
+    { q: "Can I double up stabilizer?", a: "Yes. For very dense designs or problem fabrics, use two layers of stabilizer. This is especially useful for towels and knits." },
+    { q: "What is topping and when do I need it?", a: "Topping is a water-soluble film placed ON TOP of napped fabrics (terry, fleece). It prevents stitches from sinking between fibers." },
+];
+
+export default function StabilizerCalcPage() {
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Notions", href: "/notions" }, { label: "Stabilizer Calculator" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><Shield size={14} strokeWidth={1.5} /> Notions</span><h1>Stabilizer Type and Size Calculator</h1><p>Select the correct stabilizer for embroidery and applique based on fabric and design type.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Stabilizer Selection Guide</h2>
+                    <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Fabric</th><th>Stabilizer</th><th>Topping?</th><th>Why</th></tr></thead>
+                        <tbody>{stabMatrix.map(s => (<tr key={s.fabric}><td style={{ fontWeight: 600 }}>{s.fabric}</td><td>{s.stab}</td><td>{s.top}</td><td style={{ color: "var(--color-text-secondary)", fontStyle: "italic" }}>{s.why}</td></tr>))}</tbody>
+                    </table></div>
+                </div>
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Popular Stabilizer Brands</h2>
+                    <ul style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 1.8, paddingLeft: 20, margin: 0 }}>
+                        <li><strong>Sulky Tear-Easy</strong> -- standard tear-away</li>
+                        <li><strong>Sulky Cut-Away Plus</strong> -- soft cut-away for knits</li>
+                        <li><strong>Sulky Solvy / Fabri-Solvy</strong> -- water-soluble</li>
+                        <li><strong>Sulky Sticky</strong> -- self-adhesive for hard-to-hoop items</li>
+                        <li><strong>Madeira No-Show Mesh</strong> -- invisible cut-away</li>
+                        <li><strong>OESD StabilStick</strong> -- premium self-adhesive</li>
+                    </ul>
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}

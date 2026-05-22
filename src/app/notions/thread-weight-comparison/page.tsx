@@ -1,23 +1,54 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Scale, Scissors } from "lucide-react";
-export default function Page(){
-const[weight,sW]=useState("40");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const info:Record<string,{use:string,needle:string}>={30:{use:"Topstitching, decorative, heavy fabrics",needle:"90/14-100/16"},40:{use:"All-purpose sewing, most projects",needle:"80/12-90/14"},50:{use:"Piecing quilts, fine fabrics",needle:"70/10-80/12"},60:{use:"Bobbin thread, invisible hems, delicates",needle:"60/8-70/10"}};const w=info[weight]||info["40"];const hasResult=true;const resultValue=weight+"wt thread";const resultLabel=w.use;
-const faqItems=[{q:"What weight thread should I use?",a:"40wt is all-purpose. Use 50wt for quilting piecing, 30wt for topstitching."}];
-return(<div className="container"><Breadcrumb items={[{label:"Notions",href:"/notions"},{label:"Thread Weight Comparison"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Scale size={14} strokeWidth={1.5} /> Notion #182</span><h1>Thread Weight Comparison</h1><p>Compare thread weights and recommendations.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="input-group"><label className="input-label">Thread weight</label><select className="input-field" value={weight} onChange={e=>sW(e.target.value)}><option value="30">30wt (heavy)</option><option value="40">40wt (all-purpose)</option><option value="50">50wt (fine)</option><option value="60">60wt (extra fine)</option></select></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}><div className={styles.resultRow}><span>Best for</span><strong style={{fontWeight:"normal",fontSize:"0.85rem"}}>{w.use}</strong></div><div className={styles.resultRow}><span>Needle size</span><strong>{w.needle}</strong></div></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/notions" className="related-tool-link"><Scissors size={13} /> All Notions</a></div></aside></div></div>);}
+import { useState } from "react";
+import Link from "next/link";
+import { Layers, ChevronDown, Scissors, Ruler } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const weights = [
+    { wt: "100wt", desc: "Ultra-fine", use: "Heirloom, applique edges", needle: "60/8 - 65/9", vis: "Invisible" },
+    { wt: "80wt", desc: "Very fine", use: "Delicate fabrics, bobbin thread", needle: "65/9 - 70/10", vis: "Nearly invisible" },
+    { wt: "60wt", desc: "Fine", use: "Lightweight fabrics, invisible seams", needle: "70/10 - 80/12", vis: "Nearly invisible" },
+    { wt: "50wt", desc: "Standard", use: "General sewing, quilting piecing", needle: "80/12", vis: "Subtle" },
+    { wt: "40wt", desc: "Slightly heavy", use: "Machine embroidery, quilting", needle: "80/12 - 90/14", vis: "Visible" },
+    { wt: "30wt", desc: "Heavy", use: "Topstitching, decorative", needle: "90/14 - 100/16", vis: "Clearly visible" },
+    { wt: "12wt", desc: "Very heavy", use: "Hand-look quilting, decorative", needle: "100/16 - 110/18", vis: "Very visible" },
+];
+const relatedTools = [
+    { name: "Thread by Fabric", href: "/notions/thread-by-fabric", icon: Scissors },
+    { name: "Thread Color", href: "/notions/thread-color-matching", icon: Layers },
+    { name: "Thread Yardage", href: "/notions/thread-yardage", icon: Ruler },
+];
+const faqItems = [
+    { q: "Why does a higher number mean thinner thread?", a: "The weight number represents how many meters of thread weigh 1 gram. 50wt means 50 meters weighs 1g. 100wt means 100 meters weighs 1g -- so the thread must be thinner." },
+    { q: "What thread weight should I use for quilting?", a: "50wt for piecing (less bulk in seams). 40wt for machine quilting (slightly visible). 12wt or 30wt for decorative or hand-look quilting." },
+    { q: "Can I use different weights in the needle and bobbin?", a: "Yes. A common technique is 50wt on top and 60wt in the bobbin. The lighter bobbin thread saves space and is often invisible." },
+];
+
+export default function ThreadWeightPage() {
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Notions", href: "/notions" }, { label: "Thread Weight Comparison" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><Layers size={14} strokeWidth={1.5} /> Notions</span><h1>Thread Weight Comparison Tool</h1><p>Compare thread weights across the numbering system with project recommendations and needle pairing.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Thread Weight Reference</h2>
+                    <p style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", marginBottom: 16, fontStyle: "italic" }}>Important: Higher number = FINER/THINNER thread. Lower number = HEAVIER/THICKER thread.</p>
+                    <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Weight</th><th>Category</th><th>Best Uses</th><th>Needle Size</th><th>Visibility</th></tr></thead>
+                        <tbody>{weights.map(w => (<tr key={w.wt}><td style={{ fontWeight: 600 }}>{w.wt}</td><td>{w.desc}</td><td>{w.use}</td><td>{w.needle}</td><td>{w.vis}</td></tr>))}</tbody>
+                    </table></div>
+                </div>
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Tex Weight Cross-Reference</h2>
+                    <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Standard Weight</th><th>Tex Equivalent</th></tr></thead>
+                        <tbody>
+                            <tr><td>50wt</td><td>Tex 27</td></tr><tr><td>60wt</td><td>Tex 18</td></tr>
+                            <tr><td>40wt</td><td>Tex 35</td></tr><tr><td>30wt</td><td>Tex 50</td></tr>
+                            <tr><td>12wt</td><td>Tex 90</td></tr>
+                        </tbody>
+                    </table></div>
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}
