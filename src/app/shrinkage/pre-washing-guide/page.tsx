@@ -1,45 +1,56 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, ChevronDown, Droplets, Database } from "lucide-react";
+import { BookOpen, ChevronDown, Droplets, Ruler } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
 
-const guides: { fiber: string; steps: string[] }[] = [
-    { fiber: "Cotton (quilting, broadcloth, lawn)", steps: ["Serge or zigzag all raw edges to prevent fraying", "Machine wash warm on normal cycle with mild detergent", "Tumble dry medium until slightly damp", "Press with hot iron while slightly damp for best results", "Measure and record shrinkage for your records"] },
-    { fiber: "Linen", steps: ["Serge or zigzag edges (linen frays significantly)", "Machine wash warm on normal cycle", "Tumble dry medium — remove while slightly damp", "Press with hot iron + steam while damp", "Repeat 1-2 more times — linen needs multiple washes to stabilize"] },
-    { fiber: "Wool", steps: ["Do NOT machine wash unless specifically machine-washable", "Hand wash in lukewarm water with wool wash detergent", "Do not agitate — gently submerge and soak 15 minutes", "Rinse in same-temperature water (temperature shock causes felting)", "Roll in towel to remove water, lay flat to dry — never hang"] },
-    { fiber: "Silk", steps: ["Hand wash in cool water with silk-specific detergent", "Gently agitate — do not wring or twist", "Rinse in cool water", "Roll in towel to absorb moisture", "Iron on reverse side while slightly damp at silk setting"] },
-    { fiber: "Rayon / Viscose", steps: ["Handle very carefully — rayon is fragile when wet", "Hand wash in cool water with gentle detergent", "Do not agitate or wring — fabric stretches dramatically when wet", "Roll in towel, then lay completely flat to dry", "May need to block back to shape while still damp"] },
-    { fiber: "Denim", steps: ["Turn inside out to reduce surface fading", "Machine wash warm (cold if you want minimal shrinkage)", "Tumble dry medium or hang dry to preserve color", "Press with hot iron + steam", "Expect 3-5% shrinkage on first wash"] },
-    { fiber: "Knit Fabrics (jersey, interlock, rib)", steps: ["Machine wash on same cycle you will use for finished garment", "Do not wring or twist — can distort fabric", "Tumble dry low or lay flat to dry", "Steam or press gently — do not stretch while pressing", "Let fabric rest and relax before cutting"] },
-    { fiber: "Polyester / Synthetics", steps: ["Pre-washing is optional but recommended to remove sizing", "Machine wash warm on normal cycle", "Tumble dry low — synthetics can melt at high heat", "Minimal shrinkage expected (under 1%)", "Press at appropriate temperature for fiber"] },
-];
+const guides: Record<string, { label: string; steps: string[] }> = {
+    cotton: { label: "Cotton (quilting, muslin, denim, flannel)", steps: ["Serge or zigzag raw edges to prevent fraying", "Machine wash warm on normal cycle", "Use mild detergent or none", "Tumble dry medium until slightly damp", "Press with steam while slightly damp", "Measure and compare to original dimensions"] },
+    linen: { label: "Linen", steps: ["Serge or zigzag all edges (linen frays heavily)", "Machine wash warm-hot on normal cycle", "Tumble dry medium until damp", "Press immediately with steam on linen setting", "May need 2-3 washes to fully pre-shrink", "Gets softer with each wash"] },
+    rayon: { label: "Rayon / Viscose", steps: ["Serge or zigzag edges carefully", "Hand wash in cool water -- do NOT agitate or wring", "Gently squeeze out water (do not twist)", "Lay flat to dry on towel -- do NOT hang (stretches)", "Press on medium heat with pressing cloth while slightly damp", "May need to block back to shape while damp"] },
+    wool: { label: "Wool", steps: ["Use wool wash or very mild detergent", "Hand wash in lukewarm water only -- NO hot water", "Do NOT change temperature suddenly (causes felting)", "Do NOT agitate -- gently press garment in water", "Roll in towel to remove excess water", "Lay flat to dry -- never hang (stretches)", "Press with steam on wool setting with pressing cloth"] },
+    silk: { label: "Silk", steps: ["Test a small piece first -- some silks water-spot", "Hand wash in cool water with silk-specific detergent", "Do not wring or twist", "Roll in clean towel to remove excess water", "Hang dry or lay flat away from direct sunlight", "Iron on reverse side while slightly damp on silk setting"] },
+    knits: { label: "Knit Fabrics (jersey, interlock, rib)", steps: ["Machine wash as you will wash the finished garment", "Use gentle cycle with cold or warm water", "Tumble dry low or lay flat to dry", "Do NOT wring or stretch while wet", "Press gently -- avoid stretching with iron"] },
+    polyester: { label: "Polyester / Synthetics", steps: ["Machine wash on any cycle (very forgiving)", "Any water temperature is fine", "Tumble dry low-medium", "Minimal shrinkage expected (under 1%)", "Pre-washing is optional but removes manufacturing chemicals"] },
+};
 
 const relatedTools = [
     { name: "Pre-Wash Estimator", href: "/shrinkage/pre-wash-estimator", icon: Droplets },
-    { name: "Shrinkage Database", href: "/shrinkage/fabric-database", icon: Database },
-    { name: "Shrinkage % Calc", href: "/shrinkage/percentage-calculator", icon: Droplets },
+    { name: "Fabric Database", href: "/shrinkage/fabric-database", icon: Droplets },
+    { name: "Shrinkage % Calc", href: "/shrinkage/percentage-calculator", icon: Ruler },
 ];
 const faqItems = [
-    { q: "Do I really need to pre-wash fabric before sewing?", a: "For natural fibers being used in washable garments: yes. For dry-clean-only projects or synthetics: optional. Quilters are split — both approaches are valid." },
-    { q: "How do I prevent fabric from fraying in the washing machine?", a: "Serge, zigzag, or pink all raw edges before washing. Use a mesh laundry bag for delicates. This is essential for linen and loosely woven cotton." },
-    { q: "Should I pre-wash quilting cotton?", a: "Debated in the quilting community. Pre-washing removes chemicals and prevents color bleeding. Not pre-washing preserves sizing (easier to cut) and creates the crinkled antique look after washing the finished quilt." },
+    { q: "Do I really need to pre-wash fabric before sewing?", a: "For natural fibers (cotton, linen, wool, rayon): strongly recommended. For synthetics: optional. Skipping pre-wash risks garment shrinking after first laundering." },
+    { q: "How do I prevent fabric from fraying in the washing machine?", a: "Serge, zigzag, or pink all raw edges before washing. Alternatively, use a mesh laundry bag to contain loose threads." },
+    { q: "Should I pre-wash quilting cotton?", a: "Debated in the quilting community. Pre-wash for: color bleeding prevention and shrinkage control. Skip for: the crinkled antique look after washing the finished quilt." },
 ];
 
 export default function PreWashingGuidePage() {
+    const [selectedFiber, setSelectedFiber] = useState("cotton");
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const guide = guides[selectedFiber];
+
     return (
         <div className="container">
             <Breadcrumb items={[{ label: "Shrinkage", href: "/shrinkage" }, { label: "Pre-Washing Guide" }]} />
             <div className="calculator-layout"><div className="calculator-main">
-                <div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} strokeWidth={1.5} /> Shrinkage</span><h1>Pre-Washing Guide by Fabric Type</h1><p>Step-by-step pre-washing instructions for every fabric type.</p></div>
-                {guides.map(g => (<div key={g.fiber} className="calculator-card">
-                    <h3 style={{ fontSize: "var(--text-base)", fontWeight: 600, marginBottom: 10 }}>{g.fiber}</h3>
-                    <ol style={{ paddingLeft: 20, margin: 0, lineHeight: 2, fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>
-                        {g.steps.map((s, i) => <li key={i}>{s}</li>)}
+                <div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} strokeWidth={1.5} /> Shrinkage</span><h1>Pre-Washing Guide by Fabric Type</h1><p>Step-by-step instructions for how to correctly pre-wash different fabric types.</p></div>
+                <div className="calculator-card">
+                    <div className="input-group" style={{ marginBottom: 16 }}><label className="input-label">Select Fabric Type</label><select className="input-field" value={selectedFiber} onChange={e => setSelectedFiber(e.target.value)}>{Object.entries(guides).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}</select></div>
+                    <h3 style={{ fontSize: "var(--text-base)", fontWeight: 600, marginBottom: 12 }}>Pre-Washing Steps: {guide.label}</h3>
+                    <ol style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 2.2, paddingLeft: 24, margin: 0 }}>
+                        {guide.steps.map((step, i) => <li key={i} style={{ paddingLeft: 4 }}>{step}</li>)}
                     </ol>
-                </div>))}
+                </div>
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Quick Reference: Pre-Wash Necessity</h2>
+                    <div style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 2 }}>
+                        <p><strong>Always pre-wash:</strong> Cotton, linen, rayon, wool, bamboo</p>
+                        <p><strong>Usually pre-wash:</strong> Silk, denim, flannel, any natural fiber</p>
+                        <p><strong>Optional:</strong> Polyester, nylon, acrylic blends</p>
+                        <p><strong>Cannot wash (use steam):</strong> Dry-clean-only fabrics</p>
+                    </div>
+                </div>
                 <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
             </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
         </div>);

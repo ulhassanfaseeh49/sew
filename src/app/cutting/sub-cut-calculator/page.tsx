@@ -1,23 +1,64 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Scissors } from "lucide-react";
-export default function Page(){
-const[stripW,sS]=useState("2.5");const[pieceW,sPW]=useState("2.5");const[fw,sFw]=useState("42");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const sw=parseFloat(stripW)||2.5;const pw=parseFloat(pieceW)||2.5;const fw2=parseFloat(fw)||42;const perStrip=Math.floor(fw2/pw);const hasResult=sw>0;const resultValue=perStrip+" pieces per strip";const resultLabel=pw+"\" pieces from "+sw+"\" x "+fw2+"\" strip";
-const faqItems=[{q:"What are sub-cuts?",a:"Cutting a strip into smaller pieces. A 2.5 inch WOF strip sub-cut into 2.5 inch squares gives 16 squares."}];
-return(<div className="container"><Breadcrumb items={[{label:"Cutting Tools",href:"/cutting"},{label:"Sub-Cut Calculator"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Scissors size={14} strokeWidth={1.5} /> Cutting #174</span><h1>Sub-Cut Calculator</h1><p>Sub-cuts from strips into pieces.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Strip width</label><input type="number" className="input-field" value={stripW} onChange={e=>sS(e.target.value)}/></div><div className="input-group"><label className="input-label">Piece width</label><input type="number" className="input-field" value={pieceW} onChange={e=>sPW(e.target.value)}/></div><div className="input-group"><label className="input-label">Fabric width</label><input type="number" className="input-field" value={fw} onChange={e=>sFw(e.target.value)}/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/cutting" className="related-tool-link"><Scissors size={13} /> All Cutting</a></div></aside></div></div>);}
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Scissors, Copy, Printer, ChevronDown, Grid3X3, Ruler } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const relatedTools = [
+    { name: "Strip Cutting", href: "/cutting/strip-calculator", icon: Scissors },
+    { name: "Square Cutting", href: "/cutting/square-calculator", icon: Grid3X3 },
+    { name: "Waste Minimizer", href: "/cutting/waste-minimizer", icon: Ruler },
+];
+const faqItems = [
+    { q: "What is sub-cutting?", a: "Sub-cutting is the second step: after cutting strips from fabric, you cross-cut those strips into smaller pieces (squares, rectangles, or triangles)." },
+    { q: "Can I stack strips for faster sub-cutting?", a: "Yes. Align up to 4-6 strips carefully, then cut through all layers at once with a rotary cutter for identical sub-cuts." },
+    { q: "What do I do with leftover strip ends?", a: "Save them organized by size. Small ends can become cornerstones, binding connectors, or scrappy quilt elements." },
+];
+
+export default function SubCutCalcPage() {
+    const [stripWidth, setStripWidth] = useState("2.5"); const [stripLength, setStripLength] = useState("43"); const [numStrips, setNumStrips] = useState("10");
+    const [subType, setSubType] = useState("square"); const [subSize, setSubSize] = useState("2.5");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null); const [copied, setCopied] = useState(false);
+
+    const sw = parseFloat(stripWidth) || 0; const sl = parseFloat(stripLength) || 43; const ns = parseInt(numStrips) || 1;
+    const ss = parseFloat(subSize) || 0;
+    const cutWidth = subType === "square" ? ss : ss; // for rects the user enters height
+    const piecesPerStrip = cutWidth > 0 ? Math.floor(sl / cutWidth) : 0;
+    const remainder = sl - piecesPerStrip * cutWidth;
+    const totalPieces = piecesPerStrip * ns;
+    const hasResult = sw > 0 && ss > 0 && totalPieces > 0;
+
+    const handleCopy = useCallback(() => { navigator.clipboard.writeText(`${totalPieces} pieces (${ss}" ${subType}s). ${piecesPerStrip} per strip x ${ns} strips.`); setCopied(true); setTimeout(() => setCopied(false), 2000); }, [totalPieces, ss, subType, piecesPerStrip, ns]);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Cutting Tools", href: "/cutting" }, { label: "Sub-Cut Calculator" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><Scissors size={14} strokeWidth={1.5} /> Cutting</span><h1>Sub-Cut Calculator</h1><p>Calculate how many smaller pieces can be sub-cut from already-cut strips.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Strip and Sub-Cut Details</h2>
+                    <div className="calculator-form">
+                        <div className="calculator-form-row">
+                            <div className="input-group"><label className="input-label">Strip Width (in)</label><input type="number" className="input-field input-mono" value={stripWidth} onChange={e => setStripWidth(e.target.value)} min="0.5" step="0.25" /></div>
+                            <div className="input-group"><label className="input-label">Strip Length (in)</label><input type="number" className="input-field input-mono" value={stripLength} onChange={e => setStripLength(e.target.value)} min="1" /></div>
+                            <div className="input-group"><label className="input-label">Number of Strips</label><input type="number" className="input-field input-mono" value={numStrips} onChange={e => setNumStrips(e.target.value)} min="1" /></div>
+                        </div>
+                        <div className="calculator-form-row">
+                            <div className="input-group"><label className="input-label">Sub-Cut Type</label><select className="input-field" value={subType} onChange={e => setSubType(e.target.value)}><option value="square">Squares</option><option value="rectangle">Rectangles</option></select></div>
+                            <div className="input-group"><label className="input-label">Sub-Cut Size (in)</label><input type="number" className="input-field input-mono" value={subSize} onChange={e => setSubSize(e.target.value)} min="0.5" step="0.25" /></div>
+                        </div>
+                    </div>
+                    {hasResult && (<div><div className="calculator-divider" />
+                        <div className="result-card"><div className="result-prefix">Total Pieces</div><div className="result-value">{totalPieces} {subType === "square" ? "squares" : "rectangles"}</div><div className="result-label">{subType === "square" ? `${ss}" x ${ss}"` : `${sw}" x ${ss}"`} each</div></div>
+                        <div className={styles.resultDetails} style={{ marginTop: 12 }}>
+                            <div className="result-row"><span className="result-row-label">Pieces per strip</span><span className="result-row-value">{piecesPerStrip}</span></div>
+                            <div className="result-row"><span className="result-row-label">Leftover per strip</span><span className="result-row-value">{remainder.toFixed(2)}&quot;</span></div>
+                            <div className="result-row"><span className="result-row-label">Total strips used</span><span className="result-row-value">{ns}</span></div>
+                        </div>
+                        <div className="toolbar" style={{ marginTop: 16 }}><button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button></div>
+                    </div>)}
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}

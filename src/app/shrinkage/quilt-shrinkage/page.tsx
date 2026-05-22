@@ -1,73 +1,72 @@
 "use client";
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import { Layers, Copy, Printer, ChevronDown, Droplets, BookOpen } from "lucide-react";
+import { Grid3X3, Copy, Printer, ChevronDown, Droplets, Ruler } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
 
-const quiltSizes: Record<string, { w: number; l: number }> = {
-    custom: { w: 0, l: 0 }, baby: { w: 36, l: 52 }, throw: { w: 50, l: 65 },
-    twin: { w: 68, l: 86 }, full: { w: 86, l: 86 }, queen: { w: 90, l: 95 },
-    king: { w: 108, l: 95 }, calKing: { w: 104, l: 100 },
+const quiltSizes: Record<string, { w: number; l: number; label: string }> = {
+    baby: { w: 36, l: 52, label: "Baby (36x52)" }, throw_: { w: 50, l: 65, label: "Throw (50x65)" },
+    twin: { w: 65, l: 90, label: "Twin (65x90)" }, full: { w: 80, l: 90, label: "Full (80x90)" },
+    queen: { w: 90, l: 108, label: "Queen (90x108)" }, king: { w: 108, l: 108, label: "King (108x108)" },
+    custom: { w: 0, l: 0, label: "Custom" },
 };
-
-const battingData: Record<string, { label: string; shrink: number; crinkle: string }> = {
-    cotton100: { label: "100% Cotton Batting", shrink: 4, crinkle: "Significant — classic antique look" },
-    poly100: { label: "100% Polyester Batting", shrink: 0.5, crinkle: "Minimal — smooth flat finish" },
-    blend8020: { label: "80/20 Cotton/Poly Blend", shrink: 2.5, crinkle: "Moderate — subtle texture" },
-    wool: { label: "100% Wool Batting", shrink: 3, crinkle: "Moderate — soft loft" },
-    bamboo: { label: "Bamboo Batting", shrink: 2, crinkle: "Light — smooth drape" },
+const battingTypes: Record<string, { label: string; shrink: number }> = {
+    cotton: { label: "100% Cotton batting", shrink: 4 },
+    poly: { label: "100% Polyester batting", shrink: 0.5 },
+    blend: { label: "80/20 Cotton/Poly blend", shrink: 2.5 },
+    wool: { label: "100% Wool batting", shrink: 3 },
+    bamboo: { label: "Bamboo batting", shrink: 3 },
 };
 
 const relatedTools = [
     { name: "Pre-Wash Estimator", href: "/shrinkage/pre-wash-estimator", icon: Droplets },
-    { name: "Pre-Washing Guide", href: "/shrinkage/pre-washing-guide", icon: BookOpen },
-    { name: "Quilt Size Calculator", href: "/quilt/size-calculator", icon: Layers },
+    { name: "Pre-Washing Guide", href: "/shrinkage/pre-washing-guide", icon: Droplets },
+    { name: "Quilt Binding Calc", href: "/bias-binding/quilt-binding", icon: Ruler },
 ];
 const faqItems = [
-    { q: "How much will my quilt shrink after the first wash?", a: "With cotton batting and unwashed cotton fabric: 3-5% overall. With polyester batting: under 1%. The biggest factor is batting type, not fabric." },
-    { q: "Should I pre-wash fabric before quilting?", a: "Both approaches are valid. Pre-washing: removes chemicals, prevents color bleeding, gives precise sizing. Not pre-washing: preserves sizing for easier cutting, creates beloved crinkled antique texture after washing." },
-    { q: "How do I get the crinkled vintage look?", a: "Do not pre-wash any fabric. Use 100% cotton batting. Quilt with standard density. Wash the finished quilt in warm water, tumble dry medium. The crinkle develops beautifully." },
+    { q: "How much will my quilt shrink after the first wash?", a: "With cotton batting and unwashed cotton fabric: 3-8% overall. With polyester batting and pre-washed fabric: under 1%." },
+    { q: "How do I get the crinkled vintage look?", a: "Use cotton batting, do NOT pre-wash fabric, quilt normally, then wash the finished quilt in warm water and tumble dry. The differential shrinkage creates the texture." },
+    { q: "Will cotton batting shrink more than polyester?", a: "Yes -- significantly. Cotton batting shrinks 3-5%, polyester under 1%. Blends (80/20) give a compromise at about 2-3%." },
 ];
 
 export default function QuiltShrinkagePage() {
-    const [sizeKey, setSizeKey] = useState("throw");
-    const [customW, setCustomW] = useState(""); const [customL, setCustomL] = useState("");
-    const [prewashed, setPrewashed] = useState("no"); const [batting, setBatting] = useState("cotton100");
+    const [sizeKey, setSizeKey] = useState("queen"); const [customW, setCustomW] = useState(""); const [customL, setCustomL] = useState("");
+    const [batting, setBatting] = useState("cotton"); const [prewashed, setPrewashed] = useState("no");
     const [activeFaq, setActiveFaq] = useState<number | null>(null); const [copied, setCopied] = useState(false);
 
     const sz = quiltSizes[sizeKey];
     const w = sizeKey === "custom" ? (parseFloat(customW) || 0) : sz.w;
     const l = sizeKey === "custom" ? (parseFloat(customL) || 0) : sz.l;
-    const bat = battingData[batting];
-    const fabricShrink = prewashed === "yes" ? 0.5 : 4; // already washed = minimal residual
-    const totalShrink = (fabricShrink + bat.shrink) / 2;
+    const bt = battingTypes[batting];
+    const fabricShrink = prewashed === "yes" ? 0.5 : 4; // residual vs full
+    const totalShrink = (bt.shrink + fabricShrink) / 2;
     const postW = w * (1 - totalShrink / 100); const postL = l * (1 - totalShrink / 100);
+    const wLost = w - postW; const lLost = l - postL;
     const hasResult = w > 0 && l > 0;
 
-    const handleCopy = useCallback(() => { navigator.clipboard.writeText(`Quilt: ${w}" x ${l}" → Post-wash: ${postW.toFixed(1)}" x ${postL.toFixed(1)}" (~${totalShrink.toFixed(1)}% shrinkage, ${bat.label})`); setCopied(true); setTimeout(() => setCopied(false), 2000); }, [w, l, postW, postL, totalShrink, bat]);
+    const handleCopy = useCallback(() => { navigator.clipboard.writeText(`Quilt ${w}"x${l}" with ${bt.label}: post-wash ~${postW.toFixed(1)}"x${postL.toFixed(1)}" (${totalShrink.toFixed(1)}% shrinkage)`); setCopied(true); setTimeout(() => setCopied(false), 2000); }, [w, l, bt, postW, postL, totalShrink]);
 
     return (
         <div className="container">
             <Breadcrumb items={[{ label: "Shrinkage", href: "/shrinkage" }, { label: "Quilt Shrinkage" }]} />
             <div className="calculator-layout"><div className="calculator-main">
-                <div className={styles.toolHeader}><span className="category-badge"><Layers size={14} strokeWidth={1.5} /> Shrinkage</span><h1>Quilt Shrinkage Calculator</h1><p>Estimate how much a finished quilt will shrink after the first wash.</p></div>
+                <div className={styles.toolHeader}><span className="category-badge"><Grid3X3 size={14} strokeWidth={1.5} /> Shrinkage</span><h1>Quilt Shrinkage Calculator</h1><p>Estimate how much your finished quilt will shrink after the first wash.</p></div>
                 <div className="calculator-card"><h2 className={styles.calcTitle}>Quilt Details</h2>
                     <div className="calculator-form">
-                        <div className="input-group"><label className="input-label">Quilt Size</label><select className="input-field" value={sizeKey} onChange={e => setSizeKey(e.target.value)}><option value="baby">Baby (36x52)</option><option value="throw">Throw (50x65)</option><option value="twin">Twin (68x86)</option><option value="full">Full (86x86)</option><option value="queen">Queen (90x95)</option><option value="king">King (108x95)</option><option value="calKing">Cal King (104x100)</option><option value="custom">Custom Size</option></select></div>
-                        {sizeKey === "custom" && <div className="calculator-form-row"><div className="input-group"><label className="input-label">Width (inches)</label><input type="number" className="input-field input-mono" value={customW} onChange={e => setCustomW(e.target.value)} min="1" /></div><div className="input-group"><label className="input-label">Length (inches)</label><input type="number" className="input-field input-mono" value={customL} onChange={e => setCustomL(e.target.value)} min="1" /></div></div>}
+                        <div className="input-group"><label className="input-label">Quilt Size</label><select className="input-field" value={sizeKey} onChange={e => setSizeKey(e.target.value)}>{Object.entries(quiltSizes).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}</select></div>
+                        {sizeKey === "custom" && (<div className="calculator-form-row"><div className="input-group"><label className="input-label">Width (in)</label><input type="number" className="input-field input-mono" value={customW} onChange={e => setCustomW(e.target.value)} min="1" /></div><div className="input-group"><label className="input-label">Length (in)</label><input type="number" className="input-field input-mono" value={customL} onChange={e => setCustomL(e.target.value)} min="1" /></div></div>)}
                         <div className="calculator-form-row">
-                            <div className="input-group"><label className="input-label">Fabric Pre-Washed?</label><select className="input-field" value={prewashed} onChange={e => setPrewashed(e.target.value)}><option value="no">No — unwashed fabric</option><option value="yes">Yes — pre-washed</option></select></div>
-                            <div className="input-group"><label className="input-label">Batting Type</label><select className="input-field" value={batting} onChange={e => setBatting(e.target.value)}>{Object.entries(battingData).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}</select></div>
+                            <div className="input-group"><label className="input-label">Batting Type</label><select className="input-field" value={batting} onChange={e => setBatting(e.target.value)}>{Object.entries(battingTypes).map(([k, v]) => <option key={k} value={k}>{v.label} (~{v.shrink}%)</option>)}</select></div>
+                            <div className="input-group"><label className="input-label">Fabric Pre-washed?</label><select className="input-field" value={prewashed} onChange={e => setPrewashed(e.target.value)}><option value="no">No (un-washed)</option><option value="yes">Yes (pre-washed)</option></select></div>
                         </div>
                     </div>
                     {hasResult && (<div><div className="calculator-divider" />
-                        <div className="result-card"><div className="result-prefix">Post-Wash Size</div><div className="result-value">{postW.toFixed(1)}&quot; x {postL.toFixed(1)}&quot;</div><div className="result-label">~{totalShrink.toFixed(1)}% overall shrinkage ({(w - postW).toFixed(1)}&quot; x {(l - postL).toFixed(1)}&quot; lost)</div></div>
+                        <div className="result-card"><div className="result-prefix">Post-Wash Quilt Size</div><div className="result-value">{postW.toFixed(1)}&quot; x {postL.toFixed(1)}&quot;</div><div className="result-label">Lost ~{wLost.toFixed(1)}&quot; width, ~{lLost.toFixed(1)}&quot; length ({totalShrink.toFixed(1)}%)</div></div>
                         <div className={styles.resultDetails} style={{ marginTop: 12 }}>
                             <div className="result-row"><span className="result-row-label">Original size</span><span className="result-row-value">{w}&quot; x {l}&quot;</span></div>
+                            <div className="result-row"><span className="result-row-label">Batting shrinkage</span><span className="result-row-value">~{bt.shrink}%</span></div>
                             <div className="result-row"><span className="result-row-label">Fabric shrinkage</span><span className="result-row-value">~{fabricShrink}%</span></div>
-                            <div className="result-row"><span className="result-row-label">Batting shrinkage</span><span className="result-row-value">~{bat.shrink}%</span></div>
-                            <div className="result-row"><span className="result-row-label">Crinkle effect</span><span className="result-row-value">{bat.crinkle}</span></div>
                         </div>
                         <div className="toolbar" style={{ marginTop: 16 }}><button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button></div>
                     </div>)}
