@@ -1,203 +1,233 @@
 import Link from "next/link";
 import { categories, getTotalToolCount } from "@/lib/categories";
+import {
+  Ruler, Grid3X3, Triangle, Scissors, Calculator, Blinds, User,
+  CornerDownRight, ArrowRight, Smartphone, Printer, Unlock, Link2,
+  Sparkles, BookOpen
+} from "lucide-react";
 import styles from "./page.module.css";
 
 export default function HomePage() {
   const totalTools = getTotalToolCount();
 
   const popularTools = [
-    { name: "Yards to Meters Converter", href: "/convert/yards-to-meters", icon: "📏" },
-    { name: "Quilt Size Calculator", href: "/quilt/size-calculator", icon: "🟩" },
-    { name: "Circle Skirt Calculator", href: "/skirt/full-circle", icon: "💃" },
-    { name: "Seam Allowance Converter", href: "/seam-allowance/converter", icon: "✂️" },
-    { name: "Fabric Cost Calculator", href: "/cost/per-yard", icon: "💰" },
-    { name: "Curtain Yardage Calculator", href: "/curtains/yardage-calculator", icon: "🪟" },
-    { name: "Body Measurement Guide", href: "/body/measurement-guide", icon: "👤" },
-    { name: "Bias Tape Calculator", href: "/bias-binding/tape-yardage", icon: "🎀" },
+    { name: "Yards to Meters Converter", href: "/convert/yards-to-meters", desc: "Convert fabric yardage to meters instantly for international patterns.", category: "CONVERSION", icon: Ruler },
+    { name: "Quilt Size Calculator", href: "/quilt/size-calculator", desc: "Calculate exact quilt dimensions for any bed size with proper overhang.", category: "QUILTING", icon: Grid3X3 },
+    { name: "Circle Skirt Calculator", href: "/skirt/full-circle", desc: "Get exact radius and fabric yardage for full, half, and quarter skirts.", category: "GARMENTS", icon: Triangle },
+    { name: "Seam Allowance Converter", href: "/seam-allowance/converter", desc: "Convert between common seam allowances in imperial and metric.", category: "SEWING", icon: Scissors },
+    { name: "Fabric Cost Calculator", href: "/cost/per-yard", desc: "Calculate total fabric cost with tax, shipping, and bulk pricing.", category: "COST", icon: Calculator },
+    { name: "Curtain Yardage Calculator", href: "/curtains/yardage-calculator", desc: "Determine fabric needed for window treatments with fullness ratios.", category: "HOME DÉCOR", icon: Blinds },
+    { name: "Body Measurement Guide", href: "/body/measurement-guide", desc: "Complete guide to taking accurate body measurements for sewing.", category: "BODY", icon: User },
+    { name: "Bias Tape Calculator", href: "/bias-binding/tape-yardage", desc: "Calculate fabric squares needed to make continuous bias tape.", category: "BINDING", icon: CornerDownRight },
   ];
 
   const stats = [
-    { value: `${totalTools}+`, label: "Free Tools" },
+    { value: `${totalTools}`, label: "Free Tools" },
     { value: "28", label: "Categories" },
-    { value: "∞", label: "Calculations" },
-    { value: "0", label: "Cost to You" },
+    { value: "100%", label: "Free Forever" },
+  ];
+
+  const features = [
+    { title: "Imperial & Metric", desc: "Toggle between measurement systems on any tool", icon: Ruler },
+    { title: "Print Ready", desc: "Every result generates a clean printable reference sheet", icon: Printer },
+    { title: "Mobile First", desc: "Designed for use at the cutting table, one-handed", icon: Smartphone },
+    { title: "Completely Free", desc: "No premium tiers, no paywalls, no limits", icon: Unlock },
+    { title: "Smart Cross-Links", desc: "Related tools suggested to complete your workflow", icon: Link2 },
+    { title: "Reference Library", desc: "Glossary, size charts, and fabric encyclopedia included", icon: BookOpen },
+  ];
+
+  const steps = [
+    { num: "01", title: "Find Your Tool", desc: `Search or browse ${totalTools} free calculators across 28 categories.` },
+    { num: "02", title: "Enter Your Numbers", desc: "Input your measurements with imperial or metric units." },
+    { num: "03", title: "Get Precise Results", desc: "Receive accurate calculations you can save, print, or share." },
   ];
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero Section — Two Column */}
       <section className={styles.hero}>
-        <div className={styles.heroGlow} />
-        <div className={`container ${styles.heroContent}`}>
-          <div className={styles.heroBadge}>
-            <span className={styles.heroBadgeDot} />
-            <span>{totalTools}+ Free Sewing Tools</span>
+        <div className={styles.heroGrid} aria-hidden="true" />
+        <div className={styles.heroDecoration} aria-hidden="true" />
+        <div className={styles.heroContent}>
+          <div className={styles.heroLeft}>
+            <div className={styles.heroBadge}>
+              <span className={styles.heroBadgeDot} />
+              <span>{totalTools} Free Sewing Calculators</span>
+            </div>
+            <h1 className={styles.heroTitle}>
+              Precision sewing tools,
+              <br />
+              from first stitch to
+              <br />
+              <span className={styles.heroAccent}>finished seam.</span>
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Free calculators for fabric yardage, quilt math, garment fitting,
+              pattern scaling, project costing, and {totalTools - 14}+ more — built for sewists
+              who measure twice.
+            </p>
+            <div className={styles.heroActions}>
+              <Link href="/tools-index" className="btn btn-primary btn-lg">
+                Explore All Tools
+                <ArrowRight size={18} />
+              </Link>
+              <Link href="/tools-by-category" className="btn btn-ghost btn-lg">
+                Browse Categories
+              </Link>
+            </div>
+            <div className={styles.heroStats}>
+              {stats.map((stat, i) => (
+                <div key={i} className={styles.heroStat}>
+                  <div className={styles.heroStatValue}>{stat.value}</div>
+                  <div className={styles.heroStatLabel}>{stat.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1 className={styles.heroTitle}>
-            Every Sewing Calculator
-            <br />
-            <span className={styles.heroAccent}>You'll Ever Need</span>
-          </h1>
-          <p className={styles.heroSubtitle}>
-            From fabric yardage to quilt math, garment construction to pricing —
-            free precision calculators for quilters, sewists, and crafters worldwide.
-          </p>
-          <div className={styles.heroActions}>
-            <Link href="/tools-index" className="btn btn-primary btn-lg">
-              Browse All Tools →
-            </Link>
-            <Link href="/tools-by-category" className="btn btn-secondary btn-lg">
-              Explore Categories
-            </Link>
+          <div className={styles.heroRight}>
+            <div className={styles.heroPreviewBehind} />
+            <div className={styles.heroPreviewCard}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
+                Circle Skirt Calculator
+              </div>
+              <div style={{ display: 'grid', gap: 12, marginBottom: 16 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 4 }}>Waist</div>
+                  <div style={{ padding: '10px 14px', background: 'var(--color-bg-secondary)', borderRadius: 8, border: '1px solid var(--color-border)', fontFamily: 'var(--font-mono)', fontSize: 15 }}>28 in</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 4 }}>Length</div>
+                  <div style={{ padding: '10px 14px', background: 'var(--color-bg-secondary)', borderRadius: 8, border: '1px solid var(--color-border)', fontFamily: 'var(--font-mono)', fontSize: 15 }}>24 in</div>
+                </div>
+              </div>
+              <div style={{ padding: 16, background: 'var(--color-accent-light)', borderRadius: 10, textAlign: 'center' }}>
+                <div style={{ fontSize: 12, color: 'var(--color-text-tertiary)', marginBottom: 4 }}>You need</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 28, fontWeight: 700, color: 'var(--color-text-primary)' }}>2.8 yards</div>
+                <div style={{ fontSize: 12, color: 'var(--color-text-tertiary)', marginTop: 2 }}>of 44/45&quot; wide fabric</div>
+              </div>
+            </div>
           </div>
-          <div className={styles.heroStats}>
-            {stats.map((stat, i) => (
-              <div key={i} className={styles.heroStat}>
-                <div className={styles.heroStatValue}>{stat.value}</div>
-                <div className={styles.heroStatLabel}>{stat.label}</div>
+        </div>
+      </section>
+
+      {/* Popular Tools */}
+      <section className="section">
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionHeaderRow}>
+              <div>
+                <p className={styles.sectionOverline}>MOST USED</p>
+                <h2>Popular Tools</h2>
+              </div>
+              <Link href="/tools-index" className={styles.sectionHeaderLink}>
+                View all tools <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+          <div className={styles.popularGrid}>
+            {popularTools.map((tool, i) => {
+              const IconComp = tool.icon;
+              return (
+                <Link key={i} href={tool.href} className={styles.popularCard}>
+                  <div className={styles.popularCardTop}>
+                    <div className={styles.popularIcon}>
+                      <IconComp size={24} strokeWidth={1.5} />
+                    </div>
+                    <span className={styles.popularTag}>{tool.category}</span>
+                  </div>
+                  <div className={styles.popularName}>{tool.name}</div>
+                  <p className={styles.popularDesc}>{tool.desc}</p>
+                  <span className={styles.popularLink}>
+                    Use this tool <ArrowRight size={16} />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Grid */}
+      <section className="section section-alt">
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <p className={styles.sectionOverline}>{categories.length} CATEGORIES</p>
+            <h2>Find the Right Tool</h2>
+            <p>Browse our complete collection of sewing calculators, organized by what you need to calculate.</p>
+          </div>
+          <div className={styles.categoryGrid}>
+            {categories.map((cat) => (
+              <Link key={cat.slug} href={`/${cat.slug}`} className={styles.categoryCard}>
+                <div className={styles.categoryCardTop}>
+                  <div className={styles.categoryIcon} style={{ background: 'var(--color-accent-light)', color: 'var(--color-accent-primary)' }}>
+                    <Sparkles size={20} strokeWidth={1.5} />
+                  </div>
+                  <span className={styles.categoryCount}>{cat.toolCount} tools</span>
+                </div>
+                <div className={styles.categoryName}>{cat.name}</div>
+                <p className={styles.categoryDesc}>{cat.description}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="section">
+        <div className="container">
+          <div className={styles.sectionHeader} style={{ textAlign: 'center' }}>
+            <p className={styles.sectionOverline}>SIMPLE &amp; PRECISE</p>
+            <h2>How It Works</h2>
+          </div>
+          <div className={styles.stepsGrid}>
+            {steps.map((step, i) => (
+              <div key={i} className={styles.stepCard}>
+                <div className={styles.stepNumber}>{step.num}</div>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Popular Tools */}
-      <section className={`section ${styles.popularSection}`}>
+      {/* Features */}
+      <section className="section section-alt">
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>⚡ Popular Tools</h2>
-            <p>Jump straight to the most-used calculators</p>
-          </div>
-          <div className={styles.popularGrid}>
-            {popularTools.map((tool, i) => (
-              <Link key={i} href={tool.href} className={`glass-card ${styles.popularCard}`}>
-                <span className={styles.popularIcon}>{tool.icon}</span>
-                <span className={styles.popularName}>{tool.name}</span>
-                <span className={styles.popularArrow}>→</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* All Categories */}
-      <section className={`section ${styles.categoriesSection}`}>
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2>🗂️ All 28 Categories</h2>
-            <p>{totalTools} tools organized by what you need</p>
-          </div>
-          <div className={styles.categoryGrid}>
-            {categories.map((cat, i) => (
-              <Link
-                key={cat.slug}
-                href={`/${cat.slug}`}
-                className={`glass-card ${styles.categoryCard} animate-fade-in-up delay-${Math.min(i % 5 + 1, 5)}`}
-              >
-                <div className={styles.categoryIcon}>{cat.icon}</div>
-                <div className={styles.categoryInfo}>
-                  <h3 className={styles.categoryName}>{cat.name}</h3>
-                  <p className={styles.categoryDesc}>{cat.description}</p>
-                </div>
-                <div className={styles.categoryMeta}>
-                  <span className={styles.categoryCount}>{cat.toolCount} tools</span>
-                  <span className={styles.categoryArrow}>→</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Browse by Project */}
-      <section className={`section ${styles.popularSection}`}>
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2>🎨 Browse by Project</h2>
-            <p>Find tools for what you're making</p>
-          </div>
-          <div className={styles.popularGrid}>
-            {[
-              { name: "Quilting", href: "/tools-by-project/quilting", icon: "🧩" },
-              { name: "Garment Sewing", href: "/tools-by-project/garment-sewing", icon: "👗" },
-              { name: "Home Décor", href: "/tools-by-project/home-decor", icon: "🏠" },
-              { name: "Bag Making", href: "/tools-by-project/bag-making", icon: "👜" },
-              { name: "Baby & Kids", href: "/tools-by-project/baby-children", icon: "👶" },
-              { name: "Costume & Cosplay", href: "/tools-by-project/costume-cosplay", icon: "🎭" },
-              { name: "Embroidery", href: "/tools-by-project/embroidery", icon: "🪡" },
-              { name: "Sustainable", href: "/tools-by-project/sustainable", icon: "♻️" },
-            ].map((p, i) => (
-              <Link key={i} href={p.href} className={`glass-card ${styles.popularCard}`}>
-                <span className={styles.popularIcon}>{p.icon}</span>
-                <span className={styles.popularName}>{p.name}</span>
-                <span className={styles.popularArrow}>→</span>
-              </Link>
-            ))}
-          </div>
-          <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-            <Link href="/tools-by-project" className="btn btn-secondary btn-sm">View All Project Types →</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Browse by User */}
-      <section className={`section ${styles.popularSection}`}>
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2>👤 Tools For You</h2>
-            <p>Curated tool sets for your experience level</p>
-          </div>
-          <div className={styles.popularGrid}>
-            {[
-              { name: "Complete Beginners", href: "/tools-by-user/beginners", icon: "🌟" },
-              { name: "Quilters", href: "/tools-by-user/quilters", icon: "🧩" },
-              { name: "Fashion Designers", href: "/tools-by-user/fashion-designers", icon: "👗" },
-              { name: "Etsy Sellers", href: "/tools-by-user/etsy-sellers", icon: "🏪" },
-              { name: "Professionals", href: "/tools-by-user/professionals", icon: "✂️" },
-              { name: "Textile Students", href: "/tools-by-user/students", icon: "📚" },
-            ].map((u, i) => (
-              <Link key={i} href={u.href} className={`glass-card ${styles.popularCard}`}>
-                <span className={styles.popularIcon}>{u.icon}</span>
-                <span className={styles.popularName}>{u.name}</span>
-                <span className={styles.popularArrow}>→</span>
-              </Link>
-            ))}
-          </div>
-          <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-            <Link href="/tools-by-user" className="btn btn-secondary btn-sm">View All User Types →</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Why SewTools */}
-      <section className={`section ${styles.whySection}`}>
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2>✨ Why SewTools?</h2>
-            <p>Built by sewists, for sewists</p>
+            <p className={styles.sectionOverline}>BUILT FOR SEWISTS</p>
+            <h2>Features That Matter</h2>
           </div>
           <div className={styles.featureGrid}>
-            <div className={`glass-card ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>🎯</div>
-              <h3>Precision Math</h3>
-              <p>Every formula verified by experienced quilters and sewists. No rounding errors, no guesswork.</p>
-            </div>
-            <div className={`glass-card ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>📱</div>
-              <h3>Mobile-First</h3>
-              <p>Designed for use at the cutting table. Large buttons, clear results, works on any device.</p>
-            </div>
-            <div className={`glass-card ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>🖨️</div>
-              <h3>Print & Save</h3>
-              <p>Print clean results to take to your sewing room. Save calculations for later reference.</p>
-            </div>
-            <div className={`glass-card ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>🆓</div>
-              <h3>100% Free</h3>
-              <p>No subscriptions, no paywalls, no ads. Every tool is completely free to use, forever.</p>
-            </div>
+            {features.map((feat, i) => {
+              const FeatIcon = feat.icon;
+              return (
+                <div key={i} className={styles.featureCard}>
+                  <div className={styles.featureIcon}>
+                    <FeatIcon size={24} strokeWidth={1.5} />
+                  </div>
+                  <h3>{feat.title}</h3>
+                  <p>{feat.desc}</p>
+                </div>
+              );
+            })}
           </div>
+        </div>
+      </section>
+
+      {/* CTA / Newsletter */}
+      <section className="section">
+        <div className={styles.ctaSection}>
+          <p className={styles.ctaOverline}>STAY UPDATED</p>
+          <h3 className={styles.ctaTitle}>New tools, guides, and tips</h3>
+          <p className={styles.ctaSubtitle}>
+            Join sewists who get our monthly newsletter with new calculator announcements and sewing tips.
+          </p>
+          <div className={styles.ctaForm}>
+            <input type="email" className={styles.ctaInput} placeholder="Your email address" />
+            <button className={styles.ctaButton}>Subscribe</button>
+          </div>
+          <p className={styles.ctaNote}>No spam. Unsubscribe anytime.</p>
         </div>
       </section>
     </>

@@ -1,3 +1,4 @@
+/* === Tool Header === */
 .toolHeader {
     display: flex;
     flex-direction: column;
@@ -7,24 +8,34 @@
 .toolHeader h1 {
     font-size: var(--text-4xl);
     line-height: 1.1;
+    color: var(--color-text-primary);
 }
 
 .toolHeader p {
     font-size: var(--text-lg);
     max-width: 600px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
 }
 
-/* Calculator Card */
-.calculatorCard {
-    padding: var(--space-8);
+/* === Section Titles === */
+.sectionTitle {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin-bottom: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+/* === Calculator Card === */
 .calcTitle {
     font-size: var(--text-xl);
+    font-weight: 600;
     margin-bottom: var(--space-5);
 }
 
-/* Presets */
+/* === Presets === */
 .presets {
     display: flex;
     flex-direction: column;
@@ -34,79 +45,48 @@
 .presetsLabel {
     font-size: var(--text-sm);
     color: var(--color-text-tertiary);
+    font-weight: 500;
 }
 
 .presetGrid {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: 6px;
 }
 
 .presetActive {
-    background: var(--color-accent-glow) !important;
-    color: var(--color-text-accent) !important;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: var(--color-accent-light) !important;
+    color: var(--color-accent-primary) !important;
+    border-color: rgba(0, 128, 96, 0.3) !important;
+    font-weight: 600 !important;
 }
 
-/* Results */
+/* === Results === */
 .results {
-    margin-top: var(--space-6);
     animation: fadeInUp 0.3s ease forwards;
 }
 
 .resultDetails {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    padding: var(--space-4);
-    background: var(--color-bg-tertiary);
+    background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
+    padding: var(--space-2);
+    margin-top: var(--space-4);
 }
 
-.resultRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    border-radius: var(--radius-sm);
-}
-
-.resultRow:hover {
-    background: var(--color-bg-glass-hover);
-}
-
-.resultRow strong {
-    color: var(--color-text-primary);
-    font-family: var(--font-mono);
-}
-
-/* Info Sections */
-.infoSection {
-    padding: var(--space-8);
-}
-
-.infoSection h2 {
-    font-size: var(--text-xl);
-    margin-bottom: var(--space-4);
-}
-
-.steps {
-    padding-left: var(--space-6);
+/* === Steps Grid === */
+.stepsGrid {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-5);
 }
 
-.steps li {
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-}
-
-/* Table */
+/* === Table === */
 .tableWrap {
     overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
 }
 
 .convTable {
@@ -116,39 +96,63 @@
 
 .convTable th {
     text-align: left;
-    padding: var(--space-3) var(--space-4);
+    padding: 12px 16px;
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--color-text-accent);
-    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+    border-bottom: 2px solid var(--color-border);
 }
 
 .convTable td {
-    padding: var(--space-3) var(--space-4);
+    padding: 10px 16px;
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
     border-bottom: 1px solid var(--color-border);
     font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+.convTable tr:last-child td {
+    border-bottom: none;
 }
 
 .convTable tr:hover td {
-    background: var(--color-bg-glass-hover);
+    background: var(--color-bg-secondary);
 }
 
-/* Quick Reference Sidebar */
-.quickRef {
+/* === Educational Grid === */
+.eduGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.eduItem {
     padding: var(--space-5);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
 }
 
-.quickRef h4 {
-    font-size: var(--text-base);
-    margin-bottom: var(--space-4);
+.eduItem h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
 }
 
+.eduItem p {
+    font-size: 14px;
+    color: var(--color-text-tertiary);
+    line-height: 1.6;
+}
+
+/* === Quick Reference Sidebar === */
 .quickRefItem {
     display: flex;
     justify-content: space-between;
-    padding: var(--space-2) 0;
+    padding: 10px 0;
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
     border-bottom: 1px solid var(--color-border);
@@ -159,20 +163,18 @@
 }
 
 .quickRefItem strong {
-    color: var(--color-text-primary);
+    color: var(--color-accent-primary);
     font-family: var(--font-mono);
+    font-size: 13px;
 }
 
+/* === Responsive === */
 @media (max-width: 768px) {
-    .calculatorCard {
-        padding: var(--space-5);
-    }
-
     .toolHeader h1 {
         font-size: var(--text-3xl);
     }
 
-    .infoSection {
-        padding: var(--space-5);
+    .eduGrid {
+        grid-template-columns: 1fr;
     }
 }
