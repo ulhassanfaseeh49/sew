@@ -1,68 +1,186 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Ruler, Copy, Printer, ChevronDown, BookOpen, Grid3X3, ArrowRightLeft } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../yards-to-meters/page.module.css";
 
-const areaUnits = [
-    { key: "sqin", label: "Square Inches", factor: 1 },
-    { key: "sqft", label: "Square Feet", factor: 1 / 144 },
-    { key: "sqcm", label: "Square Centimeters", factor: 6.4516 },
-    { key: "sqm", label: "Square Meters", factor: 0.00064516 },
-    { key: "sqyd", label: "Square Yards", factor: 1 / 1296 },
+const shapes = ["rectangle", "triangle", "circle"] as const;
+type Shape = typeof shapes[number];
+
+const faqItems = [
+    { q: "How do I calculate the area of fabric?", a: "For rectangles: width × length. For triangles: ½ × base × height. For circles: π × radius². This tool handles all the math and converts to every unit." },
+    { q: "How many square inches are in a yard of 44\" fabric?", a: "1 yard of 44\"-wide fabric = 36\" × 44\" = 1,584 square inches. A yard of 60\" fabric = 36\" × 60\" = 2,160 square inches." },
+    { q: "How do I price fabric remnants by area?", a: "Measure the remnant dimensions, calculate the area with this tool, then divide by the price. Compare the per-square-inch cost to new fabric to see if it's a good deal." },
+    { q: "What is the area of a fat quarter?", a: "A fat quarter (18\" × 22\") = 396 square inches, which equals about 2.75 square feet or 0.31 square yards." },
+    { q: "How do I convert square inches to square yards?", a: "Divide square inches by 1,296 (since 36\" × 36\" = 1,296 sq in per sq yd). This tool does this automatically." },
+];
+
+const relatedTools = [
+    { name: "Fat Quarter Calculator", href: "/convert/fat-quarter-calculator", icon: Grid3X3 },
+    { name: "Fabric Width Converter", href: "/convert/fabric-width-universal", icon: ArrowRightLeft },
+    { name: "Yardage Calculator", href: "/yardage/basic-calculator", icon: Ruler },
 ];
 
 export default function FabricAreaCalculatorPage() {
-    const [width, setWidth] = useState("");
-    const [length, setLength] = useState("");
-    const [unit, setUnit] = useState<"in" | "cm">("in");
+    const [shape, setShape] = useState<Shape>("rectangle");
+    const [w, setW] = useState(""); const [h, setH] = useState(""); // rectangle
+    const [base, setBase] = useState(""); const [triH, setTriH] = useState(""); // triangle
+    const [diameter, setDiameter] = useState(""); // circle
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const [copied, setCopied] = useState(false);
 
-    const w = parseFloat(width) || 0;
-    const l = parseFloat(length) || 0;
-    // Convert to sq inches as base
-    const factor = unit === "cm" ? 1 / 2.54 : 1;
-    const wIn = w * factor; const lIn = l * factor;
-    const sqIn = wIn * lIn;
+    let sqIn = 0;
+    if (shape === "rectangle") sqIn = (parseFloat(w) || 0) * (parseFloat(h) || 0);
+    else if (shape === "triangle") sqIn = 0.5 * (parseFloat(base) || 0) * (parseFloat(triH) || 0);
+    else if (shape === "circle") { const r = (parseFloat(diameter) || 0) / 2; sqIn = Math.PI * r * r; }
 
-    const faqItems = [
-        { q: "Why calculate fabric area?", a: "Knowing the total area helps compare fabric amounts across different widths and tells you exactly how much usable fabric you have for irregular-shaped projects." },
-    ];
+    const sqFt = sqIn / 144;
+    const sqYd = sqIn / 1296;
+    const sqCm = sqIn * 6.4516;
+    const sqM = sqCm / 10000;
+    const equivYards44 = sqIn / 1584;
+
+    const handleCopy = useCallback(() => {
+        if (sqIn > 0) {
+            navigator.clipboard.writeText(`Area: ${sqIn.toFixed(1)} sq in (${sqFt.toFixed(2)} sq ft, ${sqYd.toFixed(3)} sq yd, ${sqCm.toFixed(0)} sq cm)`);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
+    }, [sqIn, sqFt, sqYd, sqCm]);
 
     return (
         <div className="container">
             <Breadcrumb items={[{ label: "Conversion Tools", href: "/convert" }, { label: "Fabric Area Calculator" }]} />
-            <div className="calculator-layout">
-                <div className="calculator-main">
-                    <div className={styles.toolHeader}>
-                        <span className="category-badge"><span>📐</span> Conversion Tool #24</span>
-                        <h1>Fabric Area Calculator</h1>
-                        <p>Calculate total fabric area in square inches, square feet, sq cm, or sq meters.</p>
-                    </div>
-                    <div className={`glass-card ${styles.calculatorCard}`}>
-                        <h2 className={styles.calcTitle}>Fabric Dimensions</h2>
-                        <div className="calculator-form">
-                            <div className="input-group">
-                                <label className="input-label">Unit</label>
-                                <select className="input-field" value={unit} onChange={e => setUnit(e.target.value as "in" | "cm")}>
-                                    <option value="in">Inches</option><option value="cm">Centimeters</option>
-                                </select>
+            <div className="calculator-page">
+                <div className="calculator-layout">
+                    <div className="calculator-main">
+                        <div className={styles.toolHeader}>
+                            <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion Tool #24</span>
+                            <h1>Fabric Area Calculator</h1>
+                            <p>Calculate fabric area for rectangles, triangles, and circles — with results in all units plus yardage equivalents.</p>
+                        </div>
+
+                        <div className="calculator-card">
+                            <h2 className={styles.calcTitle}>Calculate Area</h2>
+                            <div className="calculator-form">
+                                <div className="input-group">
+                                    <label className="input-label">Shape</label>
+                                    <div className={styles.presetGrid}>
+                                        {shapes.map(s => (
+                                            <button key={s} className={`btn btn-ghost btn-sm ${shape === s ? styles.presetActive : ""}`} onClick={() => setShape(s)} style={{ textTransform: 'capitalize' }}>{s}</button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {shape === "rectangle" && (
+                                    <div className="calculator-form-row">
+                                        <div className="input-group">
+                                            <label className="input-label" htmlFor="rw">Width (inches)</label>
+                                            <input id="rw" type="number" className="input-field input-mono" placeholder="e.g., 44" value={w} onChange={e => setW(e.target.value)} min="0" step="0.5" autoFocus />
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label" htmlFor="rh">Length (inches)</label>
+                                            <input id="rh" type="number" className="input-field input-mono" placeholder="e.g., 36" value={h} onChange={e => setH(e.target.value)} min="0" step="0.5" />
+                                        </div>
+                                    </div>
+                                )}
+                                {shape === "triangle" && (
+                                    <div className="calculator-form-row">
+                                        <div className="input-group">
+                                            <label className="input-label" htmlFor="tb">Base (inches)</label>
+                                            <input id="tb" type="number" className="input-field input-mono" placeholder="e.g., 10" value={base} onChange={e => setBase(e.target.value)} min="0" step="0.5" autoFocus />
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label" htmlFor="th">Height (inches)</label>
+                                            <input id="th" type="number" className="input-field input-mono" placeholder="e.g., 10" value={triH} onChange={e => setTriH(e.target.value)} min="0" step="0.5" />
+                                        </div>
+                                    </div>
+                                )}
+                                {shape === "circle" && (
+                                    <div className="input-group">
+                                        <label className="input-label" htmlFor="cd">Diameter (inches)</label>
+                                        <input id="cd" type="number" className="input-field input-mono" placeholder="e.g., 12" value={diameter} onChange={e => setDiameter(e.target.value)} min="0" step="0.5" autoFocus />
+                                    </div>
+                                )}
                             </div>
-                            <div className="calculator-form-row">
-                                <div className="input-group"><label className="input-label" htmlFor="w">Width ({unit})</label><input id="w" type="number" className="input-field" placeholder="e.g., 44" value={width} onChange={e => setWidth(e.target.value)} min="0" /></div>
-                                <div className="input-group"><label className="input-label" htmlFor="l">Length ({unit})</label><input id="l" type="number" className="input-field" placeholder="e.g., 36" value={length} onChange={e => setLength(e.target.value)} min="0" /></div>
+
+                            {sqIn > 0 && (
+                                <div className={styles.results}>
+                                    <div className="calculator-divider" />
+                                    <div className="result-card">
+                                        <div className="result-prefix">Total Area</div>
+                                        <div className="result-value">{sqIn.toFixed(1)} sq in</div>
+                                        <div className="result-label">{sqFt.toFixed(2)} sq ft</div>
+                                    </div>
+                                    <div className={styles.resultDetails}>
+                                        <div className="result-row"><span className="result-row-label">Square inches</span><span className="result-row-value">{sqIn.toFixed(1)}</span></div>
+                                        <div className="result-row"><span className="result-row-label">Square feet</span><span className="result-row-value">{sqFt.toFixed(2)}</span></div>
+                                        <div className="result-row"><span className="result-row-label">Square yards</span><span className="result-row-value">{sqYd.toFixed(3)}</span></div>
+                                        <div className="result-row"><span className="result-row-label">Square centimeters</span><span className="result-row-value">{sqCm.toFixed(0)}</span></div>
+                                        <div className="result-row"><span className="result-row-label">Square meters</span><span className="result-row-value">{sqM.toFixed(4)}</span></div>
+                                        <div className="result-row">
+                                            <span className="result-row-label">≈ yards of 44&quot; fabric</span>
+                                            <span className="result-row-value" style={{ fontWeight: 700, color: 'var(--color-accent-primary)' }}>{equivYards44.toFixed(2)} yd</span>
+                                        </div>
+                                    </div>
+                                    <div className="toolbar" style={{ marginTop: 16 }}>
+                                        <button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button>
+                                        <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="calculator-card">
+                            <h2 className={styles.sectionTitle}><BookOpen size={20} strokeWidth={1.5} style={{ color: 'var(--color-accent-primary)' }} /> Reference Points</h2>
+                            <div className={styles.tableWrap}>
+                                <table className={styles.convTable}>
+                                    <thead><tr><th>Reference</th><th>Area</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>1 sq yard</td><td>1,296 sq in</td></tr>
+                                        <tr><td>1 fat quarter</td><td>396 sq in</td></tr>
+                                        <tr><td>1 yard of 44&quot; fabric</td><td>1,584 sq in</td></tr>
+                                        <tr><td>1 yard of 60&quot; fabric</td><td>2,160 sq in</td></tr>
+                                        <tr><td>1 sq meter</td><td>1,550 sq in</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        {sqIn > 0 && (<div className={`calculator-results ${styles.results}`}>
-                            <div className="result-card"><div className="result-value">{sqIn.toFixed(1)} sq in</div><div className="result-label">{w} × {l} {unit}</div></div>
-                            <div className={styles.resultDetails}>
-                                {areaUnits.map(u => (<div key={u.key} className={styles.resultRow}><span>{u.label}</span><strong>{(sqIn * u.factor).toFixed(4)}</strong></div>))}
+
+                        <section className="faq-section">
+                            <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
+                            <div style={{ marginTop: 16 }}>
+                                {faqItems.map((faq, i) => (
+                                    <div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}>
+                                        <button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)} aria-expanded={activeFaq === i}>
+                                            {faq.q}<ChevronDown size={16} className="faq-chevron" />
+                                        </button>
+                                        <div className="faq-answer">{faq.a}</div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(areaUnits.map(u => `${u.label}: ${(sqIn * u.factor).toFixed(4)}`).join('\n'))}>📋 Copy</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}>🖨️ Print</button></div>
-                        </div>)}
+                        </section>
                     </div>
-                    <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+
+                    <aside className="calculator-sidebar">
+                        <div className="related-tools">
+                            <h4>Related Tools</h4>
+                            {relatedTools.map((tool) => {
+                                const IC = tool.icon; return (
+                                    <Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>
+                                );
+                            })}
+                        </div>
+                        <div className="quick-reference">
+                            <h4>Quick Conversions</h4>
+                            <div className={styles.quickRefItem}><span>1 sq yd</span><strong>1,296 sq in</strong></div>
+                            <div className={styles.quickRefItem}><span>1 sq ft</span><strong>144 sq in</strong></div>
+                            <div className={styles.quickRefItem}><span>1 sq m</span><strong>10,000 sq cm</strong></div>
+                        </div>
+                    </aside>
                 </div>
-                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/convert/fabric-width-universal" className="related-tool-link">↔️ Width Converter</a><a href="/cost/per-square-unit" className="related-tool-link">💰 Cost Per Sq Unit</a></div></aside>
             </div>
         </div>
     );

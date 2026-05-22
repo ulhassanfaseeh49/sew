@@ -1,56 +1,167 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Package, Copy, Printer, ChevronDown, BookOpen, Ruler, Info } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../yards-to-meters/page.module.css";
 
-export default function BoltToProjectEstimatorPage() {
-    const [boltYards, setBoltYards] = useState("");
-    const [fabricWidth, setFabricWidth] = useState("44.5");
-    const [projectYards, setProjectYards] = useState("");
-    const [activeFaq, setActiveFaq] = useState<number | null>(null);
-    const bolt = parseFloat(boltYards) || 0; const projY = parseFloat(projectYards) || 0;
-    const projects = projY > 0 ? Math.floor(bolt / projY) : 0;
-    const leftover = projY > 0 ? bolt - (projects * projY) : 0;
+const projectPresets = [
+    { name: "Tote bag", yardage: 1 }, { name: "Pillow cover 18\"", yardage: 0.5 },
+    { name: "Pillowcase (standard)", yardage: 0.625 }, { name: "Quilt block 12\"", yardage: 0.125 },
+    { name: "Apron", yardage: 1.5 }, { name: "Simple dress (size S)", yardage: 3 },
+    { name: "Zipper pouch", yardage: 0.25 }, { name: "Table runner", yardage: 1.5 },
+];
 
-    const faqItems = [
-        { q: "How many projects can I get from a bolt?", a: "Divide the total bolt yardage by the yardage per project. We round down since you can't make a partial project." },
-    ];
+const faqItems = [
+    { q: "How do I calculate items per bolt?", a: "Divide the bolt yardage by the per-item yardage: 15 yd bolt ÷ 1 yd per tote = 15 totes. Then subtract waste (5-10% is typical) to get a realistic count." },
+    { q: "Is buying a full bolt worth it?", a: "Yes, if you're making multiple items! Most stores offer 10-20% off for end-of-bolt purchases. Plus, you guarantee dye-lot consistency across all your items." },
+    { q: "How do I account for waste?", a: "Add 5% for simple rectangular projects, 10% for curved or complex items. This covers cutting waste, selvage trimming, and occasional mistakes." },
+];
+
+const relatedTools = [
+    { name: "Bolt Yardage Calculator", href: "/convert/bolt-yardage-calculator", icon: Package },
+    { name: "Cost Per Yard", href: "/cost/per-yard", icon: Ruler },
+    { name: "Yardage Calculator", href: "/yardage/basic-calculator", icon: Ruler },
+];
+
+export default function BoltToProjectEstimatorPage() {
+    const [boltYardage, setBoltYardage] = useState("");
+    const [projectYardage, setProjectYardage] = useState("");
+    const [projectName, setProjectName] = useState("");
+    const [waste, setWaste] = useState("5");
+    const [sellPrice, setSellPrice] = useState("");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const [copied, setCopied] = useState(false);
+
+    const bolt = parseFloat(boltYardage) || 0;
+    const perItem = parseFloat(projectYardage) || 0;
+    const wastePct = parseFloat(waste) || 0;
+    const price = parseFloat(sellPrice) || 0;
+
+    const effectiveYardage = bolt * (1 - wastePct / 100);
+    const maxItems = perItem > 0 ? Math.floor(effectiveYardage / perItem) : 0;
+    const usedYardage = maxItems * perItem;
+    const leftover = bolt - usedYardage;
+    const revenue = price > 0 ? maxItems * price : 0;
+
+    const handlePreset = (p: typeof projectPresets[0]) => {
+        setProjectName(p.name);
+        setProjectYardage(p.yardage.toString());
+    };
+
+    const handleCopy = useCallback(() => {
+        if (maxItems > 0) {
+            navigator.clipboard.writeText(`${bolt} yd bolt → ${maxItems} × ${projectName || "items"} (${perItem} yd each, ${wastePct}% waste)`);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
+    }, [bolt, maxItems, projectName, perItem, wastePct]);
 
     return (
         <div className="container">
             <Breadcrumb items={[{ label: "Conversion Tools", href: "/convert" }, { label: "Bolt to Project Estimator" }]} />
-            <div className="calculator-layout">
-                <div className="calculator-main">
-                    <div className={styles.toolHeader}>
-                        <span className="category-badge"><span>📦</span> Conversion Tool #22</span>
-                        <h1>Fabric Bolt to Project Estimator</h1>
-                        <p>Given a bolt of X yards, how many projects can you make? Perfect for batch crafting and Etsy sellers.</p>
-                    </div>
-                    <div className={`glass-card ${styles.calculatorCard}`}>
-                        <h2 className={styles.calcTitle}>Estimate Projects</h2>
-                        <div className="calculator-form">
-                            <div className="calculator-form-row">
-                                <div className="input-group"><label className="input-label" htmlFor="bolt">Bolt size (yards)</label><input id="bolt" type="number" className="input-field" placeholder="e.g., 15" value={boltYards} onChange={e => setBoltYards(e.target.value)} min="0" /></div>
-                                <div className="input-group"><label className="input-label" htmlFor="fw">Fabric width</label>
-                                    <select id="fw" className="input-field" value={fabricWidth} onChange={e => setFabricWidth(e.target.value)}>
-                                        <option value="44.5">44/45&quot;</option><option value="60">60&quot;</option><option value="108">108&quot;</option>
-                                    </select>
+            <div className="calculator-page">
+                <div className="calculator-layout">
+                    <div className="calculator-main">
+                        <div className={styles.toolHeader}>
+                            <span className="category-badge"><Package size={14} strokeWidth={1.5} /> Conversion Tool #22</span>
+                            <h1>Bolt to Project Estimator</h1>
+                            <p>How many tote bags, pillows, or dresses from one bolt? Calculate project counts for batch crafting and selling.</p>
+                        </div>
+
+                        <div className="calculator-card">
+                            <h2 className={styles.calcTitle}>Estimate Items</h2>
+                            <div className="calculator-form">
+                                <div className="input-group">
+                                    <label className="input-label" htmlFor="bolt">Total bolt yardage</label>
+                                    <input id="bolt" type="number" className="input-field input-mono" placeholder="e.g., 15" value={boltYardage} onChange={e => setBoltYardage(e.target.value)} min="0" autoFocus />
+                                </div>
+
+                                <div className={styles.presets}>
+                                    <span className={styles.presetsLabel}>Choose a project:</span>
+                                    <div className={styles.presetGrid}>
+                                        {projectPresets.map(p => (
+                                            <button key={p.name} className={`btn btn-ghost btn-sm ${projectName === p.name ? styles.presetActive : ""}`} onClick={() => handlePreset(p)}>{p.name}</button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="calculator-form-row">
+                                    <div className="input-group">
+                                        <label className="input-label" htmlFor="perItem">Yardage per item</label>
+                                        <input id="perItem" type="number" className="input-field input-mono" placeholder="e.g., 1" value={projectYardage} onChange={e => setProjectYardage(e.target.value)} min="0" step="0.125" />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">Waste factor</label>
+                                        <select className="input-field" value={waste} onChange={e => setWaste(e.target.value)}>
+                                            <option value="0">None</option>
+                                            <option value="5">5% (standard)</option>
+                                            <option value="10">10% (generous)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="input-group">
+                                    <label className="input-label" htmlFor="sell">Selling price per item ($, optional)</label>
+                                    <input id="sell" type="number" className="input-field input-mono" placeholder="e.g., 25.00" value={sellPrice} onChange={e => setSellPrice(e.target.value)} min="0" step="0.01" />
                                 </div>
                             </div>
-                            <div className="input-group"><label className="input-label" htmlFor="proj">Yards per project</label><input id="proj" type="number" className="input-field" placeholder="e.g., 2.5" value={projectYards} onChange={e => setProjectYards(e.target.value)} min="0" step="0.125" /></div>
+
+                            {maxItems > 0 && (
+                                <div className={styles.results}>
+                                    <div className="calculator-divider" />
+                                    <div className="result-card">
+                                        <div className="result-prefix">You can make</div>
+                                        <div className="result-value">{maxItems} {projectName || "items"}</div>
+                                        <div className="result-label">from a {bolt} yard bolt ({wastePct}% waste factored)</div>
+                                    </div>
+                                    <div className={styles.resultDetails}>
+                                        <div className="result-row"><span className="result-row-label">Fabric used</span><span className="result-row-value">{usedYardage.toFixed(2)} yd</span></div>
+                                        <div className="result-row"><span className="result-row-label">Leftover</span><span className="result-row-value">{leftover.toFixed(2)} yd</span></div>
+                                        {price > 0 && (
+                                            <div className="result-row"><span className="result-row-label">Potential revenue</span><span className="result-row-value" style={{ fontWeight: 700, color: 'var(--color-accent-primary)' }}>${revenue.toFixed(2)}</span></div>
+                                        )}
+                                    </div>
+                                    <div className="toolbar" style={{ marginTop: 16 }}>
+                                        <button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button>
+                                        <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        {bolt > 0 && projY > 0 && (<div className={`calculator-results ${styles.results}`}>
-                            <div className="result-card"><div className="result-value">{projects} projects</div><div className="result-label">from {bolt} yards of {fabricWidth}&quot;-wide fabric</div></div>
-                            <div className={styles.resultDetails}>
-                                <div className={styles.resultRow}><span>Leftover fabric</span><strong>{leftover.toFixed(2)} yards</strong></div>
-                                <div className={styles.resultRow}><span>Fabric used</span><strong>{(projects * projY).toFixed(2)} yd ({((projects * projY) / bolt * 100).toFixed(1)}%)</strong></div>
+
+                        <section className="faq-section">
+                            <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
+                            <div style={{ marginTop: 16 }}>
+                                {faqItems.map((faq, i) => (
+                                    <div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}>
+                                        <button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)} aria-expanded={activeFaq === i}>
+                                            {faq.q}<ChevronDown size={16} className="faq-chevron" />
+                                        </button>
+                                        <div className="faq-answer">{faq.a}</div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(`${projects} projects from ${bolt} yd bolt (${leftover.toFixed(2)} yd leftover)`)}>📋 Copy</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}>🖨️ Print</button></div>
-                        </div>)}
+                        </section>
                     </div>
-                    <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+
+                    <aside className="calculator-sidebar">
+                        <div className="related-tools">
+                            <h4>Related Tools</h4>
+                            {relatedTools.map((tool) => {
+                                const IC = tool.icon; return (
+                                    <Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>
+                                );
+                            })}
+                        </div>
+                        <div className="quick-reference">
+                            <h4>Quick Estimates (15yd bolt)</h4>
+                            <div className={styles.quickRefItem}><span>Tote bags</span><strong>~14</strong></div>
+                            <div className={styles.quickRefItem}><span>Pillowcases</span><strong>~22</strong></div>
+                            <div className={styles.quickRefItem}><span>Dresses (S)</span><strong>~4</strong></div>
+                        </div>
+                    </aside>
                 </div>
-                <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/convert/bolt-yardage-calculator" className="related-tool-link">🧵 Bolt Yardage</a><a href="/pricing/handmade-pricing" className="related-tool-link">🏷️ Pricing Calculator</a></div></aside>
             </div>
         </div>
     );
