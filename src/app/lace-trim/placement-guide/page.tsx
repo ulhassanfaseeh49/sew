@@ -1,23 +1,56 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { BookOpen, ClipboardCopy, Printer } from "lucide-react";
-export default function Page(){
-const[location,sL]=useState("hem");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const tips:Record<string,string>={hem:"Apply trim along the finished hem edge. Can be topstitched or sandwiched in the hem fold.",yoke:"Insert trim in the yoke seam while sewing. Pin trim to right side of one piece before joining.",collar:"Apply trim to the outer collar edge before attaching to the neckline.",cuff:"Sandwich trim in the cuff seam or topstitch to the finished cuff edge.",center:"Apply along the center front opening overlapping the edge by the trim header width."};const tip=tips[location]||tips.hem;const hasResult=true;const resultValue=location+" trim placement";const resultLabel=tip;
-const faqItems=[{q:"Where should I place trim on a garment?",a:"Common spots: hem, neckline, cuffs, yoke seams, center front, and pocket edges."}];
-return(<div className="container"><Breadcrumb items={[{label:"Lace & Trim",href:"/lace-trim"},{label:"Trim Placement Guide"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} strokeWidth={1.5} /> Trim #330</span><h1>Trim Placement Guide</h1><p>Visual guide for trim placement.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="input-group"><label className="input-label">Placement</label><select className="input-field" value={location} onChange={e=>sL(e.target.value)}><option value="hem">Hem edge</option><option value="yoke">Yoke seam</option><option value="collar">Collar edge</option><option value="cuff">Cuff edge</option><option value="center">Center front</option></select></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/lace-trim" className="related-tool-link"> All Trim</a></div></aside></div></div>);}
+import { useState } from "react";
+import Link from "next/link";
+import { BookOpen, ChevronDown, Scissors, Ruler } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const placements = [
+    { garment: "Dress", positions: ["Hem edge", "Neckline edge", "Sleeve cuff", "Waist seam", "Bodice center panel", "Sleeve panel (insertion)"] },
+    { garment: "Skirt", positions: ["Hem edge", "Waistband top", "Above-hem band (3-6\" up)", "Along seam lines", "Tiered between layers"] },
+    { garment: "Blouse / Top", positions: ["Neckline", "Collar edge", "Cuff edge", "Yoke seam", "Button placket", "Hem edge"] },
+    { garment: "Cushion / Pillow", positions: ["Perimeter edge (piping/fringe)", "Center panel border", "Flange edge", "Between patchwork sections"] },
+    { garment: "Curtain", positions: ["Bottom hem", "Side edges", "Tieback trim", "Across panel (1/3 up)", "Top valance edge"] },
+];
+
+const trimMatch = [
+    { trim: "Lace edging", best: "Hems, necklines, cuffs" },
+    { trim: "Gathered lace", best: "Ruffled edges, baby items, Victorian" },
+    { trim: "Rickrack", best: "Retro, children's, quilts" },
+    { trim: "Piping", best: "Cushions, structured seams" },
+    { trim: "Fringe", best: "Shawls, bohemian, home decor" },
+    { trim: "Pom-pom trim", best: "Children's, boho curtains, tiers" },
+    { trim: "Ribbon", best: "Sashes, edge trim, bows" },
+];
+
+const relatedTools = [
+    { name: "Lace Straight", href: "/lace-trim/lace-straight", icon: Scissors },
+    { name: "Ribbon Calc", href: "/lace-trim/ribbon", icon: Scissors },
+    { name: "Rickrack Calc", href: "/lace-trim/rickrack", icon: Ruler },
+];
+const faqItems = [
+    { q: "Where should I place trim on a dress?", a: "Most common: hem edge. Other options: neckline, cuffs, waist seam, or bodice panel. Use the rule of thirds -- place trim at 1/3 or 2/3 of the garment height." },
+    { q: "How do I avoid over-trimming?", a: "Choose one to two trim types maximum. Keep trim scale proportional to the garment. If using patterned fabric, use simpler trims." },
+    { q: "What trim works best for beginners?", a: "Rickrack (medium size) is the most forgiving trim to work with. It is flexible, easy to sew, and hides small irregularities." },
+];
+
+export default function PlacementGuidePage() {
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Lace & Trim", href: "/lace-trim" }, { label: "Placement Guide" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} strokeWidth={1.5} /> Lace and Trim</span><h1>Trim Placement Guide</h1><p>Visual guide for where to place trim on garments and home decor items.</p></div>
+                {placements.map(p => (<div key={p.garment} className="calculator-card">
+                    <h3 style={{ fontSize: "var(--text-base)", fontWeight: 600, marginBottom: 8 }}>{p.garment}</h3>
+                    <ul style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 2, paddingLeft: 20, margin: 0 }}>{p.positions.map(pos => (<li key={pos}>{pos}</li>))}</ul>
+                </div>))}
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Trim Type Matching</h2>
+                    <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Trim Type</th><th>Best For</th></tr></thead>
+                        <tbody>{trimMatch.map(t => (<tr key={t.trim}><td style={{ fontWeight: 600 }}>{t.trim}</td><td>{t.best}</td></tr>))}</tbody>
+                    </table></div>
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}

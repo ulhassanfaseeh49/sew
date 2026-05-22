@@ -1,49 +1,47 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { BookOpen, ChevronDown, Ruler, Scale } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
-import { ArrowLeftRight, BarChart3, BookOpen, ClipboardCopy, Printer } from "lucide-react";
 
-export default function Page() {
-  const [project,setProject]=useState("garment");
-  const [activeFaq, setActiveFaq] = useState<number|null>(null);
-  const guides: Record<string,{sa:string,cm:string,notes:string}>={garment:{sa:"5/8\"",cm:"1.5 cm",notes:"Standard for most commercial patterns. Allows for fitting adjustments."},quilting:{sa:"1/4\"",cm:"0.6 cm",notes:"Standard for patchwork. Use a quarter-inch presser foot for accuracy."},homedecor:{sa:"1/2\"",cm:"1.3 cm",notes:"Common for pillows, curtains, and home decor items."},bagmaking:{sa:"3/8\" to 1/2\"",cm:"1.0-1.3 cm",notes:"Varies by pattern. Heavier fabrics may use 1/2\"."},dollclothes:{sa:"1/4\"",cm:"0.6 cm",notes:"Small scale requires narrow seam allowances to reduce bulk."},knit:{sa:"1/4\" to 3/8\"",cm:"0.6-1.0 cm",notes:"Narrower because knits stretch. Use a stretch stitch."}};const g=guides[project]||guides.garment;const hasResult=true;const resultValue=g.sa;const resultLabel=project+" standard seam allowance";
+const standards = [
+  { project: "Quilting", sa: '1/4"', metric: "6mm", notes: "Universal quilting standard. Scant 1/4\" (slightly less) is common." },
+  { project: "US garment sewing", sa: '5/8"', metric: "1.5cm", notes: "US commercial pattern standard. Allows finishing, grading, fitting." },
+  { project: "European garments", sa: '1.5 cm', metric: "1.5cm", notes: "European/metric standard. Some patterns: 1cm." },
+  { project: "Japanese patterns", sa: "Varies", metric: "1cm", notes: "Often no SA included — you add your own (typically 1cm seams, 2-3cm hems)." },
+  { project: "Home décor / crafts", sa: '1/2"', metric: "1.3cm", notes: "Common for pillows, bags, accessories." },
+  { project: "Knit garments", sa: '1/4" or 3/8"', metric: "6-10mm", notes: "Narrower SA for stretch. Serged edges don't need wide SA." },
+  { project: "Lingerie", sa: '1/4"', metric: "6mm", notes: "Narrow for comfort. Often serged or overlocked." },
+  { project: "Tailoring / coats", sa: '1"', metric: "2.5cm", notes: "Extra width for pressing open, easing, and alterations." },
+  { project: "Flat-felled seams", sa: '1"', metric: "2.5cm", notes: "Needs extra for folding and enclosing raw edge." },
+  { project: "French seams", sa: '5/8"', metric: "1.5cm", notes: "3/8\" first pass + 1/4\" second pass." },
+];
 
-  const faqItems = [{q:"Can I change the seam allowance on a pattern?",a:"Yes, but you must adjust all pattern pieces consistently and re-mark any notches."}];
+const relatedTools = [
+  { name: "SA Converter", href: "/seam-allowance/converter", icon: Ruler },
+  { name: "SA Comparison", href: "/seam-allowance/comparison", icon: Scale },
+  { name: "French Seam Calc", href: "/seam-allowance/french-seam", icon: Ruler },
+];
+const faqItems = [
+  { q: "Why do different projects use different seam allowances?", a: "Each SA serves the seam type: quilting needs precision (1/4\"), garments need fitting room (5/8\"), tailoring needs pressing/alteration room (1\"). Wider SA uses more fabric but gives more options." },
+  { q: "What if my pattern doesn't specify?", a: "US patterns: assume 5/8\" unless quilting pattern (1/4\"). European: 1.5cm. Japanese: check carefully — many include no SA. When in doubt, measure the pattern piece." },
+  { q: "Can I change the seam allowance?", a: "Yes, but adjust all pieces consistently. Reducing SA saves fabric but limits fitting options. Increasing SA helps with alterations but uses more fabric." },
+];
 
+export default function StandardGuidePage() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
   return (
     <div className="container">
-      <Breadcrumb items={[{label:"Seam Allowance Tools",href:"/seam-allowance"},{label:"Standard Seam Allowance Guide"}]} />
-      <div className="calculator-layout">
-        <div className="calculator-main">
-          <div className={styles.toolHeader}>
-            <span className="category-badge"><BookOpen size={14} strokeWidth={1.5} /> Seam Tool</span>
-            <h1>Standard Seam Allowance Guide</h1>
-            <p>Interactive guide showing standard seam allowances by project type.</p>
-          </div>
-          <div className={`glass-card ${styles.calculatorCard}`}>
-            <h2 className={styles.calcTitle}>Enter Details</h2>
-            <div className="calculator-form">
-              <div className="input-group"><label className="input-label">Project type</label><select className="input-field" value={project} onChange={e=>setProject(e.target.value)}><option value="garment">Garment sewing</option><option value="quilting">Quilting</option><option value="homedecor">Home decor</option><option value="bagmaking">Bag making</option><option value="dollclothes">Doll clothes</option><option value="knit">Knit fabrics</option></select></div>
-            </div>
-            {hasResult && (
-              <div className={`calculator-results ${styles.results}`}>
-                <div className="result-card"><div className="result-value">{resultValue}</div>
-                  <div className="result-label">{resultLabel}</div></div>
-                <div className={styles.resultDetails}>
-                  <div className={styles.resultRow}><span>Imperial</span><strong>{g.sa}</strong></div><div className={styles.resultRow}><span>Metric</span><strong>{g.cm}</strong></div><div className={styles.resultRow}><span>Notes</span><strong style={{fontWeight:"normal",fontSize:"0.85rem"}}>{g.notes}</strong></div>
-                </div>
-                <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
-                </div>
-              </div>
-            )}
-          </div>
-          <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+      <Breadcrumb items={[{ label: "Seam Allowance", href: "/seam-allowance" }, { label: "Standard Guide" }]} />
+      <div className="calculator-layout"><div className="calculator-main">
+        <div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} strokeWidth={1.5} /> Seam Allowance</span><h1>Standard Seam Allowance Guide by Project</h1><p>Interactive reference showing standard seam allowances by project type.</p></div>
+        <div className="calculator-card">
+          <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Project Type</th><th>Standard SA</th><th>Metric</th><th>Notes</th></tr></thead>
+            <tbody>{standards.map(s => (<tr key={s.project}><td style={{ fontWeight: 600 }}>{s.project}</td><td>{s.sa}</td><td>{s.metric}</td><td style={{ fontFamily: "inherit", fontSize: 13 }}>{s.notes}</td></tr>))}</tbody>
+          </table></div>
         </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/comparison" className="related-tool-link"><BarChart3 size={13} /> Comparison</a><a href="/seam-allowance/converter" className="related-tool-link"><ArrowLeftRight size={13} /> Converter</a></div></aside>
-      </div>
-    </div>
-  );
+        <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+      </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+    </div>);
 }

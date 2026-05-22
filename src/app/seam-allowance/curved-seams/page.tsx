@@ -1,49 +1,46 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { Circle, ChevronDown, Ruler, Scissors } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
-import { BookOpen, ClipboardCopy, Printer, Ruler } from "lucide-react";
 
-export default function Page() {
-  const [curveType,setCurveType]=useState("concave");const [sa,setSa]=useState("0.625");
-  const [activeFaq, setActiveFaq] = useState<number|null>(null);
-  const seam=parseFloat(sa)||0.625;const clipSpacing=curveType==="tight"?0.375:curveType==="concave"?0.5:0.75;const trimTo=seam>0.375?seam-0.125:seam;const method=curveType==="concave"?"Clip into SA":"Notch wedges from SA";const hasResult=true;const resultValue=method+" every "+clipSpacing+"\"";const resultLabel=curveType+" curve with "+sa+"\" SA";
+const curves = [
+  { type: "Inward (concave) curve", clip: "Clip perpendicular cuts into SA", spacing: "Every 1/2\" to 1\" depending on curve tightness", notes: "Allows SA to spread open and lie flat" },
+  { type: "Outward (convex) curve", clip: "Notch (V-cuts) to remove excess SA", spacing: "Every 1/2\" to 1\" depending on curve tightness", notes: "Removes bulk so SA can fold smoothly" },
+  { type: "Gentle curve (neckline back)", clip: "Clip at widest points", spacing: "Every 1\" to 1.5\"", notes: "Minimal clipping needed" },
+  { type: "Tight curve (princess seam)", clip: "Clip/notch every 1/2\"", spacing: "Every 1/2\" or closer", notes: "Both sides need treatment — one concave, one convex" },
+  { type: "Corner (right angle)", clip: "Clip diagonally across corner", spacing: "Single clip at corner point", notes: "Clip to within 1-2 threads of stitching" },
+  { type: "Scalloped edge", clip: "Clip into each scallop valley", spacing: "At each valley point", notes: "Clip almost to stitching for clean curves" },
+];
 
-  const faqItems = [{q:"Why clip curves differently?",a:"Concave curves need clips so the SA can spread open. Convex curves need notches so SA can overlap without bunching."}];
+const relatedTools = [
+  { name: "Finish Comparison", href: "/seam-allowance/finish-comparison", icon: Scissors },
+  { name: "SA Grading", href: "/seam-allowance/grading", icon: Ruler },
+  { name: "Standard Guide", href: "/seam-allowance/standard-guide", icon: Ruler },
+];
+const faqItems = [
+  { q: "What is the difference between clipping and notching?", a: "Clipping: single straight cuts into SA on concave (inward) curves — lets SA spread. Notching: V-shaped wedge cuts on convex (outward) curves — removes excess SA bulk." },
+  { q: "How close should I clip to the stitching?", a: "Within 1-2 threads of the stitch line. Too far = curve won't lie flat. Too close = weakens seam. Sharper curves need closer clipping." },
+  { q: "Should I grade curved seam allowances?", a: "Yes, especially on enclosed curves (collars, facings). Trim the inner layer shorter than the outer layer to prevent a ridge showing through." },
+];
 
+export default function CurvedSeamsPage() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
   return (
     <div className="container">
-      <Breadcrumb items={[{label:"Seam Allowance Tools",href:"/seam-allowance"},{label:"Curved Seams Guide"}]} />
-      <div className="calculator-layout">
-        <div className="calculator-main">
-          <div className={styles.toolHeader}>
-            <span className="category-badge"><span></span> Seam Tool</span>
-            <h1>Curved Seams Guide</h1>
-            <p>Guide for grading and clipping seam allowances on curves.</p>
+      <Breadcrumb items={[{ label: "Seam Allowance", href: "/seam-allowance" }, { label: "Curved Seams" }]} />
+      <div className="calculator-layout"><div className="calculator-main">
+        <div className={styles.toolHeader}><span className="category-badge"><Circle size={14} strokeWidth={1.5} /> Seam Allowance</span><h1>Seam Allowance for Curved Seams Guide</h1><p>Guide for clipping and notching seam allowances on curves with spacing recommendations.</p></div>
+        {curves.map(c => (<div key={c.type} className="calculator-card">
+          <h3 style={{ fontSize: "var(--text-base)", fontWeight: 600, marginBottom: 6 }}>{c.type}</h3>
+          <div style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 1.8 }}>
+            <div><strong>Method:</strong> {c.clip}</div>
+            <div><strong>Spacing:</strong> {c.spacing}</div>
+            <div style={{ color: "var(--color-accent)", fontWeight: 500 }}>{c.notes}</div>
           </div>
-          <div className={`glass-card ${styles.calculatorCard}`}>
-            <h2 className={styles.calcTitle}>Enter Details</h2>
-            <div className="calculator-form">
-              <div className="calculator-form-row"><div className="input-group"><label className="input-label">Curve type</label><select className="input-field" value={curveType} onChange={e=>setCurveType(e.target.value)}><option value="concave">Concave (inward, like neckline)</option><option value="convex">Convex (outward, like princess seam)</option><option value="tight">Tight curve (like armhole)</option></select></div><div className="input-group"><label className="input-label">Seam allowance</label><select className="input-field" value={sa} onChange={e=>setSa(e.target.value)}><option value="0.25">1/4&quot;</option><option value="0.375">3/8&quot;</option><option value="0.625">5/8&quot;</option></select></div></div>
-            </div>
-            {hasResult && (
-              <div className={`calculator-results ${styles.results}`}>
-                <div className="result-card"><div className="result-value">{resultValue}</div>
-                  <div className="result-label">{resultLabel}</div></div>
-                <div className={styles.resultDetails}>
-                  <div className={styles.resultRow}><span>Method</span><strong>{method}</strong></div><div className={styles.resultRow}><span>Clip/notch spacing</span><strong>{clipSpacing}&quot; apart</strong></div><div className={styles.resultRow}><span>Trim SA to</span><strong>{trimTo}&quot; to reduce bulk</strong></div><div className={styles.resultRow}><span>Tip</span><strong style={{fontWeight:"normal",fontSize:"0.85rem"}}>{curveType==="concave"?"Clip to (not through) the stitching line":"Cut small V-shaped notches so SA lies flat"}</strong></div>
-                </div>
-                <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
-                </div>
-              </div>
-            )}
-          </div>
-          <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-        </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/grading" className="related-tool-link"><Ruler size={13} /> Grading</a><a href="/seam-allowance/standard-guide" className="related-tool-link"><BookOpen size={13} /> Standard Guide</a></div></aside>
-      </div>
-    </div>
-  );
+        </div>))}
+        <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+      </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+    </div>);
 }

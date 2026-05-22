@@ -1,23 +1,82 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Scissors } from "lucide-react";
-export default function Page(){
-const[fabric,sF]=useState("jersey");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const settings:Record<string,{diff:string,note:string}>={jersey:{diff:"1.3-1.5",note:"Prevents wavy seams on single jersey"},rib:{diff:"1.5-2.0",note:"High setting for stretchy rib knits"},interlock:{diff:"1.0-1.3",note:"Stable knit, minimal adjustment needed"},swimwear:{diff:"1.5-2.0",note:"High differential + use woolly nylon in loopers"},fleece:{diff:"1.0-1.3",note:"Low setting, fleece is stable"}};const s=settings[fabric]||settings.jersey;const hasResult=true;const resultValue="Differential feed: "+s.diff;const resultLabel=s.note;
-const faqItems=[{q:"What is differential feed?",a:"It controls how fast the front and back feed dogs move fabric. Higher = more gathering = less stretching."}];
-return(<div className="container"><Breadcrumb items={[{label:"Stretch",href:"/stretch"},{label:"Differential Feed Calculator"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><span></span> Stretch #306</span><h1>Differential Feed Calculator</h1><p>Serger settings for knits.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="input-group"><label className="input-label">Fabric type</label><select className="input-field" value={fabric} onChange={e=>sF(e.target.value)}><option value="jersey">Jersey</option><option value="rib">Rib knit</option><option value="interlock">Interlock</option><option value="swimwear">Swimwear/lycra</option><option value="fleece">Fleece</option></select></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/stretch" className="related-tool-link"><Scissors size={13} /> All Stretch</a></div></aside></div></div>);}
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Settings, Copy, Printer, ChevronDown, BarChart3, Ruler } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const relatedTools = [
+    { name: "Stitch Length Guide", href: "/stretch/stitch-length", icon: Ruler },
+    { name: "Knit Types", href: "/stretch/knit-type-comparator", icon: BarChart3 },
+    { name: "All Stretch Tools", href: "/stretch", icon: Settings },
+];
+
+const faqItems = [
+    { q: "What is differential feed?", a: "Differential feed is a serger/overlocker feature with two sets of feed dogs that can move at different speeds. When the front feeds faster than the back, fabric gathers. When slower, it stretches." },
+    { q: "What setting for wavy lettuce edges?", a: "Set differential feed to 0.6-0.7 (front slower than back). The fabric stretches as it feeds, creating the distinctive wavy lettuce-edge finish." },
+    { q: "What setting to prevent stretching at seams?", a: "Set differential feed to 1.3-2.0 (front faster than back). This gently gathers the fabric at the feed, counteracting the stretch that sewing naturally creates." },
+];
+
+export default function DifferentialFeedPage() {
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const [copied, setCopied] = useState(false);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Stretch Tools", href: "/stretch" }, { label: "Differential Feed" }]} />
+            <div className="calculator-layout">
+                <div className="calculator-main">
+                    <div className={styles.toolHeader}>
+                        <span className="category-badge"><Settings size={14} strokeWidth={1.5} /> Stretch Tool</span>
+                        <h1>Differential Feed Guide</h1>
+                        <p>Serger/overlocker differential feed settings for perfect knit seams without stretching or puckering.</p>
+                    </div>
+                    <div className="calculator-card">
+                        <h2 className={styles.sectionTitle}>Differential Feed Settings</h2>
+                        <div className={styles.tableWrap}>
+                            <table className={styles.convTable}>
+                                <thead><tr><th>Setting</th><th>Effect</th><th>Best For</th></tr></thead>
+                                <tbody>
+                                    {[
+                                        ["0.6 - 0.7", "Stretches fabric (wavy edge)", "Lettuce edges, decorative effects"],
+                                        ["0.7 - 0.9", "Slight stretch", "Lightweight wovens, gentle wave"],
+                                        ["1.0", "Neutral (no change)", "Stable fabrics, wovens"],
+                                        ["1.0 - 1.3", "Slight gather (prevents stretch)", "Light knits, jersey"],
+                                        ["1.3 - 1.5", "Moderate gather", "Medium knits, interlock"],
+                                        ["1.5 - 2.0", "Strong gather", "Very stretchy knits, swimwear, rib knit"],
+                                    ].map(([s, e, b]) => (
+                                        <tr key={s}><td style={{ fontWeight: 600 }}>{s}</td><td style={{ fontFamily: "inherit" }}>{e}</td><td style={{ fontFamily: "inherit" }}>{b}</td></tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className="calculator-card">
+                        <h2 className={styles.sectionTitle}>Settings by Fabric Type</h2>
+                        <div className={styles.tableWrap}>
+                            <table className={styles.convTable}>
+                                <thead><tr><th>Fabric</th><th>Recommended</th><th>Notes</th></tr></thead>
+                                <tbody>
+                                    {[
+                                        ["Cotton jersey", "1.0 - 1.3", "Light gather prevents wavy seams"],
+                                        ["Interlock", "1.0 - 1.3", "Very stable, minimal adjustment"],
+                                        ["Rib knit", "1.5 - 2.0", "Very stretchy, needs strong gather"],
+                                        ["Lycra/spandex", "1.5 - 2.0", "High stretch, high differential"],
+                                        ["Swimwear", "1.5 - 2.0", "Very stretchy, test on scraps first"],
+                                        ["Ponte", "1.0", "Stable knit, usually neutral"],
+                                        ["French terry", "1.0 - 1.3", "Medium stretch"],
+                                        ["Sweater knit", "1.3 - 1.5", "Watch for stretching"],
+                                    ].map(([f, r, n]) => (
+                                        <tr key={f}><td style={{ fontFamily: "inherit", fontWeight: 500 }}>{f}</td><td style={{ fontWeight: 600 }}>{r}</td><td style={{ fontFamily: "inherit", fontSize: 13 }}>{n}</td></tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+                </div>
+                <aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside>
+            </div>
+        </div>
+    );
+}

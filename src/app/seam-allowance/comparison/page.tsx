@@ -1,49 +1,48 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { Scale, ChevronDown, Ruler, BookOpen } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
-import { ArrowLeftRight, BarChart3, BookOpen, ClipboardCopy, Printer } from "lucide-react";
 
-export default function Page() {
-  
-  const [activeFaq, setActiveFaq] = useState<number|null>(null);
-  const sas=[{name:"1/4\"",inches:0.25,use:"Quilting, doll clothes"},{name:"3/8\"",inches:0.375,use:"Knits, lightweight fabrics"},{name:"1/2\"",inches:0.5,use:"Home decor, casual sewing"},{name:"5/8\"",inches:0.625,use:"Standard garment sewing"},{name:"1\"",inches:1,use:"Coats, tailoring, hems"},{name:"1-1/2\"",inches:1.5,use:"Deep hems, curtain hems"}];const hasResult=true;const resultValue="6 common seam allowances";const resultLabel="comparison reference";
+const comparisons = [
+  { sa: '1/4"', mm: 6.35, when: "Quilting, piecing, narrow finishing", pros: "Precise, minimal fabric use, consistent blocks", cons: "No room for alterations, hard for beginners" },
+  { sa: '3/8"', mm: 9.53, when: "Facings, linings, enclosed seams", pros: "Less bulk than 5/8\", good for lightweight", cons: "Limited alteration room" },
+  { sa: '1/2"', mm: 12.7, when: "Home décor, crafts, simple projects", pros: "Easy to measure, good compromise", cons: "Non-standard for garments" },
+  { sa: '5/8"', mm: 15.88, when: "US garment standard, most commercial patterns", pros: "Room to grade, finish, alter. Industry standard", cons: "More fabric, can add bulk" },
+  { sa: '1"', mm: 25.4, when: "Tailoring, flat-felled, heavy fabrics", pros: "Maximum alteration room, strong seams", cons: "Uses most fabric, bulky in tight areas" },
+];
 
-  const faqItems = [{q:"Which seam allowance should I use?",a:"Follow your patterns instructions. If drafting your own, 5/8 inch is standard for garments, 1/4 inch for quilting."}];
+const relatedTools = [
+  { name: "Standard Guide", href: "/seam-allowance/standard-guide", icon: BookOpen },
+  { name: "SA Converter", href: "/seam-allowance/converter", icon: Ruler },
+  { name: "Finish Comparison", href: "/seam-allowance/finish-comparison", icon: Scale },
+];
+const faqItems = [
+  { q: "Which seam allowance should I use as a beginner?", a: "Start with 5/8\" for garments (the US standard) and 1/4\" for quilting. These are the most common, and most tutorials/patterns assume them." },
+  { q: "Does seam allowance affect fit?", a: "Absolutely. Using the wrong SA changes the finished size. A 1/4\" difference on every seam adds up quickly — potentially a full size difference across a garment." },
+  { q: "Can I mix seam allowances in one project?", a: "Yes, it is common. 5/8\" for main seams, 1/4\" for facings, 1\" for hems. Just mark each piece clearly and be consistent within each seam." },
+];
 
+export default function ComparisonPage() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
   return (
     <div className="container">
-      <Breadcrumb items={[{label:"Seam Allowance Tools",href:"/seam-allowance"},{label:"Seam Allowance Comparison"}]} />
-      <div className="calculator-layout">
-        <div className="calculator-main">
-          <div className={styles.toolHeader}>
-            <span className="category-badge"><BarChart3 size={14} strokeWidth={1.5} /> Seam Tool</span>
-            <h1>Seam Allowance Comparison</h1>
-            <p>Visual comparison of seam allowances and when to use each.</p>
+      <Breadcrumb items={[{ label: "Seam Allowance", href: "/seam-allowance" }, { label: "Comparison" }]} />
+      <div className="calculator-layout"><div className="calculator-main">
+        <div className={styles.toolHeader}><span className="category-badge"><Scale size={14} strokeWidth={1.5} /> Seam Allowance</span><h1>Seam Allowance Comparison Tool</h1><p>Visual comparison of different seam allowances — when to use each one.</p></div>
+        {comparisons.map(c => (<div key={c.sa} className="calculator-card">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <h3 style={{ fontSize: "var(--text-base)", fontWeight: 700 }}>{c.sa}</h3>
+            <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>{c.mm} mm</span>
           </div>
-          <div className={`glass-card ${styles.calculatorCard}`}>
-            <h2 className={styles.calcTitle}>Enter Details</h2>
-            <div className="calculator-form">
-              
-            </div>
-            {hasResult && (
-              <div className={`calculator-results ${styles.results}`}>
-                <div className="result-card"><div className="result-value">{resultValue}</div>
-                  <div className="result-label">{resultLabel}</div></div>
-                <div className={styles.resultDetails}>
-                  {sas.map(s=>(<div key={s.name} className={styles.resultRow}><span>{s.name} ({(s.inches*2.54).toFixed(1)} cm)</span><strong style={{fontWeight:"normal",fontSize:"0.85rem"}}>{s.use}</strong></div>))}
-                </div>
-                <div className="toolbar">
-                  <button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button>
-                </div>
-              </div>
-            )}
+          <p style={{ fontSize: "var(--text-sm)", color: "var(--color-accent)", fontWeight: 500, marginBottom: 4 }}>When: {c.when}</p>
+          <div style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", lineHeight: 1.8 }}>
+            <div>Advantages: {c.pros}</div>
+            <div>Disadvantages: {c.cons}</div>
           </div>
-          <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-        </div>
-        <aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/seam-allowance/standard-guide" className="related-tool-link"><BookOpen size={13} /> Standard Guide</a><a href="/seam-allowance/converter" className="related-tool-link"><ArrowLeftRight size={13} /> Converter</a></div></aside>
-      </div>
-    </div>
-  );
+        </div>))}
+        <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+      </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+    </div>);
 }

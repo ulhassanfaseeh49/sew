@@ -1,23 +1,79 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Shirt } from "lucide-react";
-export default function Page(){
-const[measurement,sM]=useState("");const[shrinkPct,sS]=useState("5");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const m2=parseFloat(measurement)||0;const s=parseFloat(shrinkPct)||5;const adjusted=m2/(1-s/100);const extra=adjusted-m2;const hasResult=m2>0;const resultValue=adjusted.toFixed(2)+"\" adjusted pattern";const resultLabel="add "+extra.toFixed(2)+"\" to compensate for "+s+"% shrinkage";
-const faqItems=[{q:"Should I adjust the pattern or buy extra fabric?",a:"Pre-washing is best. If you cant pre-wash, adjust the pattern by the shrinkage percentage."}];
-return(<div className="container"><Breadcrumb items={[{label:"Shrinkage",href:"/shrinkage"},{label:"Garment Shrinkage Adjuster"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Shirt size={14} strokeWidth={1.5} /> Shrinkage #237</span><h1>Garment Shrinkage Adjuster</h1><p>Pattern size adjustments for expected shrinkage.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Pattern measurement (in)</label><input type="number" className="input-field" placeholder="36" value={measurement} onChange={e=>sM(e.target.value)} min="0"/></div><div className="input-group"><label className="input-label">Expected shrinkage %</label><input type="number" className="input-field" value={shrinkPct} onChange={e=>sS(e.target.value)}/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/shrinkage" className="related-tool-link"> All Shrinkage</a></div></aside></div></div>);}
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Shirt, Copy, Printer, ChevronDown, Droplets, BookOpen } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const measurements = [
+    { key: "bust", label: "Bust/Chest", dir: "cross" },
+    { key: "waist", label: "Waist", dir: "cross" },
+    { key: "hip", label: "Hip", dir: "cross" },
+    { key: "length", label: "Length", dir: "len" },
+    { key: "sleeve", label: "Sleeve Length", dir: "len" },
+];
+
+const relatedTools = [
+    { name: "Pre-Wash Estimator", href: "/shrinkage/pre-wash-estimator", icon: Droplets },
+    { name: "Shrinkage % Calc", href: "/shrinkage/percentage-calculator", icon: Droplets },
+    { name: "Pre-Washing Guide", href: "/shrinkage/pre-washing-guide", icon: BookOpen },
+];
+const faqItems = [
+    { q: "How do I adjust a pattern to account for shrinkage?", a: "Add the shrinkage percentage to each measurement in the appropriate direction. Lengthwise shrinkage affects vertical measurements, crosswise affects horizontal. This calculator does the math for you." },
+    { q: "Is it better to pre-wash or adjust the pattern for shrinkage?", a: "Pre-washing is almost always safer and more accurate. Pattern adjustment is for fabrics that cannot be pre-washed (coated, structured, or when intentional post-construction shrinkage is desired)." },
+    { q: "Can I make a garment slightly large knowing it will shrink?", a: "Yes, but it is risky for fitted garments. Shrinkage is not perfectly uniform — curves and style lines can distort. For simple shapes (T-shirts, pajamas) this works better than for tailored garments." },
+];
+
+export default function GarmentAdjusterPage() {
+    const [lenShrink, setLenShrink] = useState("4"); const [crossShrink, setCrossShrink] = useState("3");
+    const [values, setValues] = useState<Record<string, string>>({});
+    const [activeFaq, setActiveFaq] = useState<number | null>(null); const [copied, setCopied] = useState(false);
+
+    const ls = parseFloat(lenShrink) || 0; const cs = parseFloat(crossShrink) || 0;
+
+    const getAdjusted = (key: string, dir: string) => {
+        const v = parseFloat(values[key] || "") || 0;
+        const pct = dir === "len" ? ls : cs;
+        return v > 0 ? v / (1 - pct / 100) : 0;
+    };
+    const hasResult = Object.values(values).some(v => parseFloat(v) > 0);
+
+    const handleCopy = useCallback(() => {
+        const lines = measurements.filter(m => parseFloat(values[m.key] || "") > 0).map(m => `${m.label}: ${values[m.key]}" desired → ${getAdjusted(m.key, m.dir).toFixed(2)}" cut`);
+        navigator.clipboard.writeText(lines.join("\n")); setCopied(true); setTimeout(() => setCopied(false), 2000);
+    }, [values, ls, cs]);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Shrinkage", href: "/shrinkage" }, { label: "Garment Adjuster" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><Shirt size={14} strokeWidth={1.5} /> Shrinkage</span><h1>Garment Shrinkage Adjuster</h1><p>Calculate pattern adjustments to compensate for post-construction shrinkage.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Shrinkage Rates</h2>
+                    <div className="calculator-form"><div className="calculator-form-row">
+                        <div className="input-group"><label className="input-label">Lengthwise Shrinkage (%)</label><input type="number" className="input-field input-mono" value={lenShrink} onChange={e => setLenShrink(e.target.value)} min="0" max="20" step="0.5" /></div>
+                        <div className="input-group"><label className="input-label">Crosswise Shrinkage (%)</label><input type="number" className="input-field input-mono" value={crossShrink} onChange={e => setCrossShrink(e.target.value)} min="0" max="20" step="0.5" /></div>
+                    </div></div>
+                </div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Desired Finished Measurements (after washing)</h2>
+                    <div className="calculator-form">
+                        {measurements.map(m => (
+                            <div className="input-group" key={m.key}><label className="input-label">{m.label} (inches) — {m.dir === "len" ? "lengthwise" : "crosswise"}</label><input type="number" className="input-field input-mono" placeholder={`Desired finished ${m.label.toLowerCase()}`} value={values[m.key] || ""} onChange={e => setValues(prev => ({ ...prev, [m.key]: e.target.value }))} min="0" step="0.25" /></div>
+                        ))}
+                    </div>
+                    {hasResult && (<div><div className="calculator-divider" />
+                        <h3 style={{ fontSize: "var(--text-base)", fontWeight: 600, marginBottom: 12 }}>Cut to These Measurements</h3>
+                        <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Measurement</th><th>Desired Finish</th><th>Cut To</th><th>Direction</th></tr></thead>
+                            <tbody>{measurements.filter(m => parseFloat(values[m.key] || "") > 0).map(m => {
+                                const v = parseFloat(values[m.key] || "") || 0;
+                                const adj = getAdjusted(m.key, m.dir);
+                                return (<tr key={m.key}><td style={{ fontWeight: 600 }}>{m.label}</td><td>{v}&quot;</td><td style={{ fontWeight: 700, color: "var(--color-accent)" }}>{adj.toFixed(2)}&quot;</td><td>{m.dir === "len" ? `+${ls}% lengthwise` : `+${cs}% crosswise`}</td></tr>);
+                            })}</tbody>
+                        </table></div>
+                        {(ls > 7 || cs > 7) && <p style={{ marginTop: 12, padding: "12px 16px", borderRadius: 8, fontSize: "var(--text-sm)", background: "#fed7aa", color: "#9a3412" }}>At over 7% shrinkage, pre-washing is strongly recommended over pattern adjustment. Adjusting patterns at high shrinkage rates risks distortion of style lines and fit.</p>}
+                        <div className="toolbar" style={{ marginTop: 16 }}><button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button></div>
+                    </div>)}
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}

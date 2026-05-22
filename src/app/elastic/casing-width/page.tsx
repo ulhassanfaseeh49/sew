@@ -1,23 +1,83 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Ruler } from "lucide-react";
-export default function Page(){
-const[elW,sE]=useState("1");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const ew=parseFloat(elW)||1;const casing=ew+0.375;const foldOver=casing+0.625;const hasResult=true;const resultValue=casing.toFixed(3)+"\" casing";const resultLabel="fold "+foldOver.toFixed(3)+"\" total (includes seam allowance)";
-const faqItems=[{q:"Why add ease to the casing?",a:"The elastic needs room to slide and stretch inside the casing. Too tight and it wont gather evenly."}];
-return(<div className="container"><Breadcrumb items={[{label:"Elastic",href:"/elastic"},{label:"Elastic Casing Width"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Elastic #293</span><h1>Elastic Casing Width</h1><p>Casing width from elastic width.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="input-group"><label className="input-label">Elastic width</label><select className="input-field" value={elW} onChange={e=>sE(e.target.value)}><option value="0.25">1/4\"</option><option value="0.375">3/8\"</option><option value="0.5">1/2\"</option><option value="0.75">3/4\"</option><option value="1">1\"</option><option value="1.5">1-1/2\"</option><option value="2">2\"</option></select></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}><div className={styles.resultRow}><span>Elastic</span><strong>{ew}&quot;</strong></div><div className={styles.resultRow}><span>Casing</span><strong>{casing.toFixed(3)}&quot;</strong></div></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/elastic" className="related-tool-link"> All Elastic</a></div></aside></div></div>);}
+import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Ruler, Copy, Printer, ChevronDown, BookOpen } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+
+const easeOpts: Record<string, { label: string; add: number }> = {
+    min: { label: "Minimum (snug)", add: 0.125 },
+    standard: { label: "Standard (smooth)", add: 0.25 },
+    generous: { label: "Generous (easy threading)", add: 0.375 },
+};
+
+const quickRef = [
+    { ew: '1/4"', channel: '3/8"', foldOver: '7/8" - 1"' },
+    { ew: '1/2"', channel: '3/4"', foldOver: '1-1/4" - 1-1/2"' },
+    { ew: '3/4"', channel: '1"', foldOver: '1-1/2" - 1-3/4"' },
+    { ew: '1"', channel: '1-1/4"', foldOver: '1-3/4" - 2"' },
+    { ew: '1-1/2"', channel: '1-3/4"', foldOver: '2-1/4" - 2-1/2"' },
+    { ew: '2"', channel: '2-1/4"', foldOver: '2-3/4" - 3"' },
+];
+
+const relatedTools = [
+    { name: "Waist Elastic Calc", href: "/elastic/waist-calculator", icon: Ruler },
+    { name: "Drawstring Calc", href: "/elastic/drawstring-calculator", icon: Ruler },
+    { name: "Elastic Types Guide", href: "/elastic/types-guide", icon: BookOpen },
+];
+const faqItems = [
+    { q: "How wide should a casing be for elastic?", a: "Elastic width plus 1/4\" ease (standard). Too narrow and elastic bunches; too wide and elastic twists and rolls inside the casing." },
+    { q: "What is the difference between fold-over and sewn-on casing?", a: "Fold-over: the garment edge folds to the inside to form the channel. Sewn-on: a separate strip of fabric is sewn to the garment to create the channel." },
+    { q: "Why does my elastic keep rolling in the casing?", a: "The casing is likely too wide. Reduce ease, or stitch through the casing and elastic at seam points to prevent rotation." },
+];
+
+export default function CasingWidthPage() {
+    const [elasticWidth, setElasticWidth] = useState("1"); const [ease, setEase] = useState("standard");
+    const [construction, setConstruction] = useState("foldOver");
+    const [topSA, setTopSA] = useState("0.25"); const [bottomSA, setBottomSA] = useState("0.25");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null); const [copied, setCopied] = useState(false);
+
+    const ew = parseFloat(elasticWidth) || 1; const ea = easeOpts[ease];
+    const ts = parseFloat(topSA) || 0.25; const bs = parseFloat(bottomSA) || 0.25;
+    const channel = ew + ea.add;
+    const foldOverTotal = channel + ts + bs;
+    const waistbandStrip = (channel * 2) + ts + bs;
+
+    const handleCopy = useCallback(() => { navigator.clipboard.writeText(`Elastic: ${ew}". Channel: ${channel.toFixed(3)}". ${construction === "foldOver" ? `Fold-over: ${foldOverTotal.toFixed(3)}"` : `Waistband strip: ${waistbandStrip.toFixed(3)}" wide`}`); setCopied(true); setTimeout(() => setCopied(false), 2000); }, [ew, channel, construction, foldOverTotal, waistbandStrip]);
+
+    return (
+        <div className="container">
+            <Breadcrumb items={[{ label: "Elastic", href: "/elastic" }, { label: "Casing Width" }]} />
+            <div className="calculator-layout"><div className="calculator-main">
+                <div className={styles.toolHeader}><span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Elastic</span><h1>Elastic Casing Width Calculator</h1><p>Calculate fabric casing width for elastic to slide smoothly without bunching.</p></div>
+                <div className="calculator-card"><h2 className={styles.calcTitle}>Casing Details</h2>
+                    <div className="calculator-form">
+                        <div className="calculator-form-row">
+                            <div className="input-group"><label className="input-label">Elastic Width (inches)</label><input type="number" className="input-field input-mono" value={elasticWidth} onChange={e => setElasticWidth(e.target.value)} min="0.25" step="0.125" /></div>
+                            <div className="input-group"><label className="input-label">Ease</label><select className="input-field" value={ease} onChange={e => setEase(e.target.value)}>{Object.entries(easeOpts).map(([k, v]) => <option key={k} value={k}>{v.label} (+{v.add}&quot;)</option>)}</select></div>
+                        </div>
+                        <div className="input-group"><label className="input-label">Construction</label><select className="input-field" value={construction} onChange={e => setConstruction(e.target.value)}><option value="foldOver">Fold-over casing</option><option value="waistband">Separate waistband strip</option></select></div>
+                        <div className="calculator-form-row">
+                            <div className="input-group"><label className="input-label">Top Seam Allowance</label><select className="input-field" value={topSA} onChange={e => setTopSA(e.target.value)}><option value="0.25">1/4&quot;</option><option value="0.375">3/8&quot;</option><option value="0.5">1/2&quot;</option></select></div>
+                            <div className="input-group"><label className="input-label">Bottom Seam Allowance</label><select className="input-field" value={bottomSA} onChange={e => setBottomSA(e.target.value)}><option value="0.25">1/4&quot;</option><option value="0.375">3/8&quot;</option><option value="0.5">1/2&quot;</option></select></div>
+                        </div>
+                    </div>
+                    <div className="calculator-divider" />
+                    <div className="result-card"><div className="result-prefix">{construction === "foldOver" ? "Total Fabric to Fold Up" : "Cut Waistband Strip"}</div><div className="result-value">{construction === "foldOver" ? foldOverTotal.toFixed(3) : waistbandStrip.toFixed(3)}&quot;</div><div className="result-label">Channel: {channel.toFixed(3)}&quot; ({ew}&quot; elastic + {ea.add}&quot; ease)</div></div>
+                    <div className={styles.resultDetails} style={{ marginTop: 12 }}>
+                        <div className="result-row"><span className="result-row-label">Elastic width</span><span className="result-row-value">{ew}&quot;</span></div>
+                        <div className="result-row"><span className="result-row-label">Ease added</span><span className="result-row-value">+{ea.add}&quot;</span></div>
+                        <div className="result-row"><span className="result-row-label">Channel needed</span><span className="result-row-value">{channel.toFixed(3)}&quot;</span></div>
+                        <div className="result-row"><span className="result-row-label">Stitch casing at</span><span className="result-row-value">{channel.toFixed(3)}&quot; from fold</span></div>
+                    </div>
+                    <div className="toolbar" style={{ marginTop: 16 }}><button className="btn btn-secondary btn-sm" onClick={handleCopy}><Copy size={14} /> {copied ? "Copied!" : "Copy"}</button><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={14} /> Print</button></div>
+                </div>
+                <div className="calculator-card"><h2 className={styles.sectionTitle}>Common Casing Width Reference</h2>
+                    <div className={styles.tableWrap}><table className={styles.convTable}><thead><tr><th>Elastic Width</th><th>Channel</th><th>Fold-Over Total</th></tr></thead>
+                        <tbody>{quickRef.map(r => (<tr key={r.ew}><td style={{ fontWeight: 600 }}>{r.ew}</td><td>{r.channel}</td><td>{r.foldOver}</td></tr>))}</tbody>
+                    </table></div>
+                </div>
+                <section className="faq-section"><h2>Frequently Asked Questions</h2><div className="faq-list">{faqItems.map((faq, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{faq.q}<ChevronDown size={16} className="faq-chevron" /></button><div className="faq-answer">{faq.a}</div></div>))}</div></section>
+            </div><aside className="calculator-sidebar"><div className="related-tools"><h4>Related Tools</h4>{relatedTools.map(tool => { const IC = tool.icon; return (<Link key={tool.href} href={tool.href} className="related-tool-link"><span className="related-tool-icon"><IC size={16} strokeWidth={1.5} /></span>{tool.name}</Link>); })}</div></aside></div>
+        </div>);
+}
