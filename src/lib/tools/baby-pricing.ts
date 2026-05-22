@@ -1,0 +1,35 @@
+export interface BabyKidsTool { id: number; name: string; slug: string; description: string; icon: string; }
+export const babyKidsTools: BabyKidsTool[] = [
+    { id: 386, name: "Baby Quilt Size Guide", slug: "baby-quilt", description: "Dimensions for baby quilts", icon: "🍼" },
+    { id: 387, name: "Receiving Blanket", slug: "receiving-blanket", description: "Fabric for receiving blankets", icon: "👶" },
+    { id: 388, name: "Baby Clothing Yardage", slug: "baby-clothing-yardage", description: "Yardage for baby garments", icon: "👕" },
+    { id: 389, name: "Children's Size Converter", slug: "size-converter", description: "US/UK/EU size conversion", icon: "📏" },
+    { id: 390, name: "Growth Room Calculator", slug: "growth-room", description: "Extra length for growth", icon: "📈" },
+    { id: 391, name: "Baby Bib Calculator", slug: "bib-calculator", description: "Fabric for baby bibs", icon: "🍴" },
+    { id: 392, name: "Burp Cloth Calculator", slug: "burp-cloth", description: "Fabric for burp cloths", icon: "🧻" },
+    { id: 393, name: "Diaper Cover Calculator", slug: "diaper-cover", description: "Fabric for cloth diaper covers", icon: "🩲" },
+    { id: 394, name: "Kids Costume Size", slug: "kids-costume-size", description: "Children's costume fabric", icon: "🎭" },
+    { id: 395, name: "Swaddle Blanket", slug: "swaddle", description: "Muslin swaddle blankets", icon: "🤱" },
+    { id: 396, name: "Baby Shoe/Bootie Size", slug: "baby-shoes", description: "Pattern sizes for baby shoes", icon: "👟" },
+    { id: 397, name: "Crib Sheet Calculator", slug: "crib-sheet", description: "Fitted crib sheets", icon: "🛏️" },
+    { id: 398, name: "Stuffed Animal Size", slug: "stuffed-animal", description: "Fabric for plush toys", icon: "🧸" },
+    { id: 399, name: "Growth Chart by Age", slug: "growth-chart", description: "Body measurements by age", icon: "📊" },
+];
+export interface PricingTool { id: number; name: string; slug: string; description: string; icon: string; }
+export const pricingTools: PricingTool[] = [
+    { id: 400, name: "Handmade Item Pricing", slug: "handmade-pricing", description: "Calculate selling price", icon: "💰" },
+    { id: 401, name: "Cost-Plus Pricing", slug: "cost-plus", description: "Price with profit margin", icon: "📊" },
+    { id: 402, name: "Hourly Rate Calculator", slug: "hourly-rate", description: "Calculate your hourly rate", icon: "⏰" },
+    { id: 403, name: "Material Cost Tracker", slug: "material-tracker", description: "Track material costs", icon: "📋" },
+    { id: 404, name: "Etsy Fee Calculator", slug: "etsy-fees", description: "Calculate Etsy fees and profit", icon: "🏪" },
+    { id: 405, name: "Craft Fair Pricing", slug: "craft-fair", description: "Pricing for craft fairs", icon: "🎪" },
+    { id: 406, name: "Wholesale Pricing", slug: "wholesale", description: "Wholesale price calculator", icon: "📦" },
+    { id: 407, name: "Profit Margin Calculator", slug: "profit-margin", description: "Calculate profit margins", icon: "📈" },
+    { id: 408, name: "Break-Even Calculator", slug: "break-even", description: "Units to break even", icon: "⚖️" },
+    { id: 409, name: "Pricing Comparison", slug: "comparison", description: "Compare pricing strategies", icon: "🔄" },
+    { id: 410, name: "Time Tracking", slug: "time-tracker", description: "Track sewing project time", icon: "⏱️" },
+    { id: 411, name: "Commission Quote", slug: "commission-quote", description: "Custom sewing quotes", icon: "📝" },
+    { id: 412, name: "Shipping Cost Estimator", slug: "shipping-cost", description: "Estimate shipping costs", icon: "📮" },
+    { id: 413, name: "Tax Calculator", slug: "tax-calculator", description: "Sales tax for handmade", icon: "🧾" },
+    { id: 414, name: "Inventory Value", slug: "inventory-value", description: "Calculate inventory value", icon: "📦" },
+];

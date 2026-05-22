@@ -1,0 +1,22 @@
+"use client";
+import{useState}from"react";
+import Breadcrumb from"@/components/ui/Breadcrumb";
+import styles from"../../convert/yards-to-meters/page.module.css";
+export default function Page(){
+const[waist,sW]=useState("");const[type,sT]=useState("knitted");
+const[activeFaq,setActiveFaq]=useState<number|null>(null);
+const w=parseFloat(waist)||0;const pct=type==="braided"?0.8:type==="knitted"?0.85:0.9;const elastic=w*pct+1;const hasResult=w>0;const resultValue=elastic.toFixed(1)+"\" elastic";const resultLabel=Math.round(pct*100)+"% of "+w+"\" + 1\" overlap";
+const faqItems=[{q:"How tight should waist elastic be?",a:"Cut at 80-90% of body measurement depending on elastic type. Always test on your body first."}];
+return(<div className="container"><Breadcrumb items={[{label:"Elastic",href:"/elastic"},{label:"Waist Elastic Calculator"}]}/>
+<div className="calculator-layout"><div className="calculator-main">
+<div className={styles.toolHeader}><span className="category-badge"><span>〰️</span> Elastic #290</span><h1>Waist Elastic Calculator</h1><p>Elastic length for waistbands.</p></div>
+<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
+<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Waist measurement (in)</label><input type="number" className="input-field" placeholder="28" value={waist} onChange={e=>sW(e.target.value)} min="0"/></div><div className="input-group"><label className="input-label">Elastic type</label><select className="input-field" value={type} onChange={e=>sT(e.target.value)}><option value="braided">Braided (80%)</option><option value="knitted">Knitted (85%)</option><option value="woven">Woven (90%)</option></select></div></div></div>
+{hasResult&&(<div className={`calculator-results ${styles.results}`}>
+<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
+<div className={styles.resultDetails}></div>
+<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}>📋 Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button></div>
+</div>)}
+</div>
+<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/elastic" className="related-tool-link">〰️ All Elastic</a></div></aside></div></div>);}

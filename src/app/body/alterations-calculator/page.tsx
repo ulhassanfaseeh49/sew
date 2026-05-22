@@ -1,0 +1,23 @@
+"use client";
+import { useState } from "react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+export default function Page(){
+  const [yourBust,setYourBust]=useState("");const [patBust,setPatBust]=useState("");const [yourWaist,setYourWaist]=useState("");const [patWaist,setPatWaist]=useState("");
+  const [activeFaq,setActiveFaq]=useState<number|null>(null);
+  const yb=parseFloat(yourBust)||0;const pb=parseFloat(patBust)||0;const yw=parseFloat(yourWaist)||0;const pw=parseFloat(patWaist)||0;const bustDiff=yb-pb;const waistDiff=yw-pw;const alts=[];if(Math.abs(bustDiff)>1)alts.push("Bust: "+(bustDiff>0?"+":"")+bustDiff.toFixed(1)+"\"");if(Math.abs(waistDiff)>1)alts.push("Waist: "+(waistDiff>0?"+":"")+waistDiff.toFixed(1)+"\"");const hasResult=yb>0&&pb>0;const resultValue=alts.length>0?alts.length+" alteration(s) needed":"No alterations needed";const resultLabel="pattern fit analysis";
+  const faqItems=[{q:"What alterations are most common?",a:"Bust adjustments (FBA/SBA), waist/hip blending, height adjustments, and shoulder width."}];
+  return(<div className="container"><Breadcrumb items={[{label:"Body Tools",href:"/body"},{label:"Alterations Needed Calculator"}]}/>
+    <div className="calculator-layout"><div className="calculator-main">
+      <div className={styles.toolHeader}><span className="category-badge"><span>✂️</span> Body Tool #123</span><h1>Alterations Needed Calculator</h1><p>Compare your measurements to pattern and list needed alterations.</p></div>
+      <div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
+        <div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Your bust</label><input type="number" className="input-field" placeholder="e.g., 37" value={yourBust} onChange={e=>setYourBust(e.target.value)} min="0" step="0.25"/></div><div className="input-group"><label className="input-label">Pattern bust</label><input type="number" className="input-field" placeholder="e.g., 34" value={patBust} onChange={e=>setPatBust(e.target.value)} min="0" step="0.25"/></div></div><div className="calculator-form-row"><div className="input-group"><label className="input-label">Your waist</label><input type="number" className="input-field" placeholder="e.g., 29" value={yourWaist} onChange={e=>setYourWaist(e.target.value)} min="0" step="0.25"/></div><div className="input-group"><label className="input-label">Pattern waist</label><input type="number" className="input-field" placeholder="e.g., 26.5" value={patWaist} onChange={e=>setPatWaist(e.target.value)} min="0" step="0.25"/></div></div></div>
+        {hasResult&&(<div className={`calculator-results ${styles.results}`}>
+          <div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
+          <div className={styles.resultDetails}>{Math.abs(bustDiff)>0.5&&<div className={styles.resultRow}><span>Bust adjustment</span><strong>{bustDiff>0?"+":""}{bustDiff.toFixed(1)}&quot;</strong></div>}{Math.abs(waistDiff)>0.5&&<div className={styles.resultRow}><span>Waist adjustment</span><strong>{waistDiff>0?"+":""}{waistDiff.toFixed(1)}&quot;</strong></div>}</div>
+          <div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}>📋 Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}>🖨️ Print</button></div>
+        </div>)}
+      </div>
+      <section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+    </div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related Tools</h4><a href="/pattern/full-bust-adjustment" className="related-tool-link">👗 FBA</a><a href="/body/pattern-size-selector" className="related-tool-link">🎯 Size Selector</a></div></aside></div></div>);
+}
