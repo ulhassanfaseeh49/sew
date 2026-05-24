@@ -55,10 +55,9 @@ export default function Footer() {
                                 <div className={styles.linkCol}>
                                     <Link href="/tools-index" className={styles.footerLink}>All Tools</Link>
                                     <Link href="/blog" className={styles.footerLink}>Guides</Link>
-                                    <Link href="/reference/fabric-glossary" className={styles.footerLink}>Glossary</Link>
-                                    <Link href="/printables" className={styles.footerLink}>Printable Sheets</Link>
-                                    <Link href="/reference/standard-size-chart" className={styles.footerLink}>Size Charts</Link>
-                                    <Link href="/suggest-tool" className={styles.footerLink}>Suggest a Tool</Link>
+                                    <Link href="/reference/glossary" className={styles.footerLink}>Glossary</Link>
+                                    <Link href="/reference/clothing-size-charts" className={styles.footerLink}>Size Charts</Link>
+                                    <Link href="/reference/fabric-encyclopedia" className={styles.footerLink}>Fabric Encyclopedia</Link>
                                 </div>
                             </div>
 
@@ -66,12 +65,6 @@ export default function Footer() {
                             <div className={styles.linkRow}>
                                 <div className={styles.linkCol}>
                                     <Link href="/about" className={styles.footerLink}>About</Link>
-                                    <Link href="/contact" className={styles.footerLink}>Contact</Link>
-                                </div>
-                                <div className={styles.linkCol}>
-                                    <Link href="/privacy-policy" className={styles.footerLink}>Privacy Policy</Link>
-                                    <Link href="/terms-of-service" className={styles.footerLink}>Terms of Service</Link>
-                                    <Link href="/accessibility" className={styles.footerLink}>Accessibility</Link>
                                 </div>
                             </div>
                         </div>
