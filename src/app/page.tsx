@@ -3,9 +3,22 @@ import { categories, getTotalToolCount } from "@/lib/categories";
 import {
   Ruler, Grid3X3, Triangle, Scissors, Calculator, Blinds, User,
   CornerDownRight, ArrowRight, Smartphone, Printer, Unlock, Link2,
-  Sparkles, BookOpen
+  BookOpen, ArrowRightLeft, DollarSign, ScissorsLineDashed, Scaling,
+  Slice, Wrench, Shirt, Droplets, PanelTop, Sofa, Ribbon, CircleDot,
+  Zap, Flower2, Sparkles, Theater, CircleDashed, ShoppingBag, Baby,
+  Tag, Weight, Pin, Cpu, Recycle
 } from "lucide-react";
 import styles from "./page.module.css";
+
+const categoryIcons: Record<string, React.ElementType> = {
+  convert: ArrowRightLeft, yardage: Ruler, cost: DollarSign, "seam-allowance": ScissorsLineDashed,
+  pattern: Scaling, body: User, quilt: Grid3X3, cutting: Slice,
+  notions: Wrench, garment: Shirt, shrinkage: Droplets, curtains: PanelTop,
+  "home-decor": Sofa, "bias-binding": Ribbon, elastic: CircleDot, stretch: Zap,
+  embroidery: Flower2, "lace-trim": Sparkles, costume: Theater, skirt: CircleDashed,
+  bags: ShoppingBag, "baby-kids": Baby, pricing: Tag, "fabric-type": Weight,
+  "needles-thread": Pin, machine: Cpu, sustainable: Recycle, reference: BookOpen,
+};
 
 export default function HomePage() {
   const totalTools = getTotalToolCount();
@@ -63,7 +76,7 @@ export default function HomePage() {
             </h1>
             <p className={styles.heroSubtitle}>
               Free calculators for fabric yardage, quilt math, garment fitting,
-              pattern scaling, project costing, and {totalTools - 14}+ more — built for sewists
+              pattern scaling, project costing, and more — {totalTools}+ tools built for sewists
               who measure twice.
             </p>
             <div className={styles.heroActions}>
@@ -71,9 +84,9 @@ export default function HomePage() {
                 Explore All Tools
                 <ArrowRight size={18} />
               </Link>
-              <Link href="/tools-index" className="btn btn-ghost btn-lg">
+              <a href="#categories" className="btn btn-ghost btn-lg">
                 Browse Categories
-              </Link>
+              </a>
             </div>
             <div className={styles.heroStats}>
               {stats.map((stat, i) => (
@@ -148,7 +161,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Grid */}
-      <section className="section section-alt">
+      <section id="categories" className="section section-alt">
         <div className="container">
           <div className={styles.sectionHeader}>
             <p className={styles.sectionOverline}>{categories.length} CATEGORIES</p>
@@ -156,18 +169,21 @@ export default function HomePage() {
             <p>Browse our complete collection of sewing calculators, organized by what you need to calculate.</p>
           </div>
           <div className={styles.categoryGrid}>
-            {categories.map((cat) => (
-              <Link key={cat.slug} href={`/${cat.slug}`} className={styles.categoryCard}>
-                <div className={styles.categoryCardTop}>
-                  <div className={styles.categoryIcon} style={{ background: 'var(--color-accent-light)', color: 'var(--color-accent-primary)' }}>
-                    <Sparkles size={20} strokeWidth={1.5} />
+            {categories.map((cat) => {
+              const CatIcon = categoryIcons[cat.slug] || Scissors;
+              return (
+                <Link key={cat.slug} href={`/${cat.slug}`} className={styles.categoryCard}>
+                  <div className={styles.categoryCardTop}>
+                    <div className={styles.categoryIcon}>
+                      <CatIcon size={20} strokeWidth={1.5} />
+                    </div>
+                    <span className={styles.categoryCount}>{cat.toolCount} tools</span>
                   </div>
-                  <span className={styles.categoryCount}>{cat.toolCount} tools</span>
-                </div>
-                <div className={styles.categoryName}>{cat.name}</div>
-                <p className={styles.categoryDesc}>{cat.description}</p>
-              </Link>
-            ))}
+                  <div className={styles.categoryName}>{cat.name}</div>
+                  <p className={styles.categoryDesc}>{cat.description}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

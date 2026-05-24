@@ -93,14 +93,38 @@ export default function Header() {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
     const [scrolled, setScrolled] = useState(false);
+    const [headerHidden, setHeaderHidden] = useState(false);
     const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const headerRef = useRef<HTMLElement>(null);
+    const lastScrollY = useRef(0);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 8);
+        const handleScroll = () => {
+            const currentY = window.scrollY;
+            setScrolled(currentY > 8);
+
+            // Don't hide when mega menu or mobile menu is open
+            if (activeDropdown || menuOpen) {
+                lastScrollY.current = currentY;
+                return;
+            }
+
+            // Show header at the very top
+            if (currentY < 60) {
+                setHeaderHidden(false);
+            } else if (currentY > lastScrollY.current + 10) {
+                // Scrolling down — hide
+                setHeaderHidden(true);
+            } else if (currentY < lastScrollY.current - 10) {
+                // Scrolling up — show
+                setHeaderHidden(false);
+            }
+
+            lastScrollY.current = currentY;
+        };
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [activeDropdown, menuOpen]);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -157,7 +181,7 @@ export default function Header() {
 
     return (
         <>
-            <header ref={headerRef} className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}>
+            <header ref={headerRef} className={`${styles.header} ${scrolled ? styles.headerScrolled : ""} ${headerHidden ? styles.headerHidden : ""}`}>
                 <div className={styles.headerInner}>
                     <Link href="/" className={styles.logo} onClick={closeAll}>
                         <span className={styles.logoIcon}><Scissors size={22} strokeWidth={1.5} /></span>
