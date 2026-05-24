@@ -1,23 +1,33 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { BookOpen, ClipboardCopy, Printer } from "lucide-react";
-export default function Page(){
-const[from,sF]=useState("yards");const[val,sV]=useState("");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const v=parseFloat(val)||0;const conv:Record<string,{yd:number,m:number,in2:number,cm:number}>={yards:{yd:1,m:0.9144,in2:36,cm:91.44},meters:{yd:1.0936,m:1,in2:39.37,cm:100},inches:{yd:0.02778,m:0.0254,in2:1,cm:2.54},cm:{yd:0.01094,m:0.01,in2:0.3937,cm:1}};const c=conv[from]||conv.yards;const hasResult=v>0;const resultValue=v+" "+from;const resultLabel=(v*c.yd).toFixed(3)+" yd | "+(v*c.m).toFixed(3)+" m | "+(v*c.in2).toFixed(2)+" in | "+(v*c.cm).toFixed(2)+" cm";
-const faqItems=[{q:"What conversion do sewists use most?",a:"Yards to meters (×0.9144) and inches to centimeters (×2.54) are the most common."}];
-return(<div className="container"><Breadcrumb items={[{label:"Reference",href:"/reference"},{label:"Conversion Quick Reference"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><ClipboardCopy size={14} strokeWidth={1.5} /> Ref #466</span><h1>Conversion Quick Reference</h1><p>All-in-one measurement conversions.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">From</label><select className="input-field" value={from} onChange={e=>sF(e.target.value)}><option value="yards">Yards</option><option value="meters">Meters</option><option value="inches">Inches</option><option value="cm">Centimeters</option></select></div><div className="input-group"><label className="input-label">Value</label><input type="number" className="input-field" placeholder="1" value={val} onChange={e=>sV(e.target.value)} min="0" step="0.01"/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/reference" className="related-tool-link"><BookOpen size={13} /> All Reference</a></div></aside></div></div>);}
+import { useState } from "react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+import { BookOpen, Printer } from "lucide-react";
+
+const items = [{"term":"1 yard","def":"36 inches / 91.44 cm"},{"term":"1 meter","def":"39.37 inches / 1.094 yards"},{"term":"1 inch","def":"2.54 cm / 25.4 mm"},{"term":"1/8 inch","def":"3.175 mm"},{"term":"1/4 inch","def":"6.35 mm"},{"term":"3/8 inch","def":"9.525 mm"},{"term":"1/2 inch","def":"12.7 mm"},{"term":"5/8 inch","def":"15.875 mm"},{"term":"3/4 inch","def":"19.05 mm"},{"term":"Fat Quarter","def":"18 x 22 inches"},{"term":"1 oz/yd2","def":"33.906 GSM"}];
+
+export default function Page() {
+    const [search, setSearch] = useState("");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const faqItems = [{"q":"How many inches in a yard?","a":"36 inches = 1 yard. Multiply yards by 36 for inches."}];
+    const filtered = items.filter((item: typeof items[0]) => !search || item.term.toLowerCase().includes(search.toLowerCase()) || item.def.toLowerCase().includes(search.toLowerCase()));
+    return (<div className="container"><Breadcrumb items={[{ label: "Reference", href: "/reference" }, { label: "Conversion Quick Reference" }]} />
+        <div className="calculator-layout"><div className="calculator-main">
+            <div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} /> Ref #466</span><h1>Conversion Quick Reference</h1><p>Quick measurement conversions.</p></div>
+            <div className={`glass-card ${styles.calculatorCard}`}>
+                <div className="input-group"><label className="input-label">Search</label>
+                    <input type="text" className="input-field" placeholder="Type to search..." value={search} onChange={e => setSearch(e.target.value)} /></div>
+            </div>
+            <div className={`glass-card ${styles.calculatorCard}`}>
+                <h2 className={styles.calcTitle}>{filtered.length} entries</h2>
+                {filtered.map((item: typeof items[0], i: number) => (
+                    <div key={i} style={{ padding: "6px 0", borderBottom: i < filtered.length - 1 ? "1px solid hsl(0,0%,92%)" : "none" }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "hsl(200,50%,35%)" }}>{item.term}</div>
+                        <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{item.def}</div>
+                    </div>
+                ))}
+            </div>
+            <div className="toolbar" style={{ marginBottom: 10 }}><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button></div>
+            <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+        </div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/reference" className="related-tool-link">All Reference</a></div></aside></div></div>);
+}

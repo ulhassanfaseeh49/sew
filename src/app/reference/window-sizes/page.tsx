@@ -1,23 +1,33 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { BookOpen, ClipboardCopy, Frame, Printer } from "lucide-react";
-export default function Page(){
-const[type,sT]=useState("double-hung");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const info:Record<string,{common:string,curtain:string}>={["double-hung"]:{common:"24-36\" wide × 36-72\" tall",curtain:"Add 4-8\" each side, extend 4\" above"},casement:{common:"18-36\" wide × 36-72\" tall",curtain:"Must clear the crank mechanism"},picture:{common:"48-96\" wide × 36-60\" tall",curtain:"Wide panels needed, often 2-3x width"},slider:{common:"36-84\" wide × 24-60\" tall",curtain:"One-way draw or center-opening panels"},bay:{common:"60-120\" total × 36-60\" tall",curtain:"Individual panels per section or single curved rod"}};const i2=info[type]||info["double-hung"];const hasResult=true;const resultValue=type+": "+i2.common;const resultLabel=i2.curtain;
-const faqItems=[{q:"How do I measure windows for curtains?",a:"Measure rod width (not window), add 4-8\" per side for coverage. Height from rod to desired length."}];
-return(<div className="container"><Breadcrumb items={[{label:"Reference",href:"/reference"},{label:"Window Size Reference"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Frame size={14} strokeWidth={1.5} /> Ref #471</span><h1>Window Size Reference</h1><p>Common window dimensions.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Details</h2>
-<div className="calculator-form"><div className="input-group"><label className="input-label">Window type</label><select className="input-field" value={type} onChange={e=>sT(e.target.value)}><option value="double-hung">Double hung</option><option value="casement">Casement</option><option value="picture">Picture window</option><option value="slider">Sliding</option><option value="bay">Bay window</option></select></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/reference" className="related-tool-link"><BookOpen size={13} /> All Reference</a></div></aside></div></div>);}
+import { useState } from "react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+import { BookOpen, Printer } from "lucide-react";
+
+const items = [{"term":"Standard single","def":"24x36 to 36x60 inches"},{"term":"Double hung","def":"28x54 to 36x72 inches"},{"term":"Picture window","def":"48x48 to 96x60 inches"},{"term":"Sliding glass door","def":"60x80 to 96x80 inches"},{"term":"Bay window","def":"3 panels, typically 36 inches each"}];
+
+export default function Page() {
+    const [search, setSearch] = useState("");
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const faqItems = [{"q":"How wide should curtains be?","a":"2-2.5x window width for standard fullness. Measure rod, not window."}];
+    const filtered = items.filter((item: typeof items[0]) => !search || item.term.toLowerCase().includes(search.toLowerCase()) || item.def.toLowerCase().includes(search.toLowerCase()));
+    return (<div className="container"><Breadcrumb items={[{ label: "Reference", href: "/reference" }, { label: "Window Size Reference" }]} />
+        <div className="calculator-layout"><div className="calculator-main">
+            <div className={styles.toolHeader}><span className="category-badge"><BookOpen size={14} /> Ref #473</span><h1>Window Size Reference</h1><p>Standard window sizes for curtains.</p></div>
+            <div className={`glass-card ${styles.calculatorCard}`}>
+                <div className="input-group"><label className="input-label">Search</label>
+                    <input type="text" className="input-field" placeholder="Type to search..." value={search} onChange={e => setSearch(e.target.value)} /></div>
+            </div>
+            <div className={`glass-card ${styles.calculatorCard}`}>
+                <h2 className={styles.calcTitle}>{filtered.length} entries</h2>
+                {filtered.map((item: typeof items[0], i: number) => (
+                    <div key={i} style={{ padding: "6px 0", borderBottom: i < filtered.length - 1 ? "1px solid hsl(0,0%,92%)" : "none" }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "hsl(200,50%,35%)" }}>{item.term}</div>
+                        <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{item.def}</div>
+                    </div>
+                ))}
+            </div>
+            <div className="toolbar" style={{ marginBottom: 10 }}><button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button></div>
+            <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+        </div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/reference" className="related-tool-link">All Reference</a></div></aside></div></div>);
+}

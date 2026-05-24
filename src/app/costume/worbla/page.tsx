@@ -1,23 +1,39 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Drama, Flame, Printer } from "lucide-react";
-export default function Page(){
-const[pieces,sP]=useState("");const[avgArea,sA]=useState("80");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const p=parseInt(pieces)||0;const a=parseFloat(avgArea)||80;const totalArea=p*a*1.25;const sheets=Math.ceil(totalArea/(29*19));const hasResult=p>0;const resultValue=sheets+" Worbla sheet(s)";const resultLabel="standard size sheets with 25% waste";
-const faqItems=[{q:"What is Worbla?",a:"A thermoplastic sheet that becomes moldable when heated. It sticks to itself and can be shaped over foam."}];
-return(<div className="container"><Breadcrumb items={[{label:"Costume",href:"/costume"},{label:"Worbla/Thermoplastic"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Flame size={14} strokeWidth={1.5} /> Costume #346</span><h1>Worbla/Thermoplastic</h1><p>Thermoplastic sheet quantity.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Pieces</label><input type="number" className="input-field" placeholder="8" value={pieces} onChange={e=>sP(e.target.value)} min="0"/></div><div className="input-group"><label className="input-label">Avg piece area (sq in)</label><input type="number" className="input-field" value={avgArea} onChange={e=>sA(e.target.value)}/></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/costume" className="related-tool-link"><Drama size={13} /> All Costume</a></div></aside></div></div>);}
+import { useState } from "react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+import { Wand2, ClipboardCopy, Printer } from "lucide-react";
+
+const sizes = [{"k":"small","n":"Small Piece (1 sheet)","sheets":1},{"k":"med","n":"Medium (2 sheets)","sheets":2},{"k":"large","n":"Large (3 sheets)","sheets":3},{"k":"full","n":"Full Armor (5 sheets)","sheets":5}];
+
+export default function Page() {
+    const [sizeKey, setSizeKey] = useState(sizes[0].k);
+    const [qty, setQty] = useState(1);
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const faqItems = [{"q":"Worbla vs EVA foam?","a":"Worbla: heat-activated, self-adhesive, smooth finish, expensive. EVA foam: cheaper, lighter, needs contact cement, needs priming. Many cosplayers use both together."}];
+    const spec = sizes.find((s: typeof sizes[0]) => s.k === sizeKey) || sizes[0];
+    const cost=(spec.sheets*25).toFixed(0);const yd=spec.sheets;
+    return (<div className="container"><Breadcrumb items={[{ label: "Costume", href: "/costume" }, { label: "Worbla/Thermoplastic Calculator" }]} />
+        <div className="calculator-layout"><div className="calculator-main">
+            <div className={styles.toolHeader}><span className="category-badge"><Wand2 size={14} /> Costume #346</span><h1>Worbla/Thermoplastic Calculator</h1><p>Calculate thermoplastic sheets for cosplay.</p></div>
+            <div className={`glass-card ${styles.calculatorCard}`}>
+                <h2 className={styles.calcTitle}>Select Type</h2>
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }}>
+                    {sizes.map((s: typeof sizes[0]) => (<button key={s.k} className={`btn btn-sm ${sizeKey === s.k ? "btn-primary" : "btn-ghost"}`} onClick={() => setSizeKey(s.k)} style={{ fontSize: 10 }}>{s.n}</button>))}
+                </div>
+                
+            </div>
+            <div className={`glass-card ${styles.calculatorCard}`} style={{ borderLeft: "4px solid hsl(280,50%,45%)" }}>
+                <h2 className={styles.calcTitle}>Result</h2>
+                <div style={{ padding: 14, background: "hsl(280,15%,95%)", borderRadius: 10, textAlign: "center" }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "hsl(280,40%,35%)" }}>Estimate</div>
+                    <div style={{fontSize:36,fontWeight:800,color:"hsl(280,50%,30%)"}}>{spec.sheets}</div><div style={{fontSize:10}}>sheets (~${cost})</div>
+                </div>
+            </div>
+            <div className="toolbar" style={{ marginBottom: 10 }}>
+                <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(String(yd))}><ClipboardCopy size={13} /> Copy</button>
+                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button>
+            </div>
+            <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+        </div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/costume" className="related-tool-link">All Costume</a></div></aside></div></div>);
+}

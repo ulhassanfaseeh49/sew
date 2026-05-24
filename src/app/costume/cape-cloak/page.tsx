@@ -1,23 +1,39 @@
 "use client";
-import{useState}from"react";
-import Breadcrumb from"@/components/ui/Breadcrumb";
-import styles from"../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Drama, Printer, Shirt } from "lucide-react";
-export default function Page(){
-const[length,sL]=useState("45");const[style,sS]=useState("full");
-const[activeFaq,setActiveFaq]=useState<number|null>(null);
-const l=parseFloat(length)||45;const mult=style==="full"?2:style==="half"?1.25:0.75;const yd=Math.ceil(l*mult/36*4)/4;const hasResult=true;const resultValue=yd+" yards";const resultLabel=style+" cape, "+l+"\" long";
-const faqItems=[{q:"How long should a cape be?",a:"Waist: 18-20 inches, knee: 35-40 inches, floor: 55-60 inches, with train: 70+ inches."}];
-return(<div className="container"><Breadcrumb items={[{label:"Costume",href:"/costume"},{label:"Cape/Cloak Yardage"}]}/>
-<div className="calculator-layout"><div className="calculator-main">
-<div className={styles.toolHeader}><span className="category-badge"><Shirt size={14} strokeWidth={1.5} /> Costume #340</span><h1>Cape/Cloak Yardage</h1><p>Fabric for capes and cloaks.</p></div>
-<div className={`glass-card ${styles.calculatorCard}`}><h2 className={styles.calcTitle}>Enter Details</h2>
-<div className="calculator-form"><div className="calculator-form-row"><div className="input-group"><label className="input-label">Cape length (in)</label><input type="number" className="input-field" value={length} onChange={e=>sL(e.target.value)}/></div><div className="input-group"><label className="input-label">Style</label><select className="input-field" value={style} onChange={e=>sS(e.target.value)}><option value="half">Half circle</option><option value="full">Full circle</option><option value="capelet">Capelet (short)</option></select></div></div></div>
-{hasResult&&(<div className={`calculator-results ${styles.results}`}>
-<div className="result-card"><div className="result-value">{resultValue}</div><div className="result-label">{resultLabel}</div></div>
-<div className={styles.resultDetails}></div>
-<div className="toolbar"><button className="btn btn-secondary btn-sm" onClick={()=>navigator.clipboard.writeText(resultValue)}><ClipboardCopy size={13} /> Copy</button><button className="btn btn-secondary btn-sm" onClick={()=>window.print()}><Printer size={13} /> Print</button></div>
-</div>)}
-</div>
-<section className="faq-section"><h2>FAQ</h2><div style={{marginTop:"1.5rem"}}>{faqItems.map((f,i)=>(<div key={i} className={`faq-item ${activeFaq===i?"active":""}`}><button className="faq-question" onClick={()=>setActiveFaq(activeFaq===i?null:i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
-</div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/costume" className="related-tool-link"><Drama size={13} /> All Costume</a></div></aside></div></div>);}
+import { useState } from "react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import styles from "../../convert/yards-to-meters/page.module.css";
+import { Wand2, ClipboardCopy, Printer } from "lucide-react";
+
+const sizes = [{"k":"cape","n":"Short Cape (waist)","len":20},{"k":"half","n":"Half Cape (knee)","len":30},{"k":"3q","n":"3/4 Cloak (calf)","len":40},{"k":"full","n":"Full Cloak (floor)","len":54}];
+
+export default function Page() {
+    const [sizeKey, setSizeKey] = useState(sizes[0].k);
+    const [qty, setQty] = useState(1);
+    const [activeFaq, setActiveFaq] = useState<number | null>(null);
+    const faqItems = [{"q":"How much fabric for a cloak?","a":"Short cape: 2 yards. Knee-length: 3-4 yards. Floor-length: 4-6 yards. Add 1 yard for a hood. Use 60-inch wide fabric to minimize seams."}];
+    const spec = sizes.find((s: typeof sizes[0]) => s.k === sizeKey) || sizes[0];
+    const yd=Math.ceil((spec.len*2+10)/36);
+    return (<div className="container"><Breadcrumb items={[{ label: "Costume", href: "/costume" }, { label: "Cape/Cloak Yardage Calculator" }]} />
+        <div className="calculator-layout"><div className="calculator-main">
+            <div className={styles.toolHeader}><span className="category-badge"><Wand2 size={14} /> Costume #340</span><h1>Cape/Cloak Yardage Calculator</h1><p>Calculate fabric for capes and cloaks.</p></div>
+            <div className={`glass-card ${styles.calculatorCard}`}>
+                <h2 className={styles.calcTitle}>Select Type</h2>
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }}>
+                    {sizes.map((s: typeof sizes[0]) => (<button key={s.k} className={`btn btn-sm ${sizeKey === s.k ? "btn-primary" : "btn-ghost"}`} onClick={() => setSizeKey(s.k)} style={{ fontSize: 10 }}>{s.n}</button>))}
+                </div>
+                
+            </div>
+            <div className={`glass-card ${styles.calculatorCard}`} style={{ borderLeft: "4px solid hsl(280,50%,45%)" }}>
+                <h2 className={styles.calcTitle}>Result</h2>
+                <div style={{ padding: 14, background: "hsl(280,15%,95%)", borderRadius: 10, textAlign: "center" }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "hsl(280,40%,35%)" }}>Estimate</div>
+                    <div style={{fontSize:36,fontWeight:800,color:"hsl(280,50%,30%)"}}>{yd}</div><div style={{fontSize:10}}>yards ({spec.len}" length)</div>
+                </div>
+            </div>
+            <div className="toolbar" style={{ marginBottom: 10 }}>
+                <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(String(yd))}><ClipboardCopy size={13} /> Copy</button>
+                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button>
+            </div>
+            <section className="faq-section"><h2>FAQ</h2><div style={{ marginTop: "1.5rem" }}>{faqItems.map((f, i) => (<div key={i} className={`faq-item ${activeFaq === i ? "active" : ""}`}><button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>{f.q}<svg className="faq-chevron" width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></button><div className="faq-answer">{f.a}</div></div>))}</div></section>
+        </div><aside className="calculator-sidebar"><div className="glass-card related-tools"><h4>Related</h4><a href="/costume" className="related-tool-link">All Costume</a></div></aside></div></div>);
+}
