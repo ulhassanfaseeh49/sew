@@ -14,7 +14,7 @@ const products = [
 ];
 const relatedTools = [
     { name: "Interfacing Calc", href: "/notions/interfacing-calculator", icon: Layers },
-    { name: "Stabilizer Calc", href: "/embroidery/stabilizer-selector", icon: Scissors },
+    { name: "Stabilizer Calc", href:  icon: Scissors },
     { name: "Thread Yardage", href: "/notions/thread-yardage", icon: Scissors },
 ];
 const faqItems = [

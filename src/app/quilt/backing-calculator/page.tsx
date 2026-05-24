@@ -615,9 +615,9 @@ export default function Page() {
                         <h4>Related Tools</h4>
                         <a href="/quilt/batting-calculator" className="related-tool-link">Batting Calculator #137</a>
                         <a href="/quilt/binding-calculator" className="related-tool-link">Binding Calculator #138</a>
-                        <a href="/quilt/size-calculator" className="related-tool-link">Quilt Size Calculator #129</a>
+                        <a href="" className="related-tool-link">Quilt Size Calculator #129</a>
                         <a href="/quilt/blocks-needed" className="related-tool-link">Blocks Needed #130</a>
-                        <a href="/quilt/size-calculator" className="related-tool-link">Standard Sizes #133</a>
+                        <a href="" className="related-tool-link">Standard Sizes #133</a>
                         <a href="/quilt" className="related-tool-link">All Quilt Tools</a>
                     </div>
                 </aside>
