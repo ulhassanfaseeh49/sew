@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, Ruler, Plus, Trash2, Info, ChevronDown } from "lucide-react";
+import { ClipboardCopy, Printer, Ruler, Plus, Trash2, Info, ChevronDown, Scaling, List, RotateCcw, Layers } from "lucide-react";
 
 /* ─── constants ─────────────────────────────────────── */
 const FABRIC_WIDTHS = [
@@ -248,7 +248,7 @@ export default function Page() {
                 <div className="calculator-main">
                     {/* HEADER */}
                     <div className={styles.toolHeader}>
-                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Yardage #5</span>
+                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} />Yardage #5</span>
                         <h1>Fabric Yardage Calculator — How Much Fabric Do I Need?</h1>
                         <p>Calculate exactly how much fabric to buy for any sewing project, any fabric width.</p>
                     </div>
@@ -256,10 +256,10 @@ export default function Page() {
                     {/* MODE TABS */}
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
                         {([
-                            { key: "dimensions" as Mode, icon: "📐", label: "I Know My Dimensions" },
-                            { key: "project" as Mode, icon: "👗", label: "Project Reference" },
-                            { key: "reverse" as Mode, icon: "🔄", label: "I Have Fabric" },
-                            { key: "multi" as Mode, icon: "📋", label: "Multi-Fabric" },
+                            { key: "dimensions" as Mode, icon: <Scaling size={14} />, label: "I Know My Dimensions" },
+                            { key: "project" as Mode, icon: <List size={14} />, label: "Project Reference" },
+                            { key: "reverse" as Mode, icon: <RotateCcw size={14} />, label: "I Have Fabric" },
+                            { key: "multi" as Mode, icon: <Layers size={14} />, label: "Multi-Fabric" },
                         ]).map(t => (
                             <button key={t.key}
                                 className={`btn btn-sm ${mode === t.key ? "btn-primary" : "btn-secondary"}`}
@@ -300,8 +300,7 @@ export default function Page() {
                                         </div>
                                     </div>
                                     <div style={{ fontSize: 12, color: "var(--color-text-tertiary)", marginTop: 4 }}>
-                                        <Info size={12} style={{ display: "inline", marginRight: 4 }} />
-                                        Add up all your pieces measured along the length of the fabric.
+                                        <Info size={12} style={{ display: "inline", marginRight: 4 }} />Add up all your pieces measured along the length of the fabric.
                                     </div>
                                 </div>
                             ) : (
@@ -337,7 +336,7 @@ export default function Page() {
                                         </div>
                                     ))}
                                     <button className="btn btn-sm btn-secondary" onClick={addPiece} style={{ gap: 4 }}>
-                                        <Plus size={13} /> Add Piece
+                                        <Plus size={13} />Add Piece
                                     </button>
                                 </div>
                             )}
@@ -361,16 +360,15 @@ export default function Page() {
                             <h2 className={styles.calcTitle}>③ Options</h2>
                             {/* Seam Allowance */}
                             <button className="btn btn-sm btn-secondary" style={{ width: "100%", textAlign: "left", justifyContent: "space-between", marginBottom: showSA ? 10 : 6 }}
-                                onClick={() => setShowSA(!showSA)}>
-                                Seam Allowances {saMode === "add" ? `(+${saVal}")` : "(none)"} <ChevronDown size={14} style={{ transform: showSA ? "rotate(180deg)" : "none", transition: "0.2s" }} />
+                                onClick={() => setShowSA(!showSA)}>Seam Allowances {saMode === "add" ? `(+${saVal}")` : "(none)"} <ChevronDown size={14} style={{ transform: showSA ? "rotate(180deg)" : "none", transition: "0.2s" }} />
                             </button>
                             {showSA && (
                                 <div style={{ padding: "0 8px 12px", display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                                     <label style={{ fontSize: 13, display: "flex", gap: 4, alignItems: "center" }}>
-                                        <input type="radio" checked={saMode === "none"} onChange={() => setSaMode("none")} /> Don&apos;t add
+                                        <input type="radio" checked={saMode === "none"} onChange={() => setSaMode("none")} />Don&apos;t add
                                     </label>
                                     <label style={{ fontSize: 13, display: "flex", gap: 4, alignItems: "center" }}>
-                                        <input type="radio" checked={saMode === "add"} onChange={() => setSaMode("add")} /> Add:
+                                        <input type="radio" checked={saMode === "add"} onChange={() => setSaMode("add")} />Add:
                                     </label>
                                     {saMode === "add" && (
                                         <select className="input-field" style={{ width: "auto", minWidth: 100 }} value={saVal} onChange={e => setSaVal(e.target.value)}>
@@ -384,8 +382,7 @@ export default function Page() {
 
                             {/* Shrinkage */}
                             <button className="btn btn-sm btn-secondary" style={{ width: "100%", textAlign: "left", justifyContent: "space-between", marginBottom: showShrink ? 10 : 6 }}
-                                onClick={() => setShowShrink(!showShrink)}>
-                                Shrinkage Buffer {shrinkType !== "none" ? `(${shrinkPct}%)` : "(none)"} <ChevronDown size={14} style={{ transform: showShrink ? "rotate(180deg)" : "none", transition: "0.2s" }} />
+                                onClick={() => setShowShrink(!showShrink)}>Shrinkage Buffer {shrinkType !== "none" ? `(${shrinkPct}%)` : "(none)"} <ChevronDown size={14} style={{ transform: showShrink ? "rotate(180deg)" : "none", transition: "0.2s" }} />
                             </button>
                             {showShrink && (
                                 <div style={{ padding: "0 8px 12px" }}>
@@ -409,13 +406,12 @@ export default function Page() {
 
                             {/* Pattern Repeat */}
                             <button className="btn btn-sm btn-secondary" style={{ width: "100%", textAlign: "left", justifyContent: "space-between", marginBottom: showRepeat ? 10 : 6 }}
-                                onClick={() => setShowRepeat(!showRepeat)}>
-                                Pattern Repeat {hasRepeat ? `(${repeatV}")` : directional ? `(+${dirExtra}%)` : "(none)"} <ChevronDown size={14} style={{ transform: showRepeat ? "rotate(180deg)" : "none", transition: "0.2s" }} />
+                                onClick={() => setShowRepeat(!showRepeat)}>Pattern Repeat {hasRepeat ? `(${repeatV}")` : directional ? `(+${dirExtra}%)` : "(none)"} <ChevronDown size={14} style={{ transform: showRepeat ? "rotate(180deg)" : "none", transition: "0.2s" }} />
                             </button>
                             {showRepeat && (
                                 <div style={{ padding: "0 8px 12px" }}>
                                     <label style={{ fontSize: 13, display: "flex", gap: 4, alignItems: "center", marginBottom: 6 }}>
-                                        <input type="checkbox" checked={hasRepeat} onChange={e => setHasRepeat(e.target.checked)} /> Has pattern repeat
+                                        <input type="checkbox" checked={hasRepeat} onChange={e => setHasRepeat(e.target.checked)} />Has pattern repeat
                                     </label>
                                     {hasRepeat && (
                                         <div className="input-group" style={{ maxWidth: 200, marginBottom: 8 }}>
@@ -424,7 +420,7 @@ export default function Page() {
                                         </div>
                                     )}
                                     <label style={{ fontSize: 13, display: "flex", gap: 4, alignItems: "center", marginBottom: 6 }}>
-                                        <input type="checkbox" checked={directional} onChange={e => setDirectional(e.target.checked)} /> Directional / one-way fabric
+                                        <input type="checkbox" checked={directional} onChange={e => setDirectional(e.target.checked)} />Directional / one-way fabric
                                     </label>
                                     {directional && (
                                         <div className="input-group" style={{ maxWidth: 200 }}>
@@ -440,8 +436,7 @@ export default function Page() {
 
                             {/* Quantity */}
                             <button className="btn btn-sm btn-secondary" style={{ width: "100%", textAlign: "left", justifyContent: "space-between", marginBottom: showQty ? 10 : 6 }}
-                                onClick={() => setShowQty(!showQty)}>
-                                Quantity {qty > 1 ? `(×${qty})` : "(single)"} <ChevronDown size={14} style={{ transform: showQty ? "rotate(180deg)" : "none", transition: "0.2s" }} />
+                                onClick={() => setShowQty(!showQty)}>Quantity {qty > 1 ? `(×${qty})` : "(single)"} <ChevronDown size={14} style={{ transform: showQty ? "rotate(180deg)" : "none", transition: "0.2s" }} />
                             </button>
                             {showQty && (
                                 <div style={{ padding: "0 8px 12px" }}>
@@ -470,8 +465,7 @@ export default function Page() {
                                         &nbsp;·&nbsp; of {fw}&quot; fabric
                                     </div>
                                 </div>
-                                <div style={{ textAlign: "center", fontSize: 15, fontWeight: 600, color: "var(--color-accent-primary)", margin: "8px 0" }}>
-                                    AT THE STORE: Ask for {toFraction(mode1Result.rounded)} yards
+                                <div style={{ textAlign: "center", fontSize: 15, fontWeight: 600, color: "var(--color-accent-primary)", margin: "8px 0" }}>AT THE STORE: Ask for {toFraction(mode1Result.rounded)} yards
                                 </div>
 
                                 <div className={styles.resultDetails}>
@@ -492,8 +486,7 @@ export default function Page() {
                                     <label style={{ fontSize: 13, color: "var(--color-text-secondary)" }}>Price per yard: $</label>
                                     <input type="number" className="input-field" style={{ width: 80 }} placeholder="0.00"
                                         value={pricePerYd} onChange={e => setPricePerYd(e.target.value)} min={0} step={0.01} />
-                                    {price > 0 && <strong style={{ fontSize: 15, color: "var(--color-accent-primary)" }}>
-                                        Total: ${(mode1Result.rounded * price).toFixed(2)}
+                                    {price > 0 && <strong style={{ fontSize: 15, color: "var(--color-accent-primary)" }}>Total: ${(mode1Result.rounded * price).toFixed(2)}
                                     </strong>}
                                 </div>
 
@@ -516,10 +509,10 @@ export default function Page() {
 
                                 <div className="toolbar" style={{ marginTop: 12 }}>
                                     <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(copyText)}>
-                                        <ClipboardCopy size={13} /> Copy
+                                        <ClipboardCopy size={13} />Copy
                                     </button>
                                     <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>
-                                        <Printer size={13} /> Print
+                                        <Printer size={13} />Print
                                     </button>
                                 </div>
                             </div>
@@ -530,8 +523,7 @@ export default function Page() {
                     {mode === "project" && (
                         <div className={`glass-card ${styles.calculatorCard}`}>
                             <h2 className={styles.calcTitle}>Common Project Yardage at a Glance</h2>
-                            <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", marginBottom: 14 }}>
-                                Industry-standard estimates for 44&quot; and 60&quot; fabric. Use as a sanity check or starting point.
+                            <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", marginBottom: 14 }}>Industry-standard estimates for 44&quot; and 60&quot; fabric. Use as a sanity check or starting point.
                             </p>
                             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
                                 {["All", ...PROJECT_DATA.map(c => c.cat)].map(c => (
@@ -556,8 +548,7 @@ export default function Page() {
                                     </tbody>
                                 </table>
                             </div>
-                            <p style={{ fontSize: 12, color: "var(--color-text-tertiary)", marginTop: 10, fontStyle: "italic" }}>
-                                These are general estimates. For precise calculations, use the &quot;I Know My Dimensions&quot; mode or the specific project calculator.
+                            <p style={{ fontSize: 12, color: "var(--color-text-tertiary)", marginTop: 10, fontStyle: "italic" }}>These are general estimates. For precise calculations, use the &quot;I Know My Dimensions&quot; mode or the specific project calculator.
                             </p>
                         </div>
                     )}
@@ -565,7 +556,7 @@ export default function Page() {
                     {/* ═══ MODE 3: REVERSE ═══ */}
                     {mode === "reverse" && (<>
                         <div className={`glass-card ${styles.calculatorCard}`}>
-                            <h2 className={styles.calcTitle}>🔄 I Have Fabric — What Can I Make?</h2>
+                            <h2 className={styles.calcTitle}>I Have Fabric — What Can I Make?</h2>
                             <div className="calculator-form">
                                 <div className="calculator-form-row">
                                     <div className="input-group" style={{ flex: 2 }}>
@@ -590,12 +581,11 @@ export default function Page() {
                         </div>
                         {reverseResult && (
                             <div className={`glass-card ${styles.calculatorCard}`}>
-                                <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>
-                                    With {toFraction(reverseResult.amtYds)} yards of {FABRIC_WIDTHS[revWidth].label} fabric:
+                                <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>With {toFraction(reverseResult.amtYds)} yards of {FABRIC_WIDTHS[revWidth].label} fabric:
                                 </h3>
                                 {reverseResult.can.length > 0 && (
                                     <div style={{ marginBottom: 16 }}>
-                                        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-accent-primary)", marginBottom: 6 }}>✅ Can Make (comfortably):</div>
+                                        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-accent-primary)", marginBottom: 6 }}>✓ Can Make (comfortably):</div>
                                         <ul style={{ fontSize: 13, lineHeight: 1.8, color: "var(--color-text-secondary)", paddingLeft: 20 }}>
                                             {reverseResult.can.map((it, i) => <li key={i}>{it.name} <span style={{ color: "var(--color-text-tertiary)", fontSize: 11 }}>({it.cat})</span></li>)}
                                         </ul>
@@ -603,7 +593,7 @@ export default function Page() {
                                 )}
                                 {reverseResult.tight.length > 0 && (
                                     <div style={{ marginBottom: 16 }}>
-                                        <div style={{ fontSize: 14, fontWeight: 600, color: "#e67e22", marginBottom: 6 }}>⚠️ Might Work (tight — measure carefully):</div>
+                                        <div style={{ fontSize: 14, fontWeight: 600, color: "#e67e22", marginBottom: 6 }}>⚠ Might Work (tight — measure carefully):</div>
                                         <ul style={{ fontSize: 13, lineHeight: 1.8, color: "var(--color-text-secondary)", paddingLeft: 20 }}>
                                             {reverseResult.tight.map((it, i) => <li key={i}>{it.name}</li>)}
                                         </ul>
@@ -611,7 +601,7 @@ export default function Page() {
                                 )}
                                 {reverseResult.no.length > 0 && (
                                     <div>
-                                        <div style={{ fontSize: 14, fontWeight: 600, color: "hsl(0,60%,50%)", marginBottom: 6 }}>❌ Not Enough For:</div>
+                                        <div style={{ fontSize: 14, fontWeight: 600, color: "hsl(0,60%,50%)", marginBottom: 6 }}>✗ Not Enough For:</div>
                                         <ul style={{ fontSize: 13, lineHeight: 1.8, color: "var(--color-text-tertiary)", paddingLeft: 20 }}>
                                             {reverseResult.no.slice(0, 10).map((it, i) => <li key={i}>{it.name}</li>)}
                                             {reverseResult.no.length > 10 && <li>...and {reverseResult.no.length - 10} more</li>}
@@ -625,12 +615,10 @@ export default function Page() {
                     {/* ═══ MODE 4: MULTI-FABRIC (placeholder) ═══ */}
                     {mode === "multi" && (
                         <div className={`glass-card ${styles.calculatorCard}`}>
-                            <h2 className={styles.calcTitle}>📋 Multi-Fabric Project Planner</h2>
-                            <p style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: 1.7 }}>
-                                Plan a complete multi-fabric project — main fabric + lining + interfacing + contrast — with a full shopping list and cost breakdown.
+                            <h2 className={styles.calcTitle}>Multi-Fabric Project Planner</h2>
+                            <p style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: 1.7 }}>Plan a complete multi-fabric project — main fabric + lining + interfacing + contrast — with a full shopping list and cost breakdown.
                             </p>
-                            <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", fontStyle: "italic", marginTop: 12 }}>
-                                Advanced multi-fabric planner coming soon. For now, use the &quot;I Know My Dimensions&quot; mode to calculate each fabric individually.
+                            <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", fontStyle: "italic", marginTop: 12 }}>Advanced multi-fabric planner coming soon. For now, use the &quot;I Know My Dimensions&quot; mode to calculate each fabric individually.
                             </p>
                         </div>
                     )}

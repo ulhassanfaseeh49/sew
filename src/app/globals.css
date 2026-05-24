@@ -26,18 +26,18 @@
   --color-accent-dark: #004c3f;
   --color-accent-glow: rgba(0, 128, 96, 0.08);
 
-  /* Gradients */
-  --gradient-accent: linear-gradient(135deg, #008060, #0EA5A0);
-  --gradient-accent-hover: linear-gradient(135deg, #006B50, #008060);
-  --gradient-hero: radial-gradient(ellipse at 50% 0%, rgba(0, 128, 96, 0.06) 0%, transparent 60%);
+  /* Accent Solids */
+  --gradient-accent: #008060;
+  --gradient-accent-hover: #006B50;
+  --gradient-hero: transparent;
 
-  /* Text Colors — Ink System (High Contrast) */
+  /* Text Colors — Ink System (Maximum Contrast) */
   --color-text-primary: #0F1729;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #94A3B8;
-  --color-text-accent: #008060;
+  --color-text-secondary: #334155;
+  --color-text-tertiary: #64748B;
+  --color-text-accent: #006B50;
   --color-text-inverse: #FFFFFF;
-  --color-text-muted: #94A3B8;
+  --color-text-muted: #64748B;
 
   /* Semantic Colors */
   --color-success: #059669;
@@ -142,7 +142,7 @@ body {
   font-family: var(--font-body);
   font-size: var(--text-base);
   font-weight: 400;
-  background: var(--color-bg-primary);
+  background: #F5F5F4;
   color: var(--color-text-primary);
   line-height: 1.7;
   min-height: 100vh;
@@ -274,6 +274,66 @@ a:hover {
   border-color: var(--color-border-hover);
   box-shadow: var(--shadow-md);
 }
+
+/* --- Glass Card as Collapsible Toggle Container --- */
+/* Targets glass-cards whose first child is a full-width btn-secondary toggle */
+.glass-card:has(> .btn-secondary:first-child) {
+  padding: 0;
+  border-radius: 14px;
+  border-left: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.glass-card:has(> .btn-secondary:first-child):hover {
+  border-color: rgba(0, 128, 96, 0.25);
+  border-left-color: var(--color-accent-primary);
+  box-shadow: 0 4px 16px rgba(0, 128, 96, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.glass-card>.btn-secondary:first-child {
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  transition: all 0.25s ease;
+  border-left: 3px solid transparent;
+  margin-left: -3px;
+  height: auto;
+}
+
+.glass-card>.btn-secondary:first-child:hover {
+  background: var(--color-accent-light);
+  border-left-color: var(--color-accent-primary);
+}
+
+/* Chevron icon inside toggle buttons — circular pill */
+.glass-card>.btn-secondary:first-child svg {
+  width: 28px;
+  height: 28px;
+  padding: 7px;
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.glass-card>.btn-secondary:first-child:hover svg {
+  background: var(--color-accent-light);
+  color: var(--color-accent-primary);
+}
+
+/* Content area inside collapsible glass-card */
+.glass-card:has(> .btn-secondary:first-child)>div:not(:first-child) {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--color-accent-subtle);
+}
+
 
 /* --- Buttons (Spec System) --- */
 .btn {
@@ -582,7 +642,7 @@ select.input-field {
   display: inline-block;
   width: 4px;
   height: 24px;
-  background: var(--gradient-accent);
+  background: var(--color-accent-primary);
   border-radius: 4px;
   flex-shrink: 0;
 }
@@ -604,7 +664,7 @@ select.input-field {
   inset: 0;
   border-radius: 12px;
   opacity: 0;
-  background: linear-gradient(135deg, rgba(0, 128, 96, 0.03), rgba(14, 165, 160, 0.02));
+  background: rgba(0, 128, 96, 0.02);
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
@@ -624,7 +684,7 @@ select.input-field {
   border-color: rgba(0, 128, 96, 0.3);
   border-left-color: var(--color-accent-primary);
   box-shadow: 0 4px 20px rgba(0, 128, 96, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
-  background: linear-gradient(135deg, rgba(236, 253, 245, 0.5), var(--color-bg-primary));
+  background: rgba(236, 253, 245, 0.5);
 }
 
 .faq-question {
@@ -699,6 +759,104 @@ select.input-field {
   transform: rotate(180deg);
   background: var(--color-accent-primary);
   color: white;
+}
+
+/* --- Collapsible Panel (Premium Expandable Section) --- */
+.collapsible-panel {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 12px;
+}
+
+.collapsible-panel:hover {
+  border-color: rgba(0, 128, 96, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 128, 96, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.collapsible-panel.open {
+  border-color: rgba(0, 128, 96, 0.3);
+  box-shadow: 0 6px 24px rgba(0, 128, 96, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.collapsible-panel-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  gap: 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: left;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.collapsible-panel-toggle:hover {
+  background: var(--color-accent-light);
+  border-left-color: var(--color-accent-primary);
+}
+
+.collapsible-panel.open .collapsible-panel-toggle {
+  background: rgba(236, 253, 245, 0.5);
+  border-left-color: var(--color-accent-primary);
+  color: var(--color-accent-dark);
+  border-bottom: 1px solid var(--color-accent-subtle);
+}
+
+.collapsible-panel-toggle .panel-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.collapsible-panel-toggle .panel-chevron {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.collapsible-panel:hover .panel-chevron {
+  background: var(--color-accent-light);
+  color: var(--color-accent-primary);
+}
+
+.collapsible-panel.open .panel-chevron {
+  transform: rotate(180deg);
+  background: var(--color-accent-primary);
+  color: white;
+}
+
+.collapsible-panel-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.collapsible-panel.open .collapsible-panel-body {
+  max-height: 2000px;
+  opacity: 1;
+}
+
+.collapsible-panel-content {
+  padding: 16px 20px 20px;
 }
 
 /* --- Toolbar (Copy/Print) --- */

@@ -111,7 +111,7 @@ export default function MetersToYardsPage() {
             <div className="calculator-layout">
                 <div className="calculator-main">
                     <div className={styles.toolHeader}>
-                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Conversion #2</span>
+                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} />Conversion #2</span>
                         <h1>Meters to Yards Converter for Fabric &amp; Sewing</h1>
                         <p>Convert fabric meters to yards with sewing fraction display, European &amp; Japanese pattern presets, and a &quot;buy this much&quot; recommendation. The only converter built specifically for sewists.</p>
                     </div>
@@ -166,8 +166,7 @@ export default function MetersToYardsPage() {
                                             onClick={() => setMeters(v.toString())} style={{ fontSize: 10 }}>{v}m</button>
                                     ))}
                                 </div>
-                                <div style={{ fontSize: 10, color: "var(--color-text-tertiary)", marginTop: 4 }}>
-                                    Japanese fabric is often 110cm (43&quot;) wide. Amounts may differ from wider European patterns.
+                                <div style={{ fontSize: 10, color: "var(--color-text-tertiary)", marginTop: 4 }}>Japanese fabric is often 110cm (43&quot;) wide. Amounts may differ from wider European patterns.
                                     → <Link href="/convert/fabric-width-36-to-45" style={{ color: "var(--color-accent-primary)" }}>Fabric Width Converter</Link>
                                 </div>
                             </>}
@@ -178,7 +177,7 @@ export default function MetersToYardsPage() {
                             <div className="calculator-divider" />
 
                             {/* Primary result */}
-                            <div className="result-card" style={{ textAlign: "center", padding: 24, background: "linear-gradient(135deg, hsl(150,20%,98%), hsl(170,15%,96%))" }}>
+                            <div className="result-card" style={{ textAlign: "center", padding: 24, background: "hsl(150,20%,97%)" }}>
                                 <div className="result-prefix" style={{ fontSize: 14 }}>{m} meter{m !== 1 ? "s" : ""} =</div>
                                 <div className="result-value" style={{ fontSize: 40 }}>{fracYd(yd)} yards</div>
                                 <div className="result-label" style={{ fontSize: 14 }}>({yd.toFixed(4)} yards exact)</div>
@@ -235,8 +234,7 @@ export default function MetersToYardsPage() {
 
                             {/* All conversions */}
                             <div style={{ marginTop: 10 }}>
-                                <button className="btn btn-sm btn-ghost" onClick={() => setShowAllConv(!showAllConv)} style={{ width: "100%", justifyContent: "space-between", fontSize: 11 }}>
-                                    📏 All Conversions & Fabric Area
+                                <button className="btn btn-sm btn-ghost" onClick={() => setShowAllConv(!showAllConv)} style={{ width: "100%", justifyContent: "space-between", fontSize: 11 }}>All Conversions & Fabric Area
                                     <ChevronDown size={12} style={{ transform: showAllConv ? "rotate(180deg)" : "none", transition: ".2s" }} />
                                 </button>
                                 {showAllConv && (
@@ -259,12 +257,12 @@ export default function MetersToYardsPage() {
                             {/* Actions */}
                             <div className="toolbar" style={{ marginTop: 12 }}>
                                 <button className="btn btn-secondary btn-sm" onClick={() => handleCopy(`${m} meters = ${yd.toFixed(4)} yards (≈ ${fracYd(yd)} yd). Buy: ${fracYd(buyAmt)} yards.`, "result")}>
-                                    <Copy size={13} /> {copied === "result" ? "Copied!" : "Copy"}
+                                    <Copy size={13} />{copied === "result" ? "Copied!" : "Copy"}
                                 </button>
                                 <button className="btn btn-secondary btn-sm" onClick={() => handleCopy(`Buy ${fracYd(buyAmt)} yards`, "buy")}>
-                                    <ShoppingBag size={13} /> {copied === "buy" ? "Copied!" : "Copy Buy Amount"}
+                                    <ShoppingBag size={13} />{copied === "buy" ? "Copied!" : "Copy Buy Amount"}
                                 </button>
-                                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} />Print</button>
                                 <button className="btn btn-secondary btn-sm" onClick={() => setMeters("")}>Clear</button>
                             </div>
 
@@ -280,8 +278,7 @@ export default function MetersToYardsPage() {
                     {/* ═══ WHAT CAN YOU MAKE? ═══ */}
                     {context && (
                         <div className={`glass-card ${styles.calculatorCard}`}>
-                            <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowContext(!showContext)}>
-                                🧵 What Can You Make with {m}m ({fracYd(yd)} yd)?
+                            <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowContext(!showContext)}>What Can You Make with {m}m ({fracYd(yd)} yd)?
                                 <ChevronDown size={14} style={{ transform: showContext ? "rotate(180deg)" : "none", transition: ".2s" }} />
                             </button>
                             {showContext && (
@@ -290,8 +287,7 @@ export default function MetersToYardsPage() {
                                     <ul style={{ paddingLeft: 18, fontSize: 12, lineHeight: 2 }}>
                                         {context.items.map((item, i) => <li key={i}>{item}</li>)}
                                     </ul>
-                                    <div style={{ fontSize: 11, color: "var(--color-text-tertiary)", marginTop: 6 }}>
-                                        Based on 44/45&quot; wide fabric. Wider fabric yields more from the same length.
+                                    <div style={{ fontSize: 11, color: "var(--color-text-tertiary)", marginTop: 6 }}>Based on 44/45&quot; wide fabric. Wider fabric yields more from the same length.
                                     </div>
                                 </div>
                             )}
@@ -325,8 +321,7 @@ export default function MetersToYardsPage() {
 
                     {/* ═══ INTERNATIONAL PATTERN GUIDE ═══ */}
                     <div className={`glass-card ${styles.calculatorCard}`}>
-                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowIntl(!showIntl)}>
-                            🌍 International Pattern Conversion Guide
+                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowIntl(!showIntl)}>International Pattern Conversion Guide
                             <ChevronDown size={14} style={{ transform: showIntl ? "rotate(180deg)" : "none", transition: ".2s" }} />
                         </button>
                         {showIntl && (
@@ -352,18 +347,16 @@ export default function MetersToYardsPage() {
 
                     {/* ═══ FORMULA ═══ */}
                     <div className={`glass-card ${styles.calculatorCard}`}>
-                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowFormula(!showFormula)}>
-                            📐 How to Convert Meters to Yards — The Formula
+                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowFormula(!showFormula)}>How to Convert Meters to Yards — The Formula
                             <ChevronDown size={14} style={{ transform: showFormula ? "rotate(180deg)" : "none", transition: ".2s" }} />
                         </button>
                         {showFormula && (
                             <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.9, color: "var(--color-text-secondary)" }}>
-                                <div style={{ padding: 16, background: "hsl(200,15%,96%)", borderRadius: 8, textAlign: "center", marginBottom: 10, fontFamily: "monospace", fontSize: 18, fontWeight: 700 }}>
-                                    Yards = Meters × 1.09361
+                                <div style={{ padding: 16, background: "hsl(200,15%,96%)", borderRadius: 8, textAlign: "center", marginBottom: 10, fontFamily: "monospace", fontSize: 18, fontWeight: 700 }}>Yards = Meters × 1.09361
                                 </div>
-                                <p><strong>Example:</strong> 1.40m × 1.09361 = 1.5311 yards → nearest ⅛ = 1½ yd → round UP to 1⅝ yd.</p>
+                                <p><strong>Example:</strong>1.40m × 1.09361 = 1.5311 yards → nearest ⅛ = 1½ yd → round UP to 1⅝ yd.</p>
                                 <div style={{ padding: 10, background: "hsl(40,30%,96%)", borderRadius: 6, marginTop: 8 }}>
-                                    <strong>Mental math shortcut:</strong> &quot;A meter is a yard and a hand.&quot; Add ~10% to your meters: 1.40m + 0.14 = 1.54 yd ≈ 1½–1⅝ yd. Actual: 1.53 yd ✓
+                                    <strong>Mental math shortcut:</strong>&quot;A meter is a yard and a hand.&quot; Add ~10% to your meters: 1.40m + 0.14 = 1.54 yd ≈ 1½–1⅝ yd. Actual: 1.53 yd ✓
                                 </div>
                             </div>
                         )}
@@ -371,8 +364,7 @@ export default function MetersToYardsPage() {
 
                     {/* ═══ TIPS ═══ */}
                     <div className={`glass-card ${styles.calculatorCard}`}>
-                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowTips(!showTips)}>
-                            💡 Tips for Buying Fabric When Converting
+                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowTips(!showTips)}>Tips for Buying Fabric When Converting
                             <ChevronDown size={14} style={{ transform: showTips ? "rotate(180deg)" : "none", transition: ".2s" }} />
                         </button>
                         {showTips && (
@@ -386,7 +378,7 @@ export default function MetersToYardsPage() {
                                     { title: "Add Shrinkage After Converting", text: "Pre-wash shrinkage is EXTRA, on top of the converted amount." },
                                 ].map((tip, i) => (
                                     <div key={i} style={{ padding: 8, background: i % 2 === 0 ? "hsl(0,0%,97%)" : "transparent", borderRadius: 6, marginBottom: 4 }}>
-                                        <strong style={{ color: "var(--color-text-primary)" }}>{tip.title}:</strong> {tip.text}
+                                        <strong style={{ color: "var(--color-text-primary)" }}>{tip.title}:</strong>{tip.text}
                                     </div>
                                 ))}
                             </div>
@@ -434,7 +426,7 @@ export default function MetersToYardsPage() {
                         </ol>
                     </div>
                     <Link href="/convert/yards-to-meters" className="btn btn-secondary btn-md" style={{ width: "100%", justifyContent: "center", marginBottom: "var(--space-4)" }}>
-                        <ArrowRightLeft size={16} /> Yards → Meters
+                        <ArrowRightLeft size={16} />Yards → Meters
                     </Link>
                     <div className="glass-card related-tools">
                         <h4>Related Tools</h4>

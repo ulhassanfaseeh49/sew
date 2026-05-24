@@ -15,7 +15,7 @@
   right: -100px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(0, 128, 96, 0.04) 0%, transparent 70%);
+  background: rgba(0, 128, 96, 0.03);
   pointer-events: none;
 }
 
@@ -26,9 +26,7 @@
     linear-gradient(var(--color-bg-tertiary) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-bg-tertiary) 1px, transparent 1px);
   background-size: 40px 40px;
-  opacity: 0.5;
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3), transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3), transparent 70%);
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -85,10 +83,7 @@
 }
 
 .heroAccent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent-primary);
 }
 
 .heroSubtitle {

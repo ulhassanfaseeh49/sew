@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import styles from "../../convert/yards-to-meters/page.module.css";
-import { ClipboardCopy, Printer, ChevronDown, Ruler } from "lucide-react";
+import { ClipboardCopy, Printer, ChevronDown, Ruler, BedDouble, Diamond, BookOpen } from "lucide-react";
 
 /* ─── STANDARD BED SIZES ─── */
 const bedSizes: { name: string; w: number; h: number }[] = [
@@ -98,7 +98,7 @@ export default function Page() {
         // Remove sashing
         // blocks*blockSize + sashCount*sashW = innerDim
         // sashCount = hasSashing ? (blocks-1)+2*sashOuter : 0
-        // blocks*blockSize + (blocks-1+2*sashOuter)*sashW = innerDim  (if sashing)
+        // blocks*blockSize + (blocks-1+2*sashOuter)*sashW = innerDim (if sashing)
         // blocks*(blockSize+sashW) - sashW + 2*sashOuter*sashW = innerDim
         // blocks = (innerDim + sashW - 2*sashOuter*sashW) / (blockSize + sashW)
         let neededCols: number, neededRows: number;
@@ -154,7 +154,7 @@ export default function Page() {
             <div className="calculator-layout">
                 <div className="calculator-main">
                     <div className={styles.toolHeader}>
-                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} /> Quilt #129</span>
+                        <span className="category-badge"><Ruler size={14} strokeWidth={1.5} />Quilt #129</span>
                         <h1>Quilt Size Calculator</h1>
                         <p>Calculate your finished quilt dimensions from block size, layout, sashing, and borders. Compare to standard bed sizes instantly. The foundation tool for every quilt project.</p>
                     </div>
@@ -216,16 +216,16 @@ export default function Page() {
                         <h2 className={styles.calcTitle}>② Sashing (Optional)</h2>
                         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8 }}>
                             <label style={{ fontSize: 12, display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
-                                <input type="checkbox" checked={hasSashing} onChange={e => setHasSashing(e.target.checked)} /> Enable sashing
+                                <input type="checkbox" checked={hasSashing} onChange={e => setHasSashing(e.target.checked)} />Enable sashing
                             </label>
                             {hasSashing && (
                                 <label style={{ fontSize: 12, display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
-                                    <input type="checkbox" checked={sashOuter} onChange={e => setSashOuter(e.target.checked)} /> Include outer edges
+                                    <input type="checkbox" checked={sashOuter} onChange={e => setSashOuter(e.target.checked)} />Include outer edges
                                 </label>
                             )}
                             {hasSashing && (
                                 <label style={{ fontSize: 12, display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
-                                    <input type="checkbox" checked={hasCornerstones} onChange={e => setHasCornerstones(e.target.checked)} /> Cornerstones
+                                    <input type="checkbox" checked={hasCornerstones} onChange={e => setHasCornerstones(e.target.checked)} />Cornerstones
                                 </label>
                             )}
                         </div>
@@ -282,8 +282,7 @@ export default function Page() {
                                     : `Need ${calcB.neededCols}×${calcB.neededRows} = ${calcB.totalBlocks} blocks at ${blockSize}"`}
                             </div>
                             {mode === "B" && (Math.abs(calcB.diffW) > 0.01 || Math.abs(calcB.diffH) > 0.01) && (
-                                <div style={{ fontSize: 11, marginTop: 4, color: "hsl(40,70%,40%)" }}>
-                                    Actual vs target: {calcB.diffW > 0 ? "+" : ""}{calcB.diffW.toFixed(1)}&quot; wide, {calcB.diffH > 0 ? "+" : ""}{calcB.diffH.toFixed(1)}&quot; tall
+                                <div style={{ fontSize: 11, marginTop: 4, color: "hsl(40,70%,40%)" }}>Actual vs target: {calcB.diffW > 0 ? "+" : ""}{calcB.diffW.toFixed(1)}&quot; wide, {calcB.diffH > 0 ? "+" : ""}{calcB.diffH.toFixed(1)}&quot; tall
                                 </div>
                             )}
                         </div>
@@ -300,8 +299,7 @@ export default function Page() {
                                     <div className="result-row" style={{ borderTop: "2px solid hsl(0,0%,85%)" }}><span style={{ fontWeight: 700 }}>Final size</span><strong style={{ color: "hsl(160,50%,35%)" }}>{calcA.finalW}&quot; × {calcA.finalH}&quot;</strong></div>
                                 </div>
                                 {hasSashing && (
-                                    <div style={{ marginTop: 6, fontSize: 11, color: "var(--color-text-tertiary)" }}>
-                                        Sashing: {calcA.sashCountH} vertical + {calcA.sashCountV} horizontal strips
+                                    <div style={{ marginTop: 6, fontSize: 11, color: "var(--color-text-tertiary)" }}>Sashing: {calcA.sashCountH} vertical + {calcA.sashCountV} horizontal strips
                                         {hasCornerstones && ` | ${calcA.csCount} cornerstones at ${sashW}" × ${sashW}"`}
                                     </div>
                                 )}
@@ -311,8 +309,8 @@ export default function Page() {
 
                     {/* Toolbar */}
                     <div className="toolbar" style={{ marginBottom: 10 }}>
-                        <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(copyText)}><ClipboardCopy size={13} /> Copy</button>
-                        <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} /> Print</button>
+                        <button className="btn btn-secondary btn-sm" onClick={() => navigator.clipboard.writeText(copyText)}><ClipboardCopy size={13} />Copy</button>
+                        <button className="btn btn-secondary btn-sm" onClick={() => window.print()}><Printer size={13} />Print</button>
                     </div>
 
                     {/* ═══ BED SIZE COMPARISON ═══ */}
@@ -342,64 +340,64 @@ export default function Page() {
                     </div>
 
                     {/* ═══ MATTRESS FIT ═══ */}
-                    <div className={`glass-card ${styles.calculatorCard}`}>
-                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowMattress(!showMattress)}>
-                            🛏️ Mattress Fit Analysis
-                            <ChevronDown size={14} style={{ transform: showMattress ? "rotate(180deg)" : "none", transition: ".2s" }} />
+                    <div className={`collapsible-panel ${showMattress ? "open" : ""}`}>
+                        <button className="collapsible-panel-toggle" onClick={() => setShowMattress(!showMattress)}>
+                            <span style={{ display: "flex", alignItems: "center", gap: 10 }}><BedDouble size={16} style={{ color: 'var(--color-accent-primary)' }} /> Mattress Fit Analysis</span>
+                            <span className="panel-chevron"><ChevronDown size={14} /></span>
                         </button>
-                        {showMattress && (
-                            <div style={{ marginTop: 10, fontSize: 12, lineHeight: 1.9 }}>
-                                {bedSizes.filter(b => b.name !== "Baby Play Mat").map(bed => {
-                                    // Standard mattress dimensions (width × length)
-                                    const mSizes: Record<string, [number, number]> = { "Crib": [28, 52], "Throw / Lap": [0, 0], "Twin": [39, 75], "Full / Double": [54, 75], "Queen": [60, 80], "King": [76, 80], "California King": [72, 84] };
-                                    const [mw, mh] = mSizes[bed.name] || [0, 0];
-                                    if (mw === 0) return null;
-                                    const dropSide = (qW - mw) / 2;
-                                    const dropFoot = qH - mh;
-                                    return (
-                                        <div key={bed.name} style={{ padding: 6, background: "hsl(0,0%,97%)", borderRadius: 4, marginBottom: 4, fontSize: 11 }}>
-                                            <strong>{bed.name}</strong> (mattress {mw}&quot;×{mh}&quot;)
-                                            <div>Side drop: <strong style={{ color: dropSide >= 14 ? "hsl(150,50%,35%)" : dropSide >= 9 ? "hsl(40,70%,40%)" : "hsl(0,50%,45%)" }}>{dropSide.toFixed(1)}&quot;</strong>
-                                                {dropSide >= 14 ? " ✓ Full coverage" : dropSide >= 9 ? " ~ Coverlet" : dropSide > 0 ? " ✗ Short" : " ✗ Too narrow"}
+                        <div className="collapsible-panel-body">
+                            <div className="collapsible-panel-content">
+                                <div style={{ fontSize: 12, lineHeight: 1.9 }}>
+                                    {bedSizes.filter(b => b.name !== "Baby Play Mat").map(bed => {
+                                        const mSizes: Record<string, [number, number]> = { "Crib": [28, 52], "Throw / Lap": [0, 0], "Twin": [39, 75], "Full / Double": [54, 75], "Queen": [60, 80], "King": [76, 80], "California King": [72, 84] };
+                                        const [mw, mh] = mSizes[bed.name] || [0, 0];
+                                        if (mw === 0) return null;
+                                        const dropSide = (qW - mw) / 2;
+                                        const dropFoot = qH - mh;
+                                        return (
+                                            <div key={bed.name} style={{ padding: 8, background: "hsl(150,20%,97%)", borderRadius: 8, marginBottom: 6, fontSize: 11, borderLeft: `3px solid ${dropSide >= 14 ? "hsl(150,50%,35%)" : dropSide >= 9 ? "hsl(40,70%,50%)" : "hsl(0,50%,55%)"}` }}>
+                                                <strong>{bed.name}</strong>(mattress {mw}&quot;×{mh}&quot;)
+                                                <div>Side drop: <strong style={{ color: dropSide >= 14 ? "hsl(150,50%,35%)" : dropSide >= 9 ? "hsl(40,70%,40%)" : "hsl(0,50%,45%)" }}>{dropSide.toFixed(1)}&quot;</strong>
+                                                    {dropSide >= 14 ? " ✓ Full coverage" : dropSide >= 9 ? " ~ Coverlet" : dropSide > 0 ? " ✗ Short" : " ✗ Too narrow"}
+                                                </div>
+                                                <div>Foot drop: <strong>{dropFoot.toFixed(1)}&quot;</strong></div>
                                             </div>
-                                            <div>Foot drop: <strong>{dropFoot.toFixed(1)}&quot;</strong></div>
-                                        </div>
-                                    );
-                                })}
-                                <div style={{ fontSize: 10, color: "var(--color-text-tertiary)", marginTop: 4 }}>Full coverage: 14–16&quot; drop. Coverlet: 9–12&quot;. Add 10–12&quot; to length for pillow tuck.</div>
+                                        );
+                                    })}
+                                    <div style={{ fontSize: 10, color: "var(--color-text-tertiary)", marginTop: 4 }}>Full coverage: 14–16&quot; drop. Coverlet: 9–12&quot;. Add 10–12&quot; to length for pillow tuck.</div>
+                                </div>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* ═══ ON-POINT ═══ */}
-                    <div className={`glass-card ${styles.calculatorCard}`}>
-                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowOnPoint(!showOnPoint)}>
-                            ◇ On-Point / Diagonal Layout
-                            <ChevronDown size={14} style={{ transform: showOnPoint ? "rotate(180deg)" : "none", transition: ".2s" }} />
+                    <div className={`collapsible-panel ${showOnPoint ? "open" : ""}`}>
+                        <button className="collapsible-panel-toggle" onClick={() => setShowOnPoint(!showOnPoint)}>
+                            <span style={{ display: "flex", alignItems: "center", gap: 10 }}><Diamond size={16} style={{ color: 'var(--color-accent-primary)' }} /> On-Point / Diagonal Layout</span>
+                            <span className="panel-chevron"><ChevronDown size={14} /></span>
                         </button>
-                        {showOnPoint && (
-                            <div style={{ marginTop: 10, fontSize: 12, lineHeight: 1.9 }}>
+                        <div className="collapsible-panel-body">
+                            <div className="collapsible-panel-content">
                                 <div className={styles.resultDetails}>
                                     <div className="result-row"><span>Block diagonal</span><strong>{onPoint.diag.toFixed(2)}&quot; ({blockSize}&quot; × √2)</strong></div>
                                     <div className="result-row"><span>On-point quilt size (approx)</span><strong>{onPoint.opW.toFixed(1)}&quot; × {onPoint.opH.toFixed(1)}&quot;</strong></div>
                                     <div className="result-row"><span>Side setting triangle cut</span><strong>{onPoint.settingSide.toFixed(2)}&quot; squares, cut ×2 diag</strong></div>
                                     <div className="result-row"><span>Corner triangle cut</span><strong>{onPoint.settingCorner.toFixed(2)}&quot; squares, cut ×1 diag</strong></div>
                                 </div>
-                                <div style={{ marginTop: 6, fontSize: 11, color: "var(--color-text-tertiary)" }}>
-                                    Side triangles: {(mode === "A" ? cols : calcB.neededCols) * 2 + (mode === "A" ? rows : calcB.neededRows) * 2 - 4} needed | Corner triangles: 4 needed
+                                <div style={{ marginTop: 6, fontSize: 11, color: "var(--color-text-tertiary)" }}>Side triangles: {(mode === "A" ? cols : calcB.neededCols) * 2 + (mode === "A" ? rows : calcB.neededRows) * 2 - 4} needed | Corner triangles: 4 needed
                                 </div>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* ═══ EDUCATIONAL ═══ */}
-                    <div className={`glass-card ${styles.calculatorCard}`}>
-                        <button className="btn btn-sm btn-secondary" style={{ width: "100%", justifyContent: "space-between" }} onClick={() => setShowEdu(!showEdu)}>
-                            📚 Understanding Quilt Sizing
-                            <ChevronDown size={14} style={{ transform: showEdu ? "rotate(180deg)" : "none", transition: ".2s" }} />
+                    <div className={`collapsible-panel ${showEdu ? "open" : ""}`}>
+                        <button className="collapsible-panel-toggle" onClick={() => setShowEdu(!showEdu)}>
+                            <span style={{ display: "flex", alignItems: "center", gap: 10 }}><BookOpen size={16} style={{ color: 'var(--color-accent-primary)' }} /> Understanding Quilt Sizing</span>
+                            <span className="panel-chevron"><ChevronDown size={14} /></span>
                         </button>
-                        {showEdu && (
-                            <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.9, color: "var(--color-text-secondary)" }}>
+                        <div className="collapsible-panel-body">
+                            <div className="collapsible-panel-content" style={{ fontSize: 13, lineHeight: 1.9, color: "var(--color-text-secondary)" }}>
                                 <h4 style={{ fontWeight: 600, color: "var(--color-text-primary)" }}>Finished vs Unfinished</h4>
                                 <p style={{ fontSize: 12 }}>A &quot;finished&quot; measurement is after sewing — the size the block will be in your completed quilt. &quot;Unfinished&quot; includes seam allowances (add ½&quot; for standard ¼&quot; seams on each side). Always plan with finished sizes; the seam allowances take care of themselves.</p>
                                 <h4 style={{ fontWeight: 600, color: "var(--color-text-primary)", marginTop: 10 }}>Why Quilts End Up the Wrong Size</h4>
@@ -407,7 +405,7 @@ export default function Page() {
                                 <h4 style={{ fontWeight: 600, color: "var(--color-text-primary)", marginTop: 10 }}>How Sashing Works</h4>
                                 <p style={{ fontSize: 12 }}>Sashing strips go between blocks. For N blocks in a row, there are (N−1) sashing strips between them. If you add outer sashing, that&apos;s 2 more strips per dimension. Cornerstones sit at sashing intersections — they&apos;re purely decorative and don&apos;t change the size.</p>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* FAQ */}
