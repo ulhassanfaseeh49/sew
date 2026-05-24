@@ -23,7 +23,7 @@ const relatedTools = [
     { name: "Fat Eighth Calculator", href: "/convert/fat-eighth-calculator", icon: Grid3X3 },
     { name: "Fabric Cut Comparator", href: "/convert/fabric-cut-comparator", icon: ArrowRightLeft },
     { name: "Pre-Cut Fabric Sizes", href: "/convert/precut-fabric-sizes", icon: Ruler },
-    { name: "Quilt Yardage", href: "/yardage/quilt-general", icon: Ruler },
+    { name: "Quilt Yardage", href: "/quilt/size-calculator", icon: Ruler },
 ];
 
 export default function FatQuarterCalculatorPage() {

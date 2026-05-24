@@ -20,7 +20,7 @@ const faqItems = [
 const relatedTools = [
     { name: "Fat Quarter Calculator", href: "/convert/fat-quarter-calculator", icon: Grid3X3 },
     { name: "Fabric Area Calculator", href: "/convert/fabric-area-calculator", icon: Ruler },
-    { name: "Quilt Yardage", href: "/yardage/quilt-general", icon: Ruler },
+    { name: "Quilt Yardage", href: "/quilt/size-calculator", icon: Ruler },
 ];
 
 export default function FabricPanelCalculatorPage() {

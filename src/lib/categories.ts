@@ -10,14 +10,14 @@ export interface Category {
 
 export const categories: Category[] = [
     { id: 1, name: "Fabric Measurement & Conversion", slug: "convert", icon: "", toolCount: 24, description: "Convert between yards, meters, inches, cm & fabric widths" },
-    { id: 2, name: "Fabric Yardage Calculators", slug: "yardage", icon: "", toolCount: 42, description: "Calculate fabric yardage for any project type" },
+    { id: 2, name: "Fabric Yardage Calculators", slug: "yardage", icon: "", toolCount: 31, description: "Calculate fabric yardage for any project type" },
     { id: 3, name: "Fabric Cost Calculators", slug: "cost", icon: "", toolCount: 16, description: "Estimate project costs and compare fabric prices" },
     { id: 4, name: "Seam Allowance Tools", slug: "seam-allowance", icon: "", toolCount: 12, description: "Calculate and convert seam allowances for any technique" },
-    { id: 5, name: "Pattern Scaling & Grading", slug: "pattern", icon: "", toolCount: 18, description: "Scale, grade, and adjust sewing patterns" },
+    { id: 5, name: "Pattern Scaling & Grading", slug: "pattern", icon: "", toolCount: 17, description: "Scale, grade, and adjust sewing patterns" },
     { id: 6, name: "Body Measurement Tools", slug: "body", icon: "", toolCount: 16, description: "Measure, track, and convert body measurements" },
-    { id: 7, name: "Quilt Math Tools", slug: "quilt", icon: "", toolCount: 38, description: "Plan quilts, calculate blocks, binding, and yardage" },
+    { id: 7, name: "Quilt Math Tools", slug: "quilt", icon: "", toolCount: 34, description: "Plan quilts, calculate blocks, binding, and yardage" },
     { id: 8, name: "Quilt Cutting Tools", slug: "cutting", icon: "", toolCount: 13, description: "Optimize cutting layouts and calculate piece counts" },
-    { id: 9, name: "Thread & Notion Calculators", slug: "notions", icon: "🪡", toolCount: 21, description: "Calculate thread, button, zipper, and notion needs" },
+    { id: 9, name: "Thread & Notion Calculators", slug: "notions", icon: "🪡", toolCount: 13, description: "Calculate thread, button, zipper, and notion needs" },
     { id: 10, name: "Garment Construction", slug: "garment", icon: "", toolCount: 29, description: "Darts, pleats, hems, waistbands, collars & more" },
     { id: 11, name: "Fabric Shrinkage Tools", slug: "shrinkage", icon: "", toolCount: 8, description: "Estimate shrinkage and pre-wash calculations" },
     { id: 12, name: "Curtain & Window Treatments", slug: "curtains", icon: "🪟", toolCount: 17, description: "Calculate curtain yardage, fullness, and hardware" },

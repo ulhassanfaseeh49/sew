@@ -8,7 +8,7 @@ import styles from "../../convert/yards-to-meters/page.module.css";
 const relatedTools = [
     { name: "Snap Spacing", href: "/notions/snap-spacing", icon: Ruler },
     { name: "Button Spacing", href: "/notions/button-spacing", icon: Ruler },
-    { name: "Boning Calculator", href: "/notions/boning-calculator", icon: Scissors },
+    { name: "Boning Calculator", href: "/costume/boning-calculator", icon: Scissors },
 ];
 const faqItems = [
     { q: "How close should hooks be on a corset?", a: "Corset hooks are typically 1/2 inch apart for modesty panels. Bridal gowns use 3/4 to 1 inch spacing. Waistbands usually need just 1-2 hooks." },

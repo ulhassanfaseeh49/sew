@@ -13,7 +13,6 @@ export const patternTools: PatternTool[] = [
     { id: 98, name: "Percentage Scaling Calculator", slug: "percentage-scaler", description: "Scale patterns by any custom percentage", icon: "" },
     { id: 99, name: "Copy Shop Scaling Guide", slug: "copy-shop-guide", description: "Print percentages for copy shop pattern printing", icon: "" },
     { id: 100, name: "PDF Pattern Printing Calculator", slug: "pdf-print-calculator", description: "Pages needed for printing PDF patterns at home", icon: "" },
-    { id: 101, name: "Ease Calculator", slug: "ease-calculator", description: "Calculate wearing ease and design ease", icon: "" },
     { id: 102, name: "Ease Adjustment Tool", slug: "ease-adjuster", description: "Add or remove ease from a pattern", icon: "" },
     { id: 103, name: "Petite/Tall Height Adjuster", slug: "height-adjuster", description: "Lengthen/shorten adjustments for height", icon: "" },
     { id: 104, name: "Full Bust Adjustment (FBA)", slug: "full-bust-adjustment", description: "Calculate FBA based on bust difference", icon: "" },

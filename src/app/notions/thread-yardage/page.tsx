@@ -10,7 +10,7 @@ const stitchMultipliers: Record<string, number> = { "Straight stitch": 1, "Zigza
 const relatedTools = [
     { name: "Bobbin Thread", href: "/notions/bobbin-thread", icon: Scissors },
     { name: "Thread Weight", href: "/notions/thread-weight-comparison", icon: Ruler },
-    { name: "Thread by Fabric", href: "/notions/thread-by-fabric", icon: Scissors },
+    { name: "Thread by Fabric", href: "/needles-thread/thread-by-fabric", icon: Scissors },
 ];
 const faqItems = [
     { q: "How much thread does a typical garment use?", a: "A simple blouse uses about 1,200 inches (~33 yards). A lined jacket can use over 3,000 inches (~83 yards). Serged seams use 3-4x more thread than straight stitching." },

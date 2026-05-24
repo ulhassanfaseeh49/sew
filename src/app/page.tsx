@@ -71,7 +71,7 @@ export default function HomePage() {
                 Explore All Tools
                 <ArrowRight size={18} />
               </Link>
-              <Link href="/tools-by-category" className="btn btn-ghost btn-lg">
+              <Link href="/tools-index" className="btn btn-ghost btn-lg">
                 Browse Categories
               </Link>
             </div>
