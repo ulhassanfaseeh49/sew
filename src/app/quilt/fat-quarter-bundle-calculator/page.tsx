@@ -166,7 +166,7 @@ export default function Page() {
  if (results.tooLarge) return null;
  const scale = 2.6;
  const w = FQ_W * scale, h = FQ_H * scale;
- const rects: JSX.Element[] = [];
+ const rects: React.JSX.Element[] = [];
  for (let r = 0; r < results.down; r++) {
  for (let c = 0; c < results.across; c++) {
  rects.push(
@@ -504,11 +504,11 @@ export default function Page() {
  { n: 40, desc: "Twin to full", ex: "5×8 at 12\" = 60\"×96\"" },
  ].map((b, i) =>(
  <div key={i} style={{
- display: "flex", alignItems: "center", gap: 8, padding: "6px 0",
- borderBottom: "1px solid hsl(0,0%,92%)",
- background: b.n === fqCount ? "hsl(150,40%,96%)" : undefined,
- borderRadius: b.n === fqCount ? 4 : 0,
- padding: b.n === fqCount ? "6px 8px" : "6px 0",
+ display: "flex", alignItems: "center", gap: 8,
+  borderBottom: "1px solid hsl(0,0%,92%)",
+  background: b.n === fqCount ? "hsl(150,40%,96%)" : undefined,
+  borderRadius: b.n === fqCount ? 4 : 0,
+  padding: b.n === fqCount ? "6px 8px" : "6px 0",
  }}>
  <span style={{ fontWeight: 700, fontSize: 14, width: 32, textAlign: "right", color: b.n === fqCount ? "hsl(150,60%,35%)" : "var(--color-text-primary)" }}>{b.n}</span>
  <span style={{ flex: 1 }}>

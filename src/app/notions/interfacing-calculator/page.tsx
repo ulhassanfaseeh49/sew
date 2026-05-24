@@ -13,9 +13,9 @@ const matrix = [
     { fabric: "Bags / craft projects", rec: "Pellon 809 or Pellon 987F", alt: "Peltex 72F (ultra-firm)", why: "Shape retention for structured items" },
 ];
 const relatedTools = [
-    { name: "Stabilizer Calc", href:  icon: Scissors },
+    { name: "Stabilizer Calc", href: "/needles-thread/thread-by-fabric", icon: Scissors },
     { name: "Fusible Web", href: "/notions/fusible-web-calculator", icon: Ruler },
-    { name: "Lining Yardage", href:  icon: Ruler },
+    { name: "Lining Yardage", href: "/needles-thread/thread-by-fabric", icon: Ruler },
 ];
 const faqItems = [
     { q: "Fusible or sew-in interfacing?", a: "Fusible is faster and easier -- best for most projects. Sew-in is better for delicate fabrics that can't take heat, or for professional tailoring." },

@@ -15,7 +15,7 @@ const weights = [
     { wt: "12wt", desc: "Very heavy", use: "Hand-look quilting, decorative", needle: "100/16 - 110/18", vis: "Very visible" },
 ];
 const relatedTools = [
-    { name: "Thread by Fabric", href:  icon: Scissors },
+    { name: "Thread by Fabric", href: "/needles-thread/thread-by-fabric", icon: Scissors },
     { name: "Thread Color", href: "/notions/thread-color-matching", icon: Layers },
     { name: "Thread Yardage", href: "/notions/thread-yardage", icon: Ruler },
 ];

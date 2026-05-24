@@ -444,7 +444,7 @@ export default function Page() {
  }}>
  {/* Grid lines */}
  {showGrid && (() =>{
- const lines: JSX.Element[] = [];
+ const lines: React.JSX.Element[] = [];
  for (let x = gridSize; x < canvasW; x += gridSize) {
  lines.push(<div key={`gv${x}`} style={{ position: "absolute", left: x * scale, top: 0, width: 1, height: "100%", background: "rgba(0,0,0,0.06)" }} />);
  }

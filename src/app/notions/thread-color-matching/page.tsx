@@ -14,7 +14,7 @@ const strategies = [
 ];
 const relatedTools = [
     { name: "Thread Weight", href: "/notions/thread-weight-comparison", icon: Layers },
-    { name: "Thread by Fabric", href:  icon: Scissors },
+    { name: "Thread by Fabric", href: "/needles-thread/thread-by-fabric", icon: Scissors },
     { name: "Thread Yardage", href: "/notions/thread-yardage", icon: Scissors },
 ];
 const faqItems = [

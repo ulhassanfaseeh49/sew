@@ -283,7 +283,7 @@ export default function Page() {
  <svg width={blockFin * diagScale + 20} height={blockFin * diagScale + 20} viewBox={`-10 -10 ${blockFin * diagScale + 20} ${blockFin * diagScale + 20}`}>
  {/* Build block visually */}
  {(() =>{
- const els: JSX.Element[] = [];
+ const els: React.JSX.Element[] = [];
  const s = diagScale;
  if (blockStyle === "standard") {
  let x = 0, y = 0, w = centerSize, h = centerSize;

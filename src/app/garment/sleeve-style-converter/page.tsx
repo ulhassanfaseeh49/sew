@@ -8,7 +8,7 @@ export default function Page() {
     const [vals, setVals] = useState({"from":0,"armLen":23});
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const faqItems = [{"q":"Can I convert sleeve types?","a":"Yes with pattern adjustment. Set-in to raglan: remove shoulder seam, reshape armhole."}];
-    const styles=['Set-in sleeve','Raglan sleeve','Dolman/batwing'];const fromS=styles[vals.from]||styles[0];
+    const dataRows=['Set-in sleeve','Raglan sleeve','Dolman/batwing'];const fromS=dataRows[vals.from]|| dataRows[0];
     return (<div className="container"><Breadcrumb items={[{ label: "Garment", href: "/garment" }, { label: "Sleeve Style Converter" }]} />
         <div className="calculator-layout"><div className="calculator-main">
             <div className={styles.toolHeader}><span className="category-badge"><Scissors size={14} /> Garment #221</span><h1>Sleeve Style Converter</h1><p>Convert between sleeve types.</p></div>

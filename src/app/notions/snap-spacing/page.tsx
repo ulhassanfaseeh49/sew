@@ -8,7 +8,7 @@ import styles from "../../convert/yards-to-meters/page.module.css";
 const relatedTools = [
     { name: "Hook & Eye", href: "/notions/hook-eye-spacing", icon: Pin },
     { name: "Button Spacing", href: "/notions/button-spacing", icon: Ruler },
-    { name: "Elastic Calculator", href:  icon: Ruler },
+    { name: "Elastic Calculator", href: "/needles-thread/thread-by-fabric", icon: Ruler },
 ];
 const faqItems = [
     { q: "How far apart should snaps be on baby clothing?", a: "Baby clothing crotch snaps are typically 1/2 to 3/4 inch apart for quick diaper changes. Shoulder snaps use 1-2 snaps spaced about 1 inch." },

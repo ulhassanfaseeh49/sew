@@ -8,7 +8,7 @@ export default function Page() {
     const [vals, setVals] = useState({"armLen":23,"style":1});
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const faqItems = [{"q":"Standard sleeve lengths?","a":"Cap: 4-5\". Short: 9-10\". 3/4: 17-18\". Long: full arm length + 1\"."}];
-    const styles=[{name:'Cap sleeve',pct:0.2},{name:'Short sleeve',pct:0.43},{name:'3/4 sleeve',pct:0.75},{name:'Long sleeve',pct:1}];const s=styles[vals.style]||styles[1];const len=Math.round(vals.armLen*s.pct);
+    const dataRows=[{name:'Cap sleeve',pct:0.2},{name:'Short sleeve',pct:0.43},{name:'3/4 sleeve',pct:0.75},{name:'Long sleeve',pct:1}];const s=dataRows[vals.style]|| dataRows[1];const len=Math.round(vals.armLen*s.pct);
     return (<div className="container"><Breadcrumb items={[{ label: "Garment", href: "/garment" }, { label: "Sleeve Length Calculator" }]} />
         <div className="calculator-layout"><div className="calculator-main">
             <div className={styles.toolHeader}><span className="category-badge"><Scissors size={14} /> Garment #219</span><h1>Sleeve Length Calculator</h1><p>Calculate sleeve length by style.</p></div>

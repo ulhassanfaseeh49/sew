@@ -417,7 +417,7 @@ export default function Page() {
  gap: 2, padding: 8
  }}>
  {(() =>{
- const cells: JSX.Element[] = [];
+ const cells: React.JSX.Element[] = [];
  const totalGridCols = placement === "full" ? cols * 2 + 1 : cols * 2 - 1;
  const totalGridRows = placement === "full" ? rows * 2 + 1 : rows * 2 - 1;
  let stoneNum = 0;

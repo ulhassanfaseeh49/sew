@@ -145,7 +145,7 @@ export default function Page() {
  const cx = 110, cy = 110, r = 90;
  const bladesShown = Math.round(arc / results.angle);
  const startAngle = plateStyle === "quarter" ? -90 : plateStyle === "half" ? -90 : 0;
- const paths: JSX.Element[] = [];
+ const paths: React.JSX.Element[] = [];
  const innerR = (centerDia / diameter) * r;
 
  for (let i = 0; i < bladesShown; i++) {
